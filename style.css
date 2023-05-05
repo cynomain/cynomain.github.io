@@ -1,0 +1,42 @@
+.topbar {
+  background-color: rgba(220, 20, 60, 0.699);
+  min-height: 3em;
+  color: white;
+  display: flex;
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  width: 100%;
+  align-items: center;
+}
+
+body {
+  margin: 0px;
+  background-color: #121212;
+}
+
+* {
+  outline: dotted 2px red;
+}
+
+button{
+    border: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.containers_buttons{
+    width: 100%;
+    margin: 1em;
+    bottom: 0;
+    left: 0;
+    position:fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+button.answer{
+    width: 100%;
+    flex: 1;
+    margin: 8px;
+    font-size: 3em;
+}
