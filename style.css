@@ -1,42 +1,220 @@
-.topbar {
-  background-color: rgba(220, 20, 60, 0.699);
-  min-height: 3em;
-  color: white;
-  display: flex;
-  backdrop-filter: blur(4px);
-  overflow: hidden;
-  width: 100%;
-  align-items: center;
-}
-
-body {
-  margin: 0px;
-  background-color: #121212;
-}
-
 * {
   outline: dotted 2px red;
 }
 
-button{
-    border: none;
-    padding-top: 4px;
-    padding-bottom: 4px;
+.currentNumberText {
+  text-align: center;
+  font-family: "Roboto Black", sans-serif;
+  font-size: 5em;
+  /*bottom: 50%;
+  top: 50%;*/
+  flex: 2;
+  display: inline-block;
+  text-align: center;
+  vertical-align: text-bottom;
 }
 
-.containers_buttons{
+.currentAnswerText {
+  flex: 0;
+  font-size: 4em;
+  margin: 0;
+}
+
+body {
+  background-color: #121212;
+  color: white;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto", sans-serif;
+  font-size: 18pt;
+}
+
+button {
+  font-family: "Roboto Black", sans-serif;
+  cursor: pointer;
+}
+
+.stackButtons {
+  width: 80%;
+  margin-bottom: 5%;
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  align-self: center;
+}
+
+.stackButtons.bottom {
+  /*
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;*/
+  flex: 0;
+}
+
+.stackButtons.top {
+  /*
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;*/
+  flex: 0;
+}
+
+.stackButtons.center {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0%;
+  margin-top: 0%;
+}
+
+.choice {
+  font-size: 36pt;
+  padding: 0.35em;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  margin-bottom: 0.25em;
+  display: inline-block;
+  transition: all 0.2s;
+  color: white;
+}
+
+button:hover {
+  filter: brightness(90%);
+}
+
+button:active {
+  filter: brightness(80%);
+}
+
+button:disabled {
+  filter: brightness(60%);
+}
+
+.choice.A {
+  background-color: #ff7066;
+}
+
+.choice.B {
+  background-color: #69c981;
+}
+
+.choice.C {
+  background-color: #66b0ff;
+}
+
+.choice.D {
+  background-color: #9966ff;
+}
+
+.functionButtons {
+  font-size: 22pt;
+  padding: 0.5em;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  margin-bottom: 0.25em;
+  display: inline-block;
+  transition: all 0.2s;
+  color: black;
+}
+
+.functionButtons.reset {
+  background-color: #ff5d58;
+  color: white;
+}
+
+.functionButtons.grade {
+    background-color: #ff5d58;
+    color: white;
+  }
+  
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.mainContainer > * {
+  margin: .25em 0;
+}
+
+.mainContainer > *:first-child {
+  margin-top: 0;
+}
+
+.mainContainer > *:last-child {
+  margin-bottom: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.controlButtons {
+  font-size: 22pt;
+  padding: 0.5em;
+  border: none;
+  border-radius: 16px;
+  margin-bottom: 0.25em;
+  transition: all 0.2s;
+  color: white;
+}
+
+.controlButtons.left {
+  background-color: #ff9e59;
+  flex: 1;
+  margin-right: 0.25em;
+  aspect-ratio: 1/1;
+}
+
+.controlButtons.right {
+  background-color: #e768e2;
+  flex: 1;
+  margin-left: 0.25em;
+  aspect-ratio: 1/1;
+}
+
+.controlButtons.center {
+  background-color: #7569e5;
+  flex: 5;
+}
+
+.showEntry{
+    display: flex;
+    flex-direction: row;
     width: 100%;
-    margin: 1em;
-    bottom: 0;
-    left: 0;
-    position:fixed;
+    background-color: rgb(255, 255, 255, .1);
+    color: white;
+    border-radius: 16px;
+}
+
+.entries{
+    flex: 2;
     display: flex;
     flex-direction: column;
+    margin-bottom: 0%;
+    margin-top: 0%;
+    height: fit-content;
+    flex-flow:row wrap;
+    overflow-y: auto;
 }
-
-button.answer{
-    width: 100%;
-    flex: 1;
-    margin: 8px;
-    font-size: 3em;
+.showEntry> *{
+    font-size: 14pt;
+    margin: .5em;
 }
