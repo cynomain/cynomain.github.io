@@ -1,0 +1,55 @@
+
+.choice {
+  font-size: 36pt;
+  padding: 0.35em;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  margin-bottom: 0.25em;
+  display: inline-block;
+  transition: all 0.2s;
+  color: white;
+}
+
+.choice.A {
+  background-color: #ff7066;
+}
+
+.choice.B {
+  background-color: #69c981;
+}
+
+.choice.C {
+  background-color: #66b0ff;
+}
+
+.choice.D {
+  background-color: #9966ff;
+}
+
+.currentNumberText {
+  text-align: center;
+  font-family: "Roboto Black", sans-serif;
+  font-size: 32pt;
+  /*bottom: 50%;
+  top: 50%;*/
+  display: inline-block;
+  text-align: center;
+  vertical-align: text-bottom;
+}
+
+.currentAnswerText {
+  flex: 0;
+  font-size: 32pt;
+  margin: 0;
+}
+
+/*
+.imageButton.settingsButton {
+  transition: transform 1s;
+}
+
+.imageButton.settingsButton:hover {
+  transform: rotate(180deg);
+}
+*/

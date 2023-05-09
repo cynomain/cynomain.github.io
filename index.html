@@ -1,6 +1,8 @@
 <html>
   <head>
+    <link rel="stylesheet" href="index.css" />
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
     <script src="script.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -8,17 +10,33 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pilgan</title>
   </head>
 
   <body>
-    <div class="mainContainer" id="mainUI" style="">
+    <div class="mainContainer" id="mainUI">
+      <!--
       <div class="stackButtons top">
         <button class="functionButtons reset">Reset</button>
       </div>
+    -->
+
+      <div class="topbar" style="background-color: crimson;">
+        <h1 class="pageTitle left">Pilgan</h1>
+        <button class="imageButton settingsButton" id="button_settings" style="color:white">
+          <img src="assets/icon_settings.svg" class="settingIcon"/>
+        </button>
+      </div>
 
       <div class="stackButtons center">
-        <h1 class="currentNumberText">{currentNumber}</h1>
-        <h1 class="currentAnswerText">{currentAnswer}</h1>
+        <div style="width:100%; display:flex; align-content: center; flex:2; flex-direction: column;">
+          <div style="flex:2;"></div>
+          <h1 class="currentNumberText" id="text_curNumber" style="flex:1;">{currentNumber}</h1>
+          <div style="flex:2;"></div>
+        </div>
+        <h1 class="currentAnswerText" id="text_curAnswer">{currentAnswer}</h1>
       </div>
 
       <div class="stackButtons bottom">
@@ -31,138 +49,6 @@
         <button class="choice B">B</button>
         <button class="choice C">C</button>
         <button class="choice D">D</button>
-      </div>
-    </div>
-
-    <div class="mainContainer" id="showUI" style="display: none">
-      <div class="stackButtons top">
-        <button class="functionButtons top">Back</button>
-      </div>
-      <div class="entries center" >
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>
-        <button class="showEntry">
-          <p>1.</p>
-          <p>ANS</p>
-          <p>Yes</p>
-        </button>      
-      </div>
-      
-      <div class="stackButtons bottom">
-        <button class="functionButtons grade">Grade</button>
       </div>
     </div>
   </body>
