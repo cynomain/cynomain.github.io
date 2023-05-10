@@ -1,8 +1,4 @@
 
-* {
-  outline: dotted 2px yellow;
-}
-
 
 button,
 textarea,
@@ -23,12 +19,12 @@ a {
   flex: 100;
 }
 
-.pageTitle.left{
+.pageTitle.left {
   padding-left: 1em;
 }
 
-.pageTitle.right{
-  padding-left: .5em;
+.pageTitle.right {
+  padding-left: 0.5em;
 }
 
 body {
@@ -103,6 +99,11 @@ h6 {
 button {
   font-family: "Roboto Black", sans-serif;
   cursor: pointer;
+  border-radius: 16px;
+  border: none;
+  background-color: white;
+  padding: .5em;
+  font-size: 16px;
 }
 
 button:hover {
@@ -196,3 +197,51 @@ button:disabled {
   background-color: #7569e5;
   flex: 100;
 }
+
+.overlay {
+  background-color: #00000085;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  vertical-align: center;
+  align-items: center;
+}
+
+.msgbox{
+  height: fit-content;
+  width: fit-content;
+}
+
+.msgbox.background{
+  height: fit-content;
+  width: fit-content;
+  max-height: 80vw;
+  max-width: 80vw;
+  background-color: #121212;
+  border-radius: 16px;
+  padding:0em 1em 1.5em 1.5em;
+}
+
+.msgboxTitle{
+  font-size: 32pt;
+  text-align: center;
+}
+
+.msgbox>p, .msgbox>button{
+  font-size: 18pt;
+}
+
+.msgboxTitleBg{
+  background-color: #242424;
+  width: 100%;
+  height: fit-contents;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 16px 16px 0px 0px;
+  transform: translateX(-(16px + 2em));
+}
+

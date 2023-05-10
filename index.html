@@ -10,12 +10,27 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
       rel="stylesheet"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pilgan</title>
   </head>
 
   <body>
+    
+    <div class="overlay" id="overlay">
+      <div class="msgbox">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle">Reset</h1>
+          </div>
+          <p>
+            Confirm reset?
+          </p>
+          <button style="width:100%"">Reset</button>
+        </div>
+      </div>
+    </div>
+    
     <div class="mainContainer" id="mainUI">
       <!--
       <div class="stackButtons top">
@@ -23,22 +38,46 @@
       </div>
     -->
 
-      <div class="topbar" style="background-color: crimson;">
+      <!--Top-->
+      <div class="topbar" style="background-color: crimson">
         <h1 class="pageTitle left">Pilgan</h1>
-        <button class="imageButton settingsButton" id="button_settings" style="color:white">
-          <img src="assets/icon_settings.svg" class="settingIcon"/>
+
+        <!--Save-->
+        <button class="imageButton" id="button_save" style="color: white">
+          <img src="assets/icon_save.svg" class="settingIcon" />
+        </button>
+
+        <!--Settings-->
+        <button
+          class="imageButton settingsButton"
+          id="button_settings"
+          style="color: white"
+        >
+          <img src="assets/icon_settings.svg" class="settingIcon" />
         </button>
       </div>
 
+      <!--Text-->
       <div class="stackButtons center">
-        <div style="width:100%; display:flex; align-content: center; flex:2; flex-direction: column;">
-          <div style="flex:2;"></div>
-          <h1 class="currentNumberText" id="text_curNumber" style="flex:1;">{currentNumber}</h1>
-          <div style="flex:2;"></div>
+        <div
+          style="
+            width: 100%;
+            display: flex;
+            align-content: center;
+            flex: 2;
+            flex-direction: column;
+          "
+        >
+          <div style="flex: 2"></div>
+          <h1 class="currentNumberText" id="text_curNumber" style="flex: 1">
+            {currentNumber}
+          </h1>
+          <div style="flex: 2"></div>
         </div>
         <h1 class="currentAnswerText" id="text_curAnswer">{currentAnswer}</h1>
       </div>
 
+      <!--Buttons-->
       <div class="stackButtons bottom">
         <div class="controls">
           <button class="controlButtons left"><</button>
@@ -49,7 +88,9 @@
         <button class="choice B">B</button>
         <button class="choice C">C</button>
         <button class="choice D">D</button>
-      </div>
+      </div>  
     </div>
+
+    <h1>A HSBAS</h1>
   </body>
 </html>
