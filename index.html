@@ -17,27 +17,6 @@
   </head>
 
   <body>
-    <div style="display: none" class="overlay" id="overlay">
-      <!--Delete-->
-      <div class="msgbox" id="messagebox">
-        <div class="msgbox background">
-          <div class="msgboxTitleBg">
-            <h1 class="msgboxTitle" id="messagebox_title">Delete</h1>
-          </div>
-          <!-- Contents -->
-          <div class="msgboxItems" id="messagebox_items">
-            <p style="font-weight: 100">Confirm deletion?</p>
-          </div>
-          <div class="msgboxItems" id="messagebox_buttons">
-            <div class="msgboxInlineButtons">
-              <button>Yes</button>
-              <button>No</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="mainContainer" id="mainUI">
       <!--
       <div class="stackButtons top">
@@ -50,6 +29,7 @@
         <h1 class="pageTitle left">Pilgan</h1>
 
         <!--Save-->
+        <!--
         <button
           class="imageButton"
           id="button_save"
@@ -58,6 +38,7 @@
         >
           <img src="assets/icon_save.svg" class="settingIcon" />
         </button>
+      -->
 
         <!--Settings-->
         <button
@@ -93,21 +74,21 @@
       <!--Buttons-->
       <div class="stackButtons bottom">
         <div class="controls">
-          <button class="controlButtons left">
+          <button class="controlButtons left" onclick="button_Prev()">
             <img src="/assets/icon_arrow_circle_left.svg" style="scale: 1.5" />
           </button>
-          <button class="controlButtons center">View</button>
-          <button class="controlButtons right">
+          <button class="controlButtons center" onclick="gotoView();">
+            View
+          </button>
+          <button class="controlButtons right" onclick="button_Next()">
             <img src="/assets/icon_arrow_circle_right.svg" style="scale: 1.5" />
           </button>
         </div>
-        <button class="choice A" onclick="pickAnswer();">A</button>
-        <button class="choice B">B</button>
-        <button class="choice C">C</button>
-        <button class="choice D">D</button>
+        <button class="choice A" onclick="pickAnswer(0);">A</button>
+        <button class="choice B" onclick="pickAnswer(1);">B</button>
+        <button class="choice C" onclick="pickAnswer(2);">C</button>
+        <button class="choice D" onclick="pickAnswer(3);">D</button>
       </div>
     </div>
-
-    <h1>A HSBAS</h1>
   </body>
 </html>

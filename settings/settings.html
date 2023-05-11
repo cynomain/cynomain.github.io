@@ -10,12 +10,36 @@
     <link rel="icon" href="/assets/icon_settings.svg" type="image/x-icon" />
     <script src="/script.js"></script>
     <script src="/settings/settings.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="mainContainer" id="settingsUI">
+      <div style="display: none" class="overlay" id="overlay">
+        <!--Reset-->
+        <div class="msgbox" id="messagebox_reset">
+          <div class="msgbox background">
+            <div class="msgboxTitleBg">
+              <h1 class="msgboxTitle" id="messagebox_title">Reset</h1>
+            </div>
+            <!-- Contents -->
+            <div class="msgboxItems" id="messagebox_items">
+              <p style="font-weight: 100">Confirm reset?</p>
+            </div>
+            <div class="msgboxItems" id="messagebox_buttons">
+              <div class="msgboxInlineButtons">
+                <button>Yes</button>
+                <button>No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="topbar" style="background-color: cornflowerblue">
         <!--Back button-->
         <button
@@ -24,14 +48,19 @@
           style="color: white"
           onclick="back()"
         >
-          <img src="/assets/icon_arrow_left.svg"/>
+          <img src="/assets/icon_arrow_left.svg" />
         </button>
 
         <!--Title-->
-        <h1 class="pageTitle right">Settings</h1>
+        <h1 class="pageTitle">Settings</h1>
       </div>
 
-      <div style="flex: 10"></div>
+      <div class="settingContents">
+        <button style="background-color: red; color:white">Reset</button>
+        <button style="background-color: rgb(184, 37, 189);  color:white">Download as file (JSON)</button>
+        <button style="background-color: rgb(184, 37, 189); color:white">Download as file (Readable)</button>
+        <button style="background-color: rgb(42, 156, 42); color:white">Load file (JSON)</button>
+      </div>
     </div>
   </body>
 </html>

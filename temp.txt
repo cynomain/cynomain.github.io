@@ -28,3 +28,41 @@ Viewing:
 
 Settings:
 - Save & Load
+
+<div style="display: none" class="overlay" id="overlay">
+      <!--Reset-->
+      <div class="msgbox" id="messagebox_reset">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Reset</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100">Confirm reset?</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button>Yes</button>
+              <button>No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+            <div class="showEntry">
+          <p class="number">1.</p>
+          <p class="answer">ANS</p>
+          <p class="correct">Yes</p>
+          <button
+            class="imageButton edit"
+            id="button_edit"
+            style="color: white"
+          >
+            <img
+              src="/assets/icon_edit.svg"
+              style="height: 150%; width: auto"
+            />
+          </button>
+        </div>
