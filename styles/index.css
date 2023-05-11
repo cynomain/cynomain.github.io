@@ -47,13 +47,13 @@
 
 .currentNumberText {
   text-align: center;
-  font-size: 32pt;
+  font-size: 36pt;
   /*bottom: 50%;
   top: 50%;*/
   display: inline-block;
   text-align: center;
   vertical-align: text-bottom;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 .currentAnswerText {
