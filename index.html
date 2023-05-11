@@ -1,9 +1,9 @@
 <html>
   <head>
-    <link rel="stylesheet" href="index.css" />
     <link rel="stylesheet" href="style.css" />
-    <script src="index.js"></script>
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="index.css" />
+    <script src="/script.js"></script>
+    <script src="/index.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,25 +12,32 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" href="/assets/icon_edit.svg" type="image/x-icon" />
     <title>Pilgan</title>
   </head>
 
   <body>
-    
-    <div class="overlay" id="overlay">
-      <div class="msgbox">
+    <div style="display: none" class="overlay" id="overlay">
+      <!--Delete-->
+      <div class="msgbox" id="messagebox">
         <div class="msgbox background">
           <div class="msgboxTitleBg">
-            <h1 class="msgboxTitle">Reset</h1>
+            <h1 class="msgboxTitle" id="messagebox_title">Delete</h1>
           </div>
-          <p>
-            Confirm reset?
-          </p>
-          <button style="width:100%"">Reset</button>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100">Confirm deletion?</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button>Yes</button>
+              <button>No</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    
+
     <div class="mainContainer" id="mainUI">
       <!--
       <div class="stackButtons top">
@@ -43,7 +50,12 @@
         <h1 class="pageTitle left">Pilgan</h1>
 
         <!--Save-->
-        <button class="imageButton" id="button_save" style="color: white">
+        <button
+          class="imageButton"
+          id="button_save"
+          style="color: white"
+          onclick="gotoSave();"
+        >
           <img src="assets/icon_save.svg" class="settingIcon" />
         </button>
 
@@ -52,6 +64,7 @@
           class="imageButton settingsButton"
           id="button_settings"
           style="color: white"
+          onclick="gotoSettings();"
         >
           <img src="assets/icon_settings.svg" class="settingIcon" />
         </button>
@@ -80,15 +93,19 @@
       <!--Buttons-->
       <div class="stackButtons bottom">
         <div class="controls">
-          <button class="controlButtons left"><</button>
-          <button class="controlButtons center">Show</button>
-          <button class="controlButtons right">></button>
+          <button class="controlButtons left">
+            <img src="/assets/icon_arrow_circle_left.svg" style="scale: 1.5" />
+          </button>
+          <button class="controlButtons center">View</button>
+          <button class="controlButtons right">
+            <img src="/assets/icon_arrow_circle_right.svg" style="scale: 1.5" />
+          </button>
         </div>
-        <button class="choice A">A</button>
+        <button class="choice A" onclick="pickAnswer();">A</button>
         <button class="choice B">B</button>
         <button class="choice C">C</button>
         <button class="choice D">D</button>
-      </div>  
+      </div>
     </div>
 
     <h1>A HSBAS</h1>

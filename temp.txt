@@ -1,0 +1,30 @@
+      <div class="msgbox" id="messagebox">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Reset KSKSKS</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+
+          </div>
+        </div>
+      </div>
+
+
+
+Answering:
+- ABCD
+- Correct/Wrong
+
+Viewing:
+- List: 
+  - Number
+  - Answer
+  - Correct
+  - Edit Button => Answering at Number
+
+Settings:
+- Save & Load

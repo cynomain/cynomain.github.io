@@ -1,4 +1,8 @@
 
+*{
+  outline: 1px yellow dotted;
+}
+
 
 button,
 textarea,
@@ -17,6 +21,7 @@ a {
 .pageTitle {
   font-size: 18pt;
   flex: 100;
+  vertical-align: center;
 }
 
 .pageTitle.left {
@@ -54,7 +59,7 @@ h6 {
   align-self: center;
   display: flex;
   border-radius: 16px;
-  transition: all 0.5s;
+  /*transition: all 0.5s;*/
 }
 
 .stackButtons {
@@ -97,12 +102,12 @@ h6 {
 }
 
 button {
-  font-family: "Roboto Black", sans-serif;
+  font-weight: bold;
   cursor: pointer;
   border-radius: 16px;
   border: none;
   background-color: white;
-  padding: .5em;
+  padding: 0.5em;
   font-size: 16px;
 }
 
@@ -126,7 +131,7 @@ button:disabled {
   border-radius: 16px;
   margin-bottom: 0.25em;
   display: inline-block;
-  transition: all 0.2s;
+  /*transition: all 0.2s;*/
   color: black;
 }
 
@@ -167,41 +172,10 @@ button:disabled {
   width: 100%;
 }
 
-.controlButtons {
-  font-size: 24pt;
-  padding: 0.5em;
-  border: none;
-  border-radius: 16px;
-  margin-bottom: 0.25em;
-  transition: all 0.2s;
-  color: white;
-}
-
-.controlButtons.left {
-  background-color: #ff9e59;
-  flex: 1;
-  margin-right: 0.25em;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-}
-
-.controlButtons.right {
-  background-color: #e768e2;
-  flex: 1;
-  margin-left: 0.25em;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-}
-
-.controlButtons.center {
-  background-color: #7569e5;
-  flex: 100;
-}
-
 .overlay {
   background-color: #00000085;
   position: fixed;
-  width: 100vw;
+  width: auto;
   height: 100vh;
   z-index: 100;
   backdrop-filter: blur(8px);
@@ -209,39 +183,66 @@ button:disabled {
   justify-content: center;
   vertical-align: center;
   align-items: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.msgbox{
+.msgbox {
   height: fit-content;
   width: fit-content;
 }
 
-.msgbox.background{
+.msgbox.background {
   height: fit-content;
   width: fit-content;
   max-height: 80vw;
   max-width: 80vw;
   background-color: #121212;
   border-radius: 16px;
-  padding:0em 1em 1.5em 1.5em;
+  padding: 0em 1.5em 1.5em 1.5em;
+  display: block;
 }
 
-.msgboxTitle{
-  font-size: 32pt;
+.msgboxItems > *{
+  width: 100%;
+  font-size: 20pt;
   text-align: center;
 }
 
-.msgbox>p, .msgbox>button{
-  font-size: 18pt;
+.msgboxInlineButtons{
+  display: flex;
+  flex-direction: row;
 }
 
-.msgboxTitleBg{
+.msgboxInlineButtons>*{
+  flex:2;
+  font-size: 20pt;
+  text-align: center;
+  margin: 0em 0.5em 0em 0.5em;
+  padding: .5em 1.5em .5em 1.5em;
+}
+
+.msgboxTitle {
+  font-size: 28pt;
+  text-align: center;
+  font-weight: bolder;
+}
+
+/*
+.msgbox {
+  font-size: 18pt;
+  text-align: center;
+}
+*/
+
+.msgboxTitleBg {
   background-color: #242424;
   width: 100%;
   height: fit-contents;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
   border-radius: 16px 16px 0px 0px;
-  transform: translateX(-(16px + 2em));
+  transform: translateX(-1.5em);
 }
-

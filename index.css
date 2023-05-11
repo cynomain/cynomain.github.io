@@ -1,4 +1,3 @@
-
 .choice {
   font-size: 36pt;
   padding: 0.35em;
@@ -9,6 +8,7 @@
   display: inline-block;
   transition: all 0.2s;
   color: white;
+  font-weight: bold;
 }
 
 .choice.A {
@@ -29,19 +29,48 @@
 
 .currentNumberText {
   text-align: center;
-  font-family: "Roboto Black", sans-serif;
   font-size: 32pt;
   /*bottom: 50%;
   top: 50%;*/
   display: inline-block;
   text-align: center;
   vertical-align: text-bottom;
+  font-weight: bold;
 }
 
 .currentAnswerText {
   flex: 0;
   font-size: 32pt;
   margin: 0;
+  font-weight: bold;
+}
+
+.controlButtons {
+  font-size: 24pt;
+  padding: 0.5em;
+  border: none;
+  border-radius: 16px;
+  margin-bottom: 0.25em;
+  /*transition: all 0.2s;*/
+  color: white;
+  font-weight: bold;
+}
+
+.controlButtons.left {
+  background-color: #ff9e59;
+  flex: 1;
+  margin-right: 0.25em;
+}
+
+.controlButtons.right {
+  background-color: #e768e2;
+  flex: 1;
+  margin-left: 0.25em;
+}
+
+.controlButtons.center {
+  background-color: #7569e5;
+  flex: 100;
 }
 
 /*
