@@ -20,7 +20,7 @@
     height: fit-content;
     flex-flow: row wrap;
     overflow-y: scroll;
-    height: 100vh;
+    height: 95vh;
   }
 
   .functionButtons.grade {

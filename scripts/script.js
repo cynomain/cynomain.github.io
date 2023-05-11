@@ -21,10 +21,19 @@ var msgbox_buttons = document.getElementById("messagebox_buttons");
 const DEFAULT_ANSWER_VALUE = ["", -1]; //None and uncorrected
 const LS_CURRENTLY_OPENED = "currentlyOpened";
 const LS_CURRENT_NUMBER = "currentNumber";
+const LS_ANSWERS = "answers";
+const SS_EDITMODE = "editmode";
 const SYMBOL_CHECKMARK = "✔";
 const EMOJI_CHECKMARK = "✅";
-const SYMBOL_X = "🗙";
+const SYMBOL_X = "X";
 const EMOJI_X = "❌";
+
+var sound_prev = new Audio('/assets/aud_prev.ogg');
+var sound_next = new Audio('/assets/aud_next.ogg');
+var sound_reset = new Audio('/assets/aud_reset.ogg');
+var sound_msgbox = new Audio('/assets/aud_msgbox.ogg');
+var sound_choose = new Audio('/assets/aud_choose.ogg');
+var sound_score = new Audio('/assets/aud_score.ogg');
 
 class AnswerSheet {
   //name = "placeholder";
@@ -34,10 +43,19 @@ class AnswerSheet {
   }
 }
 
-var currentOpen = new AnswerSheet();
+//var currentOpen = new AnswerSheet();
+var answers = [];
 var currentNumber = 1;
+var isEditMode = false;
 
 window.onload = () => {
+  
+ sound_prev = new Audio('/assets/aud_prev.ogg');
+ sound_next = new Audio('/assets/aud_next.ogg');
+ sound_reset = new Audio('/assets/aud_reset.ogg');
+ sound_msgbox = new Audio('/assets/aud_msgbox.ogg');
+ sound_choose = new Audio('/assets/aud_choose.ogg');
+ sound_score = new Audio('/assets/aud_score.ogg');
   LoadProgress();
 };
 
@@ -46,33 +64,73 @@ window.onbeforeunload = () => {
 };
 
 function LoadProgress() {
-  if (localStorage.getItem(LS_CURRENTLY_OPENED) != null) {
-    currentOpen = JSON.parse(localStorage[LS_CURRENTLY_OPENED]);
+  if (localStorage.getItem(LS_ANSWERS) != null) {
+    //currentOpen = JSON.parse(localStorage[LS_CURRENTLY_OPENED]);
+    answers = JSON.parse(localStorage[LS_ANSWERS]);
     currentNumber = Number(localStorage[LS_CURRENT_NUMBER]);
+    if (sessionStorage[SS_EDITMODE] != null) {
+      isEditMode = sessionStorage[SS_EDITMODE] == "true";
+    }
     console.log("Loaded!");
-    console.log(currentOpen);
+    console.log(answers);
     console.log(currentNumber);
+    console.log(isEditMode);
   } else {
     console.log("no saves");
   }
 }
 
 function SaveProgress() {
-  localStorage[LS_CURRENTLY_OPENED] = JSON.stringify(currentOpen);
+  //localStorage[LS_CURRENTLY_OPENED] = JSON.stringify(currentOpen);
+  localStorage[LS_ANSWERS] = JSON.stringify(answers);
   localStorage[LS_CURRENT_NUMBER] = currentNumber;
+  sessionStorage[SS_EDITMODE] = isEditMode;
 }
 
 function ResetProgress() {
-  currentOpen = new AnswerSheet();
-  console.log(currentOpen);
+  //currentOpen = new AnswerSheet();
+  answers = [];
+  isEditMode = false;
+  console.log(answers);
   currentNumber = 0;
   SaveProgress();
-  updateDisplay();
+  //updateDisplay();
+  window.onload();
+  console.log("Reset!");
+}
+
+function LoadSave_JSON() {
+  var input = document.createElement("input");
+  input.type = "file";
+
+  input.onchange = (e) => {
+    // getting a hold of the file reference
+    var file = e.target.files[0];
+
+    // setting up the reader
+    var reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+
+    // here we tell the reader what to do when it's done reading...
+    reader.onload = (readerEvent) => {
+      var content = readerEvent.target.result; // this is the content!
+      console.log(content);
+      var parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        ResetProgress();
+        answers = parsed;
+        console.log("Loaded!");
+        gotoHome();
+      }
+    };
+  };
+
+  input.click();
 }
 
 function DownloadSave_JSON() {
-  let json = JSON.stringify(currentOpen);
-  download("answer_sheet", json);
+  let json = JSON.stringify(answers);
+  download("answer_sheet.json", json);
 }
 
 function DownloadSave_Readable(useEmojis) {
@@ -85,10 +143,10 @@ function GetReadable(useEmojis) {
   let marks = useEmojis
     ? [EMOJI_X, EMOJI_CHECKMARK]
     : [SYMBOL_X, SYMBOL_CHECKMARK];
-  for (let index = 0; index < currentOpen.answers.length; index++) {
-    const element = currentOpen.answers[index];
+  for (let index = 0; index < answers.length; index++) {
+    const element = answers[index];
     let mark = element[1] === -1 ? "" : marks[element[1]];
-    text += `${number + 1}. ${element[0]} ${mark}\n`;
+    text += `${index + 1}. ${element[0]} ${mark}\n`;
   }
   return text;
 }
@@ -107,6 +165,9 @@ function download(filename, text) {
   element.click();
 
   document.body.removeChild(element);
+
+  //sound
+  sound_score.play();
 }
 /*
 function SaveOverwriteSheet(answerSheet){
@@ -131,17 +192,19 @@ function getAllLocalStorage(){
 }
 */
 
+function setEditMode(yes) {
+  isEditMode = yes;
+  //updateDisplay();
+  window.onload();
+}
+
 function setAnswer(number, answer) {
-  if (currentOpen.length <= number) {
-    currentOpen.answers.fill(
-      currentOpen.answers.length - 1,
-      number - 1,
-      DEFAULT_ANSWER_VALUE
-    );
-    currentOpen.answers.push([answer, -1]);
-  } else {
-    currentOpen.answers[number][0] = answer;
+  if (answers.length <= number) {
+    for (let index = answers.length - 1; index < number; index++) {
+      answers.push(["", -1]);
+    }
   }
+  answers[number][0] = answer;
   console.log("Set answer for number " + (number + 1) + " to " + answer);
 }
 
@@ -160,6 +223,17 @@ function setCorrect(number, correct) {
   }
 }
 
+function getScore() {
+  let correctCount = 0;
+  answers.forEach((element) => {
+    if (element[1] === 1) {
+      correctCount++;
+    }
+  });
+  let score = Math.trunc((correctCount/answers.length)*10000)/100;
+  return score;
+}
+
 function clamp(value, min, max) {
   if (value > max) return max;
   if (value < min) return min;
@@ -175,15 +249,28 @@ function gotoHome() {
 }
 
 function gotoView() {
-  document.location.href = "/view/view.html";
+  document.location.href = "/pages/view.html";
 }
 
 function gotoSettings() {
-  document.location.href = "/settings/settings.html";
+  document.location.href = "/pages/settings.html";
 }
 
 function gotoSave() {
-  document.location.href = "/save/save.html";
+  document.location.href = "/pages/save.html";
+}
+
+
+function button_navsoundPrev(){
+  sound_prev.pause();
+  sound_prev.currentTime = 0;
+  sound_prev.play();
+}
+
+function button_navsoundNext(){
+  sound_next.pause();
+  sound_next.currentTime = 0;
+  sound_next.play();
 }
 
 //MessageBox

@@ -66,3 +66,24 @@ Settings:
             />
           </button>
         </div>
+
+              
+        <!--Exit Edit Mode-->
+        <button
+          class="imageButton settingsButton"
+          id="button_settings"
+          style="color: white;"
+          onclick="gotoSettings();"
+        >
+          <img src="assets/icon_close.svg" class="settingIcon" />
+        </button>
+
+        <!-- Get Score -->
+        <button
+          class="imageButton settingsButton"
+          id="button_settings"
+          style="color: white"
+          onclick="gotoSettings();"
+        >
+          <img src="assets/icon_confirmgrading.svg" class="settingIcon" />
+        </button>

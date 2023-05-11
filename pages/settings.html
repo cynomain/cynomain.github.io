@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Pilgan - Settings</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/settings.css" />
+    <link rel="icon" href="/assets/icon_settings.svg" type="image/x-icon" />
+    <script src="/scripts/script.js"></script>
+    <script src="/scripts/settings.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div style="display: none" class="overlay" id="overlay">
+      <!--Reset-->
+      <div class="msgbox" id="messagebox_reset">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Reset</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100">Confirm reset?</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button onclick="msgbox_yes(); sound_reset.play();">Yes</button>
+              <button onclick="msgbox_no(); button_navsoundPrev();">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mainContainer" id="settingsUI">
+      <div class="topbar" style="background-color: cornflowerblue">
+        <!--Back button-->
+        <button
+          class="imageButton"
+          id="button_settings"
+          style="color: white"
+          onclick="back();  button_navsoundPrev();"
+        >
+          <img src="/assets/icon_arrow_left.svg" />
+        </button>
+
+        <!--Title-->
+        <h1 class="pageTitle">Settings</h1>
+      </div>
+
+      <div class="settingContents">
+        <button onclick="displayMsgBox();" style="background-color: red; color:white">Reset</button>
+        <button onclick="DownloadSave_JSON();" style="background-color: rgb(184, 37, 189);  color:white">Download as file (JSON)</button>
+        <button onclick="DownloadSave_Readable(false);" style="background-color: rgb(184, 37, 189); color:white">Download as file (readable)</button>
+        <button onclick="DownloadSave_Readable(true);" style="background-color: rgb(184, 37, 189); color:white">Download as file (readable w/ emojis)</button>
+        <button onclick="LoadSave_JSON()" style="background-color: rgb(42, 156, 42); color:white">Load file (JSON)</button>
+      </div>
+    </div>
+  </body>
+</html>

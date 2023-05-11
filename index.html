@@ -1,9 +1,9 @@
 <html>
   <head>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="index.css" />
-    <script src="/script.js"></script>
-    <script src="/index.js"></script>
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/index.css" />
+    <script src="/scripts/script.js"></script>
+    <script src="/scripts/index.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,35 +17,56 @@
   </head>
 
   <body>
-    <div class="mainContainer" id="mainUI">
-      <!--
-      <div class="stackButtons top">
-        <button class="functionButtons reset">Reset</button>
+    <div style="display: none" class="overlay" id="overlay">
+      <!--Confirm-->
+      <div style="display:none;" class="msgbox" id="messagebox_confirm">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Confirm</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100">Are you sure?</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button onclick="msgbox_yes(); button_navsoundPrev();">Yes</button>
+              <button onclick="msgbox_no(); button_navsoundPrev();">No</button>
+            </div>
+          </div>
+        </div>
       </div>
-    -->
 
+      <!-- Score -->
+      <div tyle="display:none;" class="msgbox" id="messagebox_score">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Score</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100; margin-bottom: 0;">Your score is: </p>
+            <p id="text_score" style="font-weight:bolder; font-size: 32pt; margin-top: 0; margin-bottom: 0.5em;">100</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button onclick="msgbox_no();  button_navsoundPrev();">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mainContainer" id="mainUI">
       <!--Top-->
       <div class="topbar" style="background-color: crimson">
         <h1 class="pageTitle left">Pilgan</h1>
 
-        <!--Save-->
-        <!--
-        <button
-          class="imageButton"
-          id="button_save"
-          style="color: white"
-          onclick="gotoSave();"
-        >
-          <img src="assets/icon_save.svg" class="settingIcon" />
-        </button>
-      -->
-
-        <!--Settings-->
         <button
           class="imageButton settingsButton"
           id="button_settings"
           style="color: white"
-          onclick="gotoSettings();"
+          onclick="gotoSettings();  button_navsoundNext()"
         >
           <img src="assets/icon_settings.svg" class="settingIcon" />
         </button>
@@ -74,20 +95,38 @@
       <!--Buttons-->
       <div class="stackButtons bottom">
         <div class="controls">
-          <button class="controlButtons left" onclick="button_Prev()">
+          <button
+            class="controlButtons left"
+            onclick="button_Prev(); button_navsoundPrev();"
+            id="button_prev"
+          >
             <img src="/assets/icon_arrow_circle_left.svg" style="scale: 1.5" />
           </button>
-          <button class="controlButtons center" onclick="gotoView();">
+          <button class="controlButtons center" onclick="gotoView();  button_navsoundNext()">
             View
           </button>
-          <button class="controlButtons right" onclick="button_Next()">
+          <button
+            class="controlButtons right"
+            onclick="button_Next(); button_navsoundNext();"
+            id="button_next"
+          >
             <img src="/assets/icon_arrow_circle_right.svg" style="scale: 1.5" />
           </button>
         </div>
-        <button class="choice A" onclick="pickAnswer(0);">A</button>
-        <button class="choice B" onclick="pickAnswer(1);">B</button>
-        <button class="choice C" onclick="pickAnswer(2);">C</button>
-        <button class="choice D" onclick="pickAnswer(3);">D</button>
+        <div style="width: 100%; display: none" id="choices">
+          <button class="choice A" onclick="pickAnswer(0);">A</button>
+          <button class="choice B" onclick="pickAnswer(1);">B</button>
+          <button class="choice C" onclick="pickAnswer(2);">C</button>
+          <button class="choice D" onclick="pickAnswer(3);">D</button>
+        </div>
+        <div style="width: 100%; display: block" id="correcting">
+          <div style="font-size:24pt; display: flex; margin-bottom: 0.25em; height: 2em">
+            <button style="font-size:18pt;flex: 1; margin-right: 0.25em" onclick="button_CloseEdit();">Stop</button>
+            <button style="font-size:18pt; flex: 1" onclick="button_GetGrade();">Get Grade</button>
+          </div>
+          <button class="choice correct" onclick="button_Correct();">Correct</button>
+          <button class="choice wrong" onclick="button_Wrong();">Wrong</button>
+        </div>
       </div>
     </div>
   </body>

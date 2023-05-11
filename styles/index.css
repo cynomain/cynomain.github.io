@@ -27,6 +27,24 @@
   background-color: #9966ff;
 }
 
+.choice.correct {
+  background-color: limegreen;
+  height: 3.25em;
+}
+
+.choice.correct:hover{
+  box-shadow: 0 5px 15px rgb(102, 255, 0);
+}
+
+.choice.wrong {
+  background-color: red;
+  height: 3.25em;
+}
+
+.choice.choice.wrong:hover{
+  box-shadow: 0 5px 15px rgb(255, 51, 0);
+}
+
 .currentNumberText {
   text-align: center;
   font-size: 32pt;

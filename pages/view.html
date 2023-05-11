@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pilgan - View</title>
-    <link rel="stylesheet" href="/style.css" />
-    <link rel="stylesheet" href="/view/view.css" />
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/view.css" />
     <link rel="icon" href="/assets/icon_clipboard.svg" type="image/x-icon" />
-    <script src="/script.js"></script>
-    <script defer src="/view/view.js"></script>
+    <script src="/scripts/script.js"></script>
+    <script defer src="/scripts/view.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,21 +18,21 @@
     />
   </head>
   <body>
-    <div class="mainContainer" id="showUI" style="height: 100vh">
+    <div class="mainContainer" id="showUI" style="height: 98vh">
       <div class="topbar" style="background-color: mediumpurple">
         <!--Back button-->
         <button
           class="imageButton"
           id="button_settings"
           style="color: white"
-          onclick="back()"
+          onclick="back(); button_navsoundPrev();"
         >
           <img src="/assets/icon_arrow_left.svg" class="" />
         </button>
 
         <!--Title-->
         <h1 class="pageTitle">View</h1>
-        <button class="imageButton" id="button_settings" style="color: white">
+        <button onclick="button_grade();" class="imageButton" id="button_settings" style="color: white">
           <img src="/assets/icon_grade.svg" />
         </button>
       </div>
