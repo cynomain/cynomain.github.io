@@ -28,7 +28,7 @@ addEventListener("load", (e) => {
   msgbox_score = document.getElementById("messagebox_score");
   text_score = document.getElementById("text_score");
   updateDisplay();
-  sound_next.play();
+  //sound_next.play();
 });
 
 function nextNumber() {
@@ -91,7 +91,7 @@ function button_CloseEdit() {
   displayMsgBox_Confirm();
   onConfirm = () => {
     isEditMode = false;
-    updateDisplay();
+    gotoHome();
   };
 }
 

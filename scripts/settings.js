@@ -4,23 +4,36 @@ var overlay = document.getElementById("overlay");
 addEventListener("load", () => {
   resetDialog = document.getElementById("messagebox_reset");
   overlay = document.getElementById("overlay");
-  sound_next.play();
 });
 
-function msgbox_yes() {
-  ResetProgress();
+var resetQ = 0;
+
+function setResetCorrect() {
+  resetQ = 1;
+}
+
+function reset_msgbox_yes() {
+  if (resetQ == 0) {
+    ResetProgress();
+  } else {
+    ResetCorrectness();
+  }
+  resetQ = 0;
   gotoHome();
+  reset_closeMsgBox();
 }
 
-function msgbox_no() {
-  closeMsgBox();
+function reset_msgbox_no() {
+  reset_closeMsgBox();
 }
 
-function displayMsgBox() {
+function reset_displayMsgBox() {
   overlay.style = "";
+  resetDialog.style = "";
   sound_msgbox.play();
 }
 
-function closeMsgBox() {
+function reset_closeMsgBox() {
   overlay.style = "display:none;";
+  resetDialog.style = "display: none;";
 }

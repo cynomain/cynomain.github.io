@@ -2,8 +2,13 @@
   <head>
     <link rel="stylesheet" href="/styles/style.css" />
     <link rel="stylesheet" href="/styles/index.css" />
+    <link rel="stylesheet" href="/styles/settings.css" />
+    <link rel="stylesheet" href="/styles/view.css" />
     <script src="/scripts/script.js"></script>
     <script src="/scripts/index.js"></script>
+    <script src = "/scripts/bubbles.js"></script>
+    <script defer src="/scripts/settings.js"></script>
+    <script defer src="/scripts/view.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,9 +22,19 @@
   </head>
 
   <body>
+    <div id="bubblesContainer" class="bubblesContainer" >
+      <canvas id="floatingBubbles" class="floatingBubbles">
+      </canvas>
+    </div>
+
+    <div id="transitionBlack" class="transitionBlack clear">
+
+    </div>
+
+    <!-- Overlay -->
     <div style="display: none" class="overlay" id="overlay">
       <!--Confirm-->
-      <div style="display:none;" class="msgbox" id="messagebox_confirm">
+      <div style="display: none" class="msgbox" id="messagebox_confirm">
         <div class="msgbox background">
           <div class="msgboxTitleBg">
             <h1 class="msgboxTitle" id="messagebox_title">Confirm</h1>
@@ -30,7 +45,9 @@
           </div>
           <div class="msgboxItems" id="messagebox_buttons">
             <div class="msgboxInlineButtons">
-              <button onclick="msgbox_yes(); button_navsoundPrev();">Yes</button>
+              <button onclick="msgbox_yes(); button_navsoundPrev();">
+                Yes
+              </button>
               <button onclick="msgbox_no(); button_navsoundPrev();">No</button>
             </div>
           </div>
@@ -38,15 +55,25 @@
       </div>
 
       <!-- Score -->
-      <div tyle="display:none;" class="msgbox" id="messagebox_score">
+      <div style="display: none" class="msgbox" id="messagebox_score">
         <div class="msgbox background">
           <div class="msgboxTitleBg">
             <h1 class="msgboxTitle" id="messagebox_title">Score</h1>
           </div>
           <!-- Contents -->
           <div class="msgboxItems" id="messagebox_items">
-            <p style="font-weight: 100; margin-bottom: 0;">Your score is: </p>
-            <p id="text_score" style="font-weight:bolder; font-size: 32pt; margin-top: 0; margin-bottom: 0.5em;">100</p>
+            <p style="font-weight: 100; margin-bottom: 0">Your score is:</p>
+            <p
+              id="text_score"
+              style="
+                font-weight: bolder;
+                font-size: 32pt;
+                margin-top: 0;
+                margin-bottom: 0.5em;
+              "
+            >
+              100
+            </p>
           </div>
           <div class="msgboxItems" id="messagebox_buttons">
             <div class="msgboxInlineButtons">
@@ -55,8 +82,32 @@
           </div>
         </div>
       </div>
+
+      <!--Reset-->
+      <div style="display: none" class="msgbox" id="messagebox_reset">
+        <div class="msgbox background">
+          <div class="msgboxTitleBg">
+            <h1 class="msgboxTitle" id="messagebox_title">Reset</h1>
+          </div>
+          <!-- Contents -->
+          <div class="msgboxItems" id="messagebox_items">
+            <p style="font-weight: 100">Confirm reset?</p>
+          </div>
+          <div class="msgboxItems" id="messagebox_buttons">
+            <div class="msgboxInlineButtons">
+              <button onclick="reset_msgbox_yes(); sound_reset.play();">
+                Yes
+              </button>
+              <button onclick="reset_msgbox_no(); button_navsoundPrev();">
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <!-- Menu -->
     <div class="mainContainer" id="mainUI">
       <!--Top-->
       <div class="topbar" style="background-color: crimson">
@@ -85,11 +136,11 @@
         >
           <div style="flex: 2"></div>
           <h1 class="currentNumberText" id="text_curNumber" style="flex: 1">
-            {currentNumber}
+            0
           </h1>
           <div style="flex: 2"></div>
         </div>
-        <h1 class="currentAnswerText" id="text_curAnswer">{currentAnswer}</h1>
+        <h1 class="currentAnswerText" id="text_curAnswer">_</h1>
       </div>
 
       <!--Buttons-->
@@ -102,7 +153,10 @@
           >
             <img src="/assets/icon_arrow_circle_left.svg" style="scale: 1.5" />
           </button>
-          <button class="controlButtons center" onclick="gotoView();  button_navsoundNext()">
+          <button
+            class="controlButtons center"
+            onclick="gotoView();  button_navsoundNext()"
+          >
             View
           </button>
           <button
@@ -113,21 +167,131 @@
             <img src="/assets/icon_arrow_circle_right.svg" style="scale: 1.5" />
           </button>
         </div>
-        <div style="width: 100%; display: none" id="choices">
+        <div style="width: 100%; display: block" id="choices">
           <button class="choice A" onclick="pickAnswer(0);">A</button>
           <button class="choice B" onclick="pickAnswer(1);">B</button>
           <button class="choice C" onclick="pickAnswer(2);">C</button>
           <button class="choice D" onclick="pickAnswer(3);">D</button>
         </div>
-        <div style="width: 100%; display: block" id="correcting">
-          <div style="font-size:24pt; display: flex; margin-bottom: 0.25em; height: 2em">
-            <button style="font-size:18pt;flex: 1; margin-right: 0.25em" onclick="button_CloseEdit();">Stop</button>
-            <button style="font-size:18pt; flex: 1" onclick="button_GetGrade();">Get Grade</button>
+        <div style="width: 100%; display: none" id="correcting">
+          <div
+            style="
+              font-size: 24pt;
+              display: flex;
+              margin-bottom: 0.25em;
+              height: 2em;
+            "
+          >
+            <button
+              style="font-size: 18pt; flex: 1; margin-right: 0.25em"
+              onclick="button_CloseEdit();"
+            >
+              Stop
+            </button>
+            <button
+              style="font-size: 18pt; flex: 1"
+              onclick="button_GetGrade();"
+            >
+              Get Grade
+            </button>
           </div>
-          <button class="choice correct" onclick="button_Correct();">Correct</button>
+          <button class="choice correct" onclick="button_Correct();">
+            Correct
+          </button>
           <button class="choice wrong" onclick="button_Wrong();">Wrong</button>
         </div>
       </div>
+    </div>
+
+    <!-- Settings -->
+    <div style="display: none" class="mainContainer" id="settingsUI">
+      <div class="topbar" style="background-color: cornflowerblue">
+        <!--Back button-->
+        <button
+          class="imageButton"
+          id="button_settings"
+          style="color: white"
+          onclick="back();  button_navsoundPrev();"
+        >
+          <img src="/assets/icon_arrow_left.svg" />
+        </button>
+
+        <!--Title-->
+        <h1 class="pageTitle">Settings</h1>
+      </div>
+
+      <div class="settingContents">
+        <button
+          onclick="reset_displayMsgBox();"
+          style="background-color: red; color: white"
+        >
+          Reset
+        </button>
+        <button
+          onclick="setResetCorrect(); reset_displayMsgBox();"
+          style="background-color: red; color: white"
+        >
+          Reset Choices
+        </button>
+        <button
+          onclick="DownloadSave_JSON();"
+          style="background-color: rgb(184, 37, 189); color: white"
+        >
+          Download as file (JSON)
+        </button>
+        <button
+          onclick="DownloadSave_Readable(false);"
+          style="background-color: rgb(184, 37, 189); color: white"
+        >
+          Download as file (readable)
+        </button>
+        <button
+          onclick="DownloadSave_Readable(true);"
+          style="background-color: rgb(184, 37, 189); color: white"
+        >
+          Download as file (readable w/ emojis)
+        </button>
+        <button
+          onclick="LoadSave_JSON()"
+          style="background-color: rgb(42, 156, 42); color: white"
+        >
+          Load file (JSON)
+        </button>
+      </div>
+    </div>
+
+    <!-- View -->
+    <div
+      style="display: none"
+      class="mainContainer"
+      id="showUI"
+      style="height: 98vh"
+    >
+      <div class="topbar" style="background-color: mediumpurple">
+        <!--Back button-->
+        <button
+          class="imageButton"
+          id="button_settings"
+          style="color: white"
+          onclick="back(); button_navsoundPrev();"
+        >
+          <img src="/assets/icon_arrow_left.svg" class="" />
+        </button>
+
+        <!--Title-->
+        <h1 class="pageTitle">View</h1>
+        <button
+          onclick="button_grade(); button_navsoundNext();"
+          class="imageButton"
+          id="button_score"
+          style="color: white"
+        >
+          <img src="/assets/icon_grade.svg" />
+        </button>
+      </div>
+
+      <!--Entries-->
+      <div class="entries" id="entries"></div>
     </div>
   </body>
 </html>

@@ -18,12 +18,6 @@ var msgbox_buttons = document.getElementById("messagebox_buttons");
 </div>
 </div>*/
 
-var ui_main = document.getElementById("mainUI");
-var ui_settings = document.getElementById("settingsUI");
-var ui_view = document.getElementById("showUI");
-
-var transitionBlack = document.getElementById("transitionBlack");
-
 const DEFAULT_ANSWER_VALUE = ["", -1]; //None and uncorrected
 const LS_CURRENTLY_OPENED = "currentlyOpened";
 const LS_CURRENT_NUMBER = "currentNumber";
@@ -34,12 +28,12 @@ const EMOJI_CHECKMARK = "✅";
 const SYMBOL_X = "X";
 const EMOJI_X = "❌";
 
-var sound_prev = new Audio("/assets/aud_prev.ogg");
-var sound_next = new Audio("/assets/aud_next.ogg");
-var sound_reset = new Audio("/assets/aud_reset.ogg");
-var sound_msgbox = new Audio("/assets/aud_msgbox.ogg");
-var sound_choose = new Audio("/assets/aud_choose.ogg");
-var sound_score = new Audio("/assets/aud_score.ogg");
+var sound_prev = new Audio('/assets/aud_prev.ogg');
+var sound_next = new Audio('/assets/aud_next.ogg');
+var sound_reset = new Audio('/assets/aud_reset.ogg');
+var sound_msgbox = new Audio('/assets/aud_msgbox.ogg');
+var sound_choose = new Audio('/assets/aud_choose.ogg');
+var sound_score = new Audio('/assets/aud_score.ogg');
 
 class AnswerSheet {
   //name = "placeholder";
@@ -55,17 +49,13 @@ var currentNumber = 1;
 var isEditMode = false;
 
 window.onload = () => {
-  ui_main = document.getElementById("mainUI");
-  ui_settings = document.getElementById("settingsUI");
-  ui_view = document.getElementById("showUI");
-  transitionBlack = document.getElementById("transitionBlack");
-
-  sound_prev = new Audio("/assets/aud_prev.ogg");
-  sound_next = new Audio("/assets/aud_next.ogg");
-  sound_reset = new Audio("/assets/aud_reset.ogg");
-  sound_msgbox = new Audio("/assets/aud_msgbox.ogg");
-  sound_choose = new Audio("/assets/aud_choose.ogg");
-  sound_score = new Audio("/assets/aud_score.ogg");
+  
+ sound_prev = new Audio('/assets/aud_prev.ogg');
+ sound_next = new Audio('/assets/aud_next.ogg');
+ sound_reset = new Audio('/assets/aud_reset.ogg');
+ sound_msgbox = new Audio('/assets/aud_msgbox.ogg');
+ sound_choose = new Audio('/assets/aud_choose.ogg');
+ sound_score = new Audio('/assets/aud_score.ogg');
   LoadProgress();
 };
 
@@ -78,10 +68,9 @@ function LoadProgress() {
     //currentOpen = JSON.parse(localStorage[LS_CURRENTLY_OPENED]);
     answers = JSON.parse(localStorage[LS_ANSWERS]);
     currentNumber = Number(localStorage[LS_CURRENT_NUMBER]);
-    /*
     if (sessionStorage[SS_EDITMODE] != null) {
       isEditMode = sessionStorage[SS_EDITMODE] == "true";
-    }*/
+    }
     console.log("Loaded!");
     console.log(answers);
     console.log(currentNumber);
@@ -95,7 +84,7 @@ function SaveProgress() {
   //localStorage[LS_CURRENTLY_OPENED] = JSON.stringify(currentOpen);
   localStorage[LS_ANSWERS] = JSON.stringify(answers);
   localStorage[LS_CURRENT_NUMBER] = currentNumber;
-  //sessionStorage[SS_EDITMODE] = isEditMode;
+  sessionStorage[SS_EDITMODE] = isEditMode;
 }
 
 function ResetProgress() {
@@ -108,15 +97,6 @@ function ResetProgress() {
   //updateDisplay();
   window.onload();
   console.log("Reset!");
-}
-
-function ResetCorrectness() {
-  for (let index = 0; index < answers.length; index++) {
-    answers[index][1] = -1;
-  }
-  isEditMode = false;
-  updateDisplay();
-  console.log("Reset correct");
 }
 
 function LoadSave_JSON() {
@@ -241,7 +221,6 @@ function setCorrect(number, correct) {
   } else {
     console.log("ERROR: ans.len < num");
   }
-  updateDisplay();
 }
 
 function getScore() {
@@ -251,7 +230,7 @@ function getScore() {
       correctCount++;
     }
   });
-  let score = Math.trunc((correctCount / answers.length) * 10000) / 100;
+  let score = Math.trunc((correctCount/answers.length)*10000)/100;
   return score;
 }
 
@@ -262,78 +241,33 @@ function clamp(value, min, max) {
 }
 
 function back() {
-  //history.back();
-  gotoHome();
+  history.back();
 }
 
 function gotoHome() {
-  //document.location.href = "/index.html";
-  //doTransition(() => {
-    setEnabled(ui_main);
-    setDisabled(ui_settings);
-    setDisabled(ui_view);
-    updateDisplay();
-  //});
+  document.location.href = "/index.html";
 }
 
 function gotoView() {
-  //document.location.href = "/pages/view.html";
-  //doTransition(() => {
-    setDisabled(ui_main);
-    setDisabled(ui_settings);
-    setEnabled(ui_view);
-    ViewLoad();
-  //});
+  document.location.href = "/pages/view.html";
 }
 
 function gotoSettings() {
-  //document.location.href = "/pages/settings.html";
-  //doTransition(() => {
-    setDisabled(ui_main);
-    setEnabled(ui_settings);
-    setDisabled(ui_view);
-  //});
+  document.location.href = "/pages/settings.html";
 }
 
 function gotoSave() {
-  //document.location.href = "/pages/save.html";
+  document.location.href = "/pages/save.html";
 }
 
-function doTransition(func) {
-  transition2Black();
-  transition2ClearWait(func);
-}
 
-function transition2ClearWait(func) {
-  setTimeout(() => {
-    func();
-    transition2Clear();
-  }, 200);
-}
-
-function transition2Black() {
-  transitionBlack.className = "transitionBlack dark";
-}
-
-function transition2Clear() {
-  transitionBlack.className = "transitionBlack clear";
-}
-
-function setDisabled(element) {
-  element.style.display = "none";
-}
-
-function setEnabled(element) {
-  element.style.display = "flex";
-}
-
-function button_navsoundPrev() {
+function button_navsoundPrev(){
   sound_prev.pause();
   sound_prev.currentTime = 0;
   sound_prev.play();
 }
 
-function button_navsoundNext() {
+function button_navsoundNext(){
   sound_next.pause();
   sound_next.currentTime = 0;
   sound_next.play();

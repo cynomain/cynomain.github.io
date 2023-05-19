@@ -1,16 +1,22 @@
 const parent = document.getElementById("entries");
+const scoreButton = document.getElementById("button_score");
 
-addEventListener("load", (e) => {
-  Load();
-});
+function ViewLoad() {
+parent.innerHTML = '';
 
-function Load() {
   for (let index = 0; index < answers.length; index++) {
     const element = answers[index];
     createEntry(index, element[0], element[1]);
   }
+  if (answers.length <= 0) {
+    scoreButton.setAttribute("disabled", "");
+  } else {
+    scoreButton.removeAttribute("disabled");
+  }
+
+
   console.log("View loaded");
-  sound_next.play();
+  //sound_next.play();
 }
 
 function button_grade() {
@@ -51,6 +57,7 @@ function createEntry(number, answer, correctness) {
   image.style = "color:white;border-radius: 0px; padding:0;";
   image.onclick = () => {
     Edit(number);
+    sound_next.play();
   };
   image.appendChild(icon);
   entryElement.appendChild(p1);
