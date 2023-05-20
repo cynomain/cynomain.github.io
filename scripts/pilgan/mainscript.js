@@ -18,6 +18,17 @@ var msgbox_buttons = document.getElementById("messagebox_buttons");
 </div>
 </div>*/
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(res => console.log("service worker registered"))
+      .catch(err => console.log("service worker not registered", err))
+  })
+}else{
+  console.log("no sw");
+}
+
 var ui_main = document.getElementById("mainUI");
 var ui_settings = document.getElementById("settingsUI");
 var ui_view = document.getElementById("showUI");

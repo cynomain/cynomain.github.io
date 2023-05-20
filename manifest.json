@@ -1,0 +1,21 @@
+{
+  "background_color": "#121212",
+  "description": "Simple app for storing multiple choice answers for correcting.",
+  "dir": "ltr",
+  "display": "fullscreen",
+  "name": "Pilgan",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "Pilgan",
+  "start_url": "/pages/pilgan.html",
+  "theme_color": "#121212",
+  "categories": [],
+  "screenshots": [],
+  "icons": [
+    {
+      "src": "/assets/icon_edit.svg",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": []
+}
