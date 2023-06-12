@@ -49,10 +49,10 @@
           </div>
           <div class="msgboxItems" id="messagebox_buttons">
             <div class="msgboxInlineButtons">
-              <button onclick="msgbox_yes(); button_navsoundPrev();">
-                Yes
+              <button onclick="msgbox_no(); button_navsoundPrev();">
+                No
               </button>
-              <button onclick="msgbox_no(); button_navsoundPrev();">No</button>
+              <button onclick="msgbox_yes(); button_navsoundPrev();">Yes</button>
             </div>
           </div>
         </div>
@@ -99,11 +99,11 @@
           </div>
           <div class="msgboxItems" id="messagebox_buttons">
             <div class="msgboxInlineButtons">
-              <button onclick="reset_msgbox_yes(); sound_reset.play();">
-                Yes
-              </button>
               <button onclick="reset_msgbox_no(); button_navsoundPrev();">
                 No
+              </button>
+              <button onclick="reset_msgbox_yes(); sound_reset.play();">
+                Yes
               </button>
             </div>
           </div>
