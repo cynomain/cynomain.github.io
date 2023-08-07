@@ -37,3 +37,7 @@ function reset_closeMsgBox() {
   overlay.style = "display:none;";
   resetDialog.style = "display: none;";
 }
+
+function ClearCache(){
+  window.location.reload(true);
+}

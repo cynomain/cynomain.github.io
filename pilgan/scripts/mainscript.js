@@ -21,7 +21,7 @@ var msgbox_buttons = document.getElementById("messagebox_buttons");
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
     navigator.serviceWorker
-      .register("/sw.js")
+      .register("sw.js")
       .then(res => console.log("service worker registered"))
       .catch(err => console.log("service worker not registered", err))
   })
@@ -45,12 +45,12 @@ const EMOJI_CHECKMARK = "✅";
 const SYMBOL_X = "X";
 const EMOJI_X = "❌";
 
-var sound_prev = new Audio("/assets/pilgan/aud_prev.ogg");
-var sound_next = new Audio("/assets/pilgan/aud_next.ogg");
-var sound_reset = new Audio("/assets/pilgan/aud_reset.ogg");
-var sound_msgbox = new Audio("/assets/pilgan/aud_msgbox.ogg");
-var sound_choose = new Audio("/assets/pilgan/aud_choose.ogg");
-var sound_score = new Audio("/assets/pilgan/aud_score.ogg");
+var sound_prev = new Audio("assets/aud_prev.ogg");
+var sound_next = new Audio("assets/aud_next.ogg");
+var sound_reset = new Audio("assets/aud_reset.ogg");
+var sound_msgbox = new Audio("assets/aud_msgbox.ogg");
+var sound_choose = new Audio("assets/aud_choose.ogg");
+var sound_score = new Audio("assets/aud_score.ogg");
 
 class AnswerSheet {
   //name = "placeholder";
@@ -78,6 +78,10 @@ window.onbeforeunload = () => {
 };
 
 var isFullScreen = false;
+
+function gotoHome(){
+  window.location.href.replace("../index.html");
+}
 
 function ToggleFullscreen() {
   const elem = document.documentElement;

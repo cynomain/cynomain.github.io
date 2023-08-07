@@ -1,0 +1,35 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romanizer</title>
+    <link rel="stylesheet" type="text/css" href="styles/spinner.css">
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <script src="scripts/translator.js"></script>
+    <script src="scripts/script.js"></script>
+</head>
+
+<body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
+    <h1 style="flex-grow: 1;">Romanizer (JP/KR)</h1>
+
+    <!--
+    <form class="inputSquare" method="post" enctype="multipart/form-data">
+        <label for="inputZone">Upload files: </label>
+        <input id="inputZone" class="inputSquare" type="file" multiple/>
+        <input style="width: 95%;" type="submit"/>
+    </form>
+        <p>- or -</p>
+-->
+    <input style="display:none;" id="inputZone" class="inputSquare" type="file" multiple onchange="handleFileSelect(event)"/>
+
+
+    <div id="dropZone" class="dropSquare" onclick="inputButton.click();">
+        <p>Drop files here</p>
+        <p>or</p>
+        <p>Click to upload files</p>
+    </div>
+    <p>If frozen, be patient</p>
+    <span class="loader"></span>
+</body>
+</html>

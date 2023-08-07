@@ -1,0 +1,62 @@
+body {
+  color: #222;
+  background: #fff;
+  font: 100% system-ui;
+}
+
+a {
+  color: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+    background: #121212;
+  }
+
+  body a {
+    color: #eee;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100vww;
+  height: 100vwh;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+.menus {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+}
+
+.menuButton {
+  display: block;
+  border: none;
+  border-radius: 1em;
+  padding: 1em;
+  margin-bottom: 1em;
+  width: 20em;
+  background-color: #222;
+  text-align: center;
+  font-size: large;
+  font-style: normal;
+  font-variant: normal;
+}
+
+span{
+    font-size: large;
+    transition: font-size .2s;
+}
+
+span:hover{
+    font-size: larger;
+}

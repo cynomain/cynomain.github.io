@@ -50,7 +50,7 @@ function createEntry(number, answer, correctness) {
   p3.style = "color:" + correctColors[correctness + 1];
   let image = document.createElement("button");
   let icon = document.createElement("img");
-  icon.src = "/assets/pilgan/icon_edit.svg";
+  icon.src = "assets/icon_edit.svg";
   icon.style = "height:100%; width: auto;";
   image.className = "imageButton edit";
   image.id = "button_edit";
