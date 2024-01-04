@@ -1,0 +1,389 @@
+body {
+  color: #f6f6f6;
+  background: #0f0f0f;
+  font: 100% system-ui;
+  margin: 0;
+  user-select: none;
+
+  justify-content: center;
+  justify-self: center;
+  justify-items: center;
+
+  align-items: center;
+  align-content: center;
+  align-self: center;
+
+  vertical-align: middle;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100dvh;
+  width: 100dvw;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media only screen and (hover: none) and (pointer: coarse) {
+  body{
+    font: 50% system-ui;
+  }
+}
+
+a {
+  color: #222;
+}
+
+/*
+0f0d13
+*/
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e6e0e9;
+    background: #1d1b20;
+  }
+
+  body a {
+    color: #e6e0e9;
+  }
+}
+
+/*
+* {
+  outline: #ffff00a0 2px dotted;
+}
+*/
+
+:root {
+  --lyrics-reached: #ffffff;
+  --lyrics-not-reached: #3a3a3a;
+}
+
+.touch-bar {
+  align-self: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0em;
+  width: 100%;
+  align-items: center;
+  height: 8em;
+}
+
+.bottom-bar {
+  background-color: #141218;
+  align-self: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0.5em;
+  width: 95%;
+  align-items: center;
+  gap: 1em;
+  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 1em;
+
+  transition: bottom 0.25s ease;
+  /*font-size: 1.25em;*/
+
+  > * {
+    display: inline-flex;
+  }
+}
+
+.bottom-bar.hidden {
+  bottom: -10em;
+  transition: bottom 1s ease;
+}
+
+button {
+  background-color: #d0bcff;
+  color: #4f378b;
+  border: none;
+  border-radius: 0.5em;
+  padding: 0.25em 0.5em 0.25em 0.5em;
+  font-size: 1.2em;
+  outline: none;
+  transition: brightness 0.25s linear;
+}
+
+button:enabled {
+  cursor: pointer;
+}
+
+button:hover:enabled {
+  filter: brightness(75%);
+}
+
+button:active:enabled {
+  filter: brightness(50%);
+}
+
+*:disabled {
+  filter: brightness(50%);
+}
+
+.playback-progress {
+  appearance: none;
+  flex-grow: 1;
+  height: 2em;
+  border-radius: 1em;
+  background-color: #e6e0e9;
+  background: #d0bcff;
+  padding: 0 0.15em 0 0.15em;
+}
+
+.playback-progress:enabled {
+  cursor: pointer;
+}
+
+.playback-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.75em;
+  width: 1.75em;
+  aspect-ratio: 1/1;
+  border-radius: 1em;
+  background-color: #4f378b;
+}
+
+.playback-button {
+  font-size: 1.5em;
+
+  > span {
+    font-size: 1.5em;
+  }
+}
+
+.playback-time {
+  font-size: 1.25em;
+  min-width: 3em;
+}
+
+.lyrics-area {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+
+  /*font-size: 1.2em;*/
+
+  /*
+  justify-content: center;
+  justify-items: center;
+  justify-self: center;
+
+  align-items: center;
+  align-content: center;
+  align-self: center;
+  */
+
+  vertical-align: middle;
+  overflow: hidden;
+
+  width: fit-content;
+  max-width: 75%;
+  max-height: 75%;
+
+  box-sizing: border-box;
+
+  scroll-behavior: smooth;
+}
+
+.lyrics-area > *:first-child {
+  margin-top: 1.5em;
+}
+
+.lyrics-area > *:last-child {
+  margin-bottom: 1.5em;
+}
+
+.lyrics-area.masked {
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    transparent 1%,
+    black 20%,
+    black 80%,
+    transparent 99%,
+    transparent
+  );
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+.lyrics {
+  align-items: start;
+  justify-items: start;
+  align-content: start;
+  justify-content: start;
+
+  font-size: 4em;
+  font-weight: bolder;
+
+  word-wrap: normal;
+  word-break: normal;
+
+  margin: 0.25em;
+
+  width: 95%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  transition: filter 1s, text-shadow 1s;
+}
+
+.lyrics.small {
+  font-weight: 400;
+  font-size: 3.5em;
+  margin-top: -0.3em;
+  padding-top: 0;
+  padding-left: 0.15em;
+}
+
+.lyrics.left {
+  text-align: left;
+}
+
+.lyrics.right {
+  text-align: right;
+}
+
+.lyrics-word {
+  background-image: linear-gradient(
+    to right,
+    var(--lyrics-reached),
+    var(--lyrics-reached) var(--progress),
+    var(--lyrics-not-reached) var(--progress),
+    var(--lyrics-not-reached)
+  );
+  background-clip: text;
+  text-size-adjust: auto;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+
+  transition: background-image 0.2s;
+}
+
+.lyrics.reached {
+  filter: brightness(70%);
+  text-shadow: none;
+}
+
+.lyrics.notreached {
+  filter: brightness(80%);
+  text-shadow: none;
+}
+
+.interlude {
+  align-items: start;
+  justify-items: start;
+  align-content: start;
+  justify-content: start;
+
+  font-size: 4em;
+  font-weight: bolder;
+
+  margin: 0.25em;
+
+  width: 100%;
+
+  transition: transform 0.5s, height 1s, margin 0.5s;
+
+  transform: scaleY(0);
+  height: 0;
+}
+
+/*
+.interlude > span {
+  transform: translateY(calc(var(--multiplier) * 1em)), var(--multiplier) * 1.5;
+  font-size: var(--multiplier) * 1em ;
+}
+
+.interlude > span:nth-child(1) {
+  --multiplier: calc((var(--progress)*100) / 33);
+}
+
+.interlude > span:nth-child(2) {
+  --multiplier: calc(((var(--progress)*100)-34) / 33);
+}
+
+.interlude > span:nth-child(3) {
+  --multiplier: calc(((var(--progress)*100)-67) / 33);
+}
+*/
+
+.interlude.open {
+  transform: scaleY(1);
+  height: auto;
+  margin: 1em 0.25em 1em 0.25em;
+}
+
+.import-dialog {
+  background-color: #00000098;
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  position: absolute;
+
+  transition: opacity 1s;
+
+  display: flex;
+
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  vertical-align: center;
+
+  font-size: 1.25em;
+}
+
+.import-dialog.closed {
+  opacity: 0;
+  display: none;
+}
+
+.import-card {
+  background-color: #36343b;
+  padding: 2em;
+  border-radius: 2em;
+}
+
+.import-card > h1 {
+  margin: 0;
+}
+
+.import-buttons {
+  display: flex;
+  gap: 1em;
+}
+
+.import-buttons > button {
+  flex-grow: 1;
+  padding: 0.5em;
+  background-color: transparent;
+  color: #d0bcff;
+  font-weight: bold;
+}
+
+.disabled {
+  display: none;
+  visibility: hidden;
+}
