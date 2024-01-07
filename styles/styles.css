@@ -1,10 +1,21 @@
 body {
-  color: #222;
-  background: #fff;
+  color: #e6e0e9;
+  background: #141218;
   font: 100% system-ui;
   height: 100%;
   width: 100%;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-self: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+
+  overflow: hidden;
+
+  user-select: none;
 }
 
 a {
@@ -13,53 +24,92 @@ a {
 
 @media (prefers-color-scheme: dark) {
   body {
-    color: #eee;
-    background: #222;
+    color: #e6e0e9;
+    background: #141218;
   }
 
   body a {
-    color: #eee;
+    color: #e6e0e9;
   }
 }
+/*
+surf
+141218
+onsurf
+E6E0E9
 
-.main {
-  display: flex;
-  flex-direction: column;
-  width: 100vww;
-  height: 100vwh;
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
+
+*/
+header {
+  text-align: center;
+  background-color: #211F26;
+  color: #e6e0e9;
+  margin: 0;
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+  width: 100dvw;
 }
 
-.menus {
+header > h1{
+  margin: 0;
+  font-size: 3em;
+}
+
+nav{
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  justify-items: center;
   align-items: center;
   align-content: center;
-  justify-items: center;
+  flex-direction: column;
+  width: fit-content;
+  gap: 1.5em;
 }
 
-.menuButton {
-  display: block;
-  border: none;
+nav > a{
+  padding: .5em 1em .5em 1em;
+  background-color: #D0BCFF;
+  color: #381E72;
+  font-size: 2em;
   border-radius: 1em;
-  padding: 1em;
-  margin-bottom: 1em;
-  width: 20em;
-  background-color: #222;
   text-align: center;
-  font-size: large;
-  font-style: normal;
-  font-variant: normal;
+  width: 100%;
+
+  transition: filter .25s;
+  
+  display: flex;
+
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: row;
+
+  vertical-align:middle;
+
+  text-decoration: none;
+  font-weight: bold;
+  color: #381E72;
+  
+  gap: .25em;
 }
 
-span{
-    font-size: large;
-    transition: font-size .2s;
+nav > a:hover{
+  filter:brightness(75%);
 }
 
-span:hover{
-    font-size: larger;
+nav > a:active{
+  filter:brightness(50%);
 }
+
+nav > a >img{
+  height: 1em;
+  width: auto;
+  transform: translateY(.1em);
+}
+
+h2{
+  font-size: 2.75em;
+  margin: 0 0 1em 0;
+}
+
