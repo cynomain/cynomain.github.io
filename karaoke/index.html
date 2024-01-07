@@ -23,16 +23,20 @@
 </head>
 
 <body>
+    <audio id="audio-player" style="display: none;"></audio>
     <div class="lyrics-area masked" id="lyrics-area">
-        <p class="lyrics left display" style="--progress: 100%">
-            <span class="lyrics-word">Waiting for import..</span>
+        <p class="lyrics left display" style="--progress: 100%; --lyrics-reached: #ffffff;">
+            <span class="lyrics-word">Waiting for</span>
+            <span class="lyrics-word special-import" onclick="ImportMenu.openImportMenu();">import</span>
         </p>
-        <p class="lyrics left display small" style="--progress: 100%; font-size: 2em; text-align:center;">
+        <p class="lyrics left display small"
+            style=" --lyrics-reached: #ffffff; --progress: 100%; font-size: 2em; text-align:center;">
             <span class="lyrics-word">(hover over the bottom of the screen)</span>
         </p>
     </div>
 
-    <div class="touch-bar" id="touch-bar" onpointerenter="MediaControls.onTouchBarEnter();" onpointerleave="MediaControls.onTouchBarExit();">
+    <div class="touch-bar" id="touch-bar" onpointerenter="MediaControls.onTouchBarEnter();"
+        onpointerleave="MediaControls.onTouchBarExit();">
         <div class="bottom-bar hidden" id="bottom-bar">
 
             <button class="playback-button" id="playback-playpause-button" onclick="MediaControls.TogglePausePlay();">
@@ -40,22 +44,28 @@
                     play_arrow
                 </span>
             </button>
-    
+
             <p class="playback-time" style="text-align:left;" id="playback-time-current">
                 00:00
             </p>
-    
+
             <input type="range" class="playback-progress styled-slider slider-progress" name="playback-progress"
                 id="playback-progress" onpointerup="MediaControls.onProgressBarChange(this.value);"
                 onpointerdown="MediaControls.onProgressBarClick();" on min="0" max="1" step=".00001" value="0">
-    
+
             <p class="playback-time" style="text-align:right;" id="playback-time-remaining">
                 -00:00
             </p>
-    
+
             <button onclick="ImportMenu.openImportMenu();">
                 <span class="material-symbols-rounded">
                     file_open
+                </span>
+            </button>
+
+            <button onclick="MediaControls.ToggleFullscreen();">
+                <span class="material-symbols-rounded" id="fullscreen-text">
+                    fullscreen
                 </span>
             </button>
         </div>
@@ -86,8 +96,7 @@
                     Select lyric
                 </button>
                 <br />
-                <button id="import-button-ok"
-                    onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); ">
+                <button id="import-button-ok" onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); ">
                     OK
                 </button>
             </div>

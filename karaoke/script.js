@@ -365,6 +365,11 @@ class TTMLRenderer {
       let wordElement = this.createWord(vocalGroup.Text);
       el.appendChild(wordElement);
     }
+
+    el.addEventListener("click", () => {
+      MediaControls.Seek(vocalGroup.StartTime);
+    });
+
     return el;
   }
 
@@ -399,9 +404,10 @@ class TTMLRenderer {
     el.className = "interlude close";
     el.style = "--progress: 0%";
     var sp = document.createElement("span");
-    sp.className = "lyrics-word";
+    sp.className = "lyrics-word interlude-circles";
     sp.innerText = "⬤ ⬤ ⬤ ⬤";
     el.appendChild(sp);
+
     return el;
   }
 }
@@ -417,6 +423,7 @@ var button_playpause;
 var button_playpause_span;
 var progress_bar;
 var bottom_bar;
+var fs_text;
 
 var playback_time;
 var playback_time_left;
@@ -425,23 +432,33 @@ var currentLyrics;
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
+const $Q = document.querySelector;
+const $QA = document.querySelectorAll;
+const $ID = document.getElementById;
+
 window.addEventListener("load", () => {
   lyrics_area = document.getElementById("lyrics-area");
   import_dialog = document.getElementById("import-dialog");
   import_status_lyric = document.getElementById("import-status-lyric");
   import_status_song = document.getElementById("import-status-song");
-  audio_player = new Audio();
+  audio_player = document.getElementById("audio-player");
   button_playpause = document.getElementById("playback-playpause-button");
   button_playpause_span = button_playpause.children[0];
   progress_bar = document.getElementById("playback-progress");
   playback_time = document.getElementById("playback-time-current");
   playback_time_left = document.getElementById("playback-time-remaining");
   bottom_bar = document.getElementById("bottom-bar");
+  fs_text = document.getElementById("fullscreen-text");
 
   progress_bar.disabled = true;
   button_playpause.disabled = true;
 
+  audio_player.addEventListener("timeupdate", MediaControls.onTimeUpdate);
+  audio_player.addEventListener("ended", MediaControls.onEnd);
+
   document.body.addEventListener("keyup", function (e) {
+    if (e.target.tagName == "button") return;
+
     if (e.key == " " || e.code == "Space") {
       MediaControls.TogglePausePlay();
     }
@@ -464,15 +481,29 @@ window.addEventListener("load", () => {
 
 isSeeking = false;
 intervalId = 0;
+
+//OLD LOGIC
 hasScrolledThisFrame = false;
 lastStartTime = 0;
+
+//NEW LOGIC
+mostRecentLyric = null;
+lastMostRecentLyric = null;
 class MediaControls {
+  static ToggleFullscreen() {
+    if (document.fullscreenElement == null) {
+      document.body.requestFullscreen();
+      fs_text.innerText = "fullscreen_exit";
+    }else{
+      document.exitFullscreen();
+      fs_text.innerText = "fullscreen";
+    }
+  }
+
   static LoadCurrentAudio() {
     button_playpause_span.innerText = "play_arrow";
     audio_player.pause();
-    audio_player = new Audio(URL.createObjectURL(import_selected_song));
-    audio_player.addEventListener("timeupdate", MediaControls.onTimeUpdate);
-    audio_player.addEventListener("ended", MediaControls.onEnd);
+    audio_player.src = URL.createObjectURL(import_selected_song);
     audio_player.load();
     progress_bar.disabled = false;
     button_playpause.disabled = false;
@@ -543,9 +574,14 @@ class MediaControls {
             d.elements[0].classList.remove("reached");
             d.elements[0].classList.remove("notreached");
 
+            /*
             if (!hasScrolledThisFrame && lastStartTime != d.data.StartTime) {
               lastStartTime = d.data.StartTime;
               this.smoothScroll(lyrics_area, d.elements[0]);
+            }
+            */
+            if (mostRecentLyric != d.elements[0]) {
+              mostRecentLyric = d.elements[0];
             }
           } else if (d.data.Type === "Line") {
             //Single
@@ -572,10 +608,16 @@ class MediaControls {
 
             d.elements[0].classList.remove("reached");
             d.elements[0].classList.add("open");
+            d.elements[0].classList.remove("notreached");
 
+            /*
             if (!hasScrolledThisFrame && lastStartTime != d.data.StartTime) {
               lastStartTime = d.data.StartTime;
               this.smoothScroll(lyrics_area, d.elements[0]);
+            }
+            */
+            if (mostRecentLyric != d.elements[0]) {
+              mostRecentLyric = d.elements[0];
             }
           }
 
@@ -590,6 +632,7 @@ class MediaControls {
               }%;`;
             }
             d.elements[1].classList.remove("reached");
+            d.elements[1].classList.remove("notreached");
           }
         }
         //Reached
@@ -650,6 +693,12 @@ class MediaControls {
           }
         }
         hasScrolledThisFrame = false;
+
+        //NEW LOGIC
+        if (mostRecentLyric !== lastMostRecentLyric) {
+          this.smoothScroll(lyrics_area, mostRecentLyric);
+          lastMostRecentLyric = mostRecentLyric;
+        }
       });
     }
   }
@@ -709,6 +758,7 @@ class LyricsControls {
 
     reader.onload = function (e) {
       var content = reader.result;
+      currentLyrics = undefined;
       currentLyrics = MAKE(content);
     };
 
@@ -717,7 +767,7 @@ class LyricsControls {
 }
 
 function MAKE(ttml) {
-  lyrics_area.innerText = "";
+  lyrics_area.innerHTML = "";
   let data = RenderTTML(ttml);
   data.forEach((d) => {
     d.elements.forEach((e) => {
@@ -844,7 +894,13 @@ class ImportMenu {
   static LoadFiles() {
     MediaControls.LoadCurrentAudio();
     LyricsControls.LoadTTML();
-    audio_player.addEventListener("canplay", () => {MediaControls.TogglePausePlay();}, {once: true});
+    audio_player.addEventListener(
+      "canplay",
+      () => {
+        MediaControls.TogglePausePlay();
+      },
+      { once: true }
+    );
   }
 }
 

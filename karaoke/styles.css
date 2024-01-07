@@ -1,6 +1,6 @@
 body {
   color: #f6f6f6;
-  background: #0f0f0f;
+  background-color: #1d1b20;
   font: 100% system-ui;
   margin: 0;
   user-select: none;
@@ -18,8 +18,8 @@ body {
   display: flex;
   flex-direction: column;
 
-  height: 100dvh;
-  width: 100dvw;
+  height: 100%;
+  width: 100%;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,8 +29,18 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+::backdrop
+{
+    background-color: #1d1b20;
+}
+
+html {
+  height: 100dvh;
+  width: 100dvw;
+}
+
 @media only screen and (hover: none) and (pointer: coarse) {
-  body{
+  body {
     font: 50% system-ui;
   }
 }
@@ -61,7 +71,7 @@ a {
 */
 
 :root {
-  --lyrics-reached: #ffffff;
+  --lyrics-reached: white;
   --lyrics-not-reached: #3a3a3a;
 }
 
@@ -97,7 +107,7 @@ a {
   padding: 0.5em 1em 0.5em 1em;
   border-radius: 1em;
 
-  transition: bottom 0.25s ease;
+  transition: bottom 0.25s ease-out;
   /*font-size: 1.25em;*/
 
   > * {
@@ -107,7 +117,7 @@ a {
 
 .bottom-bar.hidden {
   bottom: -10em;
-  transition: bottom 1s ease;
+  transition: bottom 1s ease-in;
 }
 
 button {
@@ -118,7 +128,7 @@ button {
   padding: 0.25em 0.5em 0.25em 0.5em;
   font-size: 1.2em;
   outline: none;
-  transition: brightness 0.25s linear;
+  transition: brightness 0.5s linear;
 }
 
 button:enabled {
@@ -145,6 +155,19 @@ button:active:enabled {
   background-color: #e6e0e9;
   background: #d0bcff;
   padding: 0 0.15em 0 0.15em;
+  transition: filter 0.5s;
+}
+
+.playback-button:focus {
+  outline: none;
+}
+
+.playback-button:active {
+  outline: none;
+}
+
+.playback-progress:hover:enabled {
+  filter: brightness(75%);
 }
 
 .playback-progress:enabled {
@@ -216,8 +239,10 @@ button:active:enabled {
     180deg,
     transparent,
     transparent 1%,
+    rgba(0, 0, 0, 0.05) 5%,
     black 20%,
     black 80%,
+    rgba(0, 0, 0, 0.05) 95%,
     transparent 99%,
     transparent
   );
@@ -245,7 +270,10 @@ button:active:enabled {
   max-width: 100%;
   box-sizing: border-box;
 
-  transition: filter 1s, text-shadow 1s;
+  --lyrics-reached: #c6afff;
+
+  transition: filter 1s, text-shadow 1s, --lyrics-reached 1s,
+    -webkit-text-stroke 1s;
 }
 
 .lyrics.small {
@@ -281,12 +309,16 @@ button:active:enabled {
 }
 
 .lyrics.reached {
-  filter: brightness(70%);
+  --lyrics-reached: white;
+
+  filter: brightness(50%);
   text-shadow: none;
 }
 
 .lyrics.notreached {
-  filter: brightness(80%);
+  --lyrics-reached: white;
+
+  filter: brightness(70%);
   text-shadow: none;
 }
 
@@ -307,6 +339,8 @@ button:active:enabled {
 
   transform: scaleY(0);
   height: 0;
+
+  --lyrics-reached: #c6afff;
 }
 
 /*
@@ -333,6 +367,11 @@ button:active:enabled {
   height: auto;
   margin: 1em 0.25em 1em 0.25em;
 }
+
+/*
+.interlude-circles {
+}
+*/
 
 .import-dialog {
   background-color: #00000098;
@@ -386,4 +425,15 @@ button:active:enabled {
 .disabled {
   display: none;
   visibility: hidden;
+}
+
+.special-import {
+  color: #d0bcff;
+  transition: text-decoration 0.25s, filter 0.25s;
+  cursor: pointer;
+}
+
+.special-import:hover {
+  text-decoration: underline 0.05em #a090c5;
+  filter: brightness(75%);
 }
