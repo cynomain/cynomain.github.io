@@ -128,7 +128,7 @@ function button_Wrong() {
 }
 
 function pickAnswer(ans) {
-  const answers = ["A", "B", "C", "D"];
+  const answers = ["A", "B", "C", "D", "E"];
   setAnswer(currentNumber, answers[ans]);
   button_Next();
   sound_choose.pause();

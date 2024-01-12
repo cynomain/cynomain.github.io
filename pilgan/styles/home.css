@@ -1,5 +1,5 @@
 .choice {
-  font-size: 36pt;
+  font-size: 32pt;
   padding: 0.35em;
   width: 100%;
   border: none;
@@ -25,6 +25,10 @@
 
 .choice.D {
   background-color: #9966ff;
+}
+
+.choice.E {
+  background-color: #ffa366;
 }
 
 .choice.correct {
