@@ -40,8 +40,8 @@ html {
 }
 
 @media only screen and (min-width: 800px) {
-  .main-content {
-    width: 70%;
+  .main-content > * {
+    max-width: 70%;
   }
 }
 
@@ -84,10 +84,10 @@ h6 {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #d0bcff;
+  background-color: #d0bcff80;
   border-radius: 1em;
 }
 
@@ -150,7 +150,7 @@ input[type="submit"] {
   user-select: none;
   background-color: #2b2930;
   width: 100%;
-  flex: 1;
+  flex: 2;
   flex-direction: row;
   display: flex;
   vertical-align: middle;
@@ -162,7 +162,8 @@ input[type="submit"] {
 
   font-size: clamp(0.5em, 3dvw, 1em);
 
-  > h1, > a{
+  > h1,
+  > a {
     margin: auto;
     text-align: center;
     flex: 100;
@@ -170,11 +171,10 @@ input[type="submit"] {
     overflow: hidden;
   }
 
-  > a{
+  > a {
     font-size: 2em;
     font-weight: bolder;
     text-decoration: none;
-    
   }
 
   > button {
@@ -189,7 +189,18 @@ input[type="submit"] {
 
 .main-content {
   flex: 100;
-  overflow: auto;
+
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  align-content: center;
+  vertical-align: top;
+  box-sizing: content-box;
+
+  width: 100%;
 }
 
 .card {
@@ -399,10 +410,10 @@ a:not(.static):active {
     font-weight: bold;
   }
 
-  &:empty{
+  &:empty {
     max-height: 0;
     padding: 0;
-    margin: -.5em;
+    margin: -0.5em;
   }
 }
 
@@ -491,24 +502,41 @@ blockquote {
 
 .children-fill {
   display: flex;
-  > * {
-    flex: 1;
+
+  &.equal{
+    > * {
+      flex: 1;
+    }
   }
 
-  .col {
+  &.first{
+    > *:first-child {
+      flex: 100;
+    }
+
+    > *:not(:first-child) {
+      flex: 1;
+    }
+  }
+
+  &.col {
     flex-direction: column;
   }
 
-  .row {
+  &.row {
     flex-direction: row;
   }
 }
 
 .card.search {
   z-index: inherit;
+  border: #eaddff solid 0.15em;
+
   width: 80%;
   height: 80%;
-  border: #eaddff solid 0.15em;
+
+  display: flex;
+  flex-direction: column;
 
   input[type="text"],
   input[type="number"],
@@ -517,16 +545,13 @@ blockquote {
     box-sizing: border-box;
   }
 
-  display: flex;
-  flex-direction: column;
-
   .contents {
     overflow-y: scroll;
     overflow-x: hidden;
     box-sizing: border-box;
     /*mask:  linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);*/
-  
-    &::-webkit-scrollbar{
+
+    &::-webkit-scrollbar {
       width: 0;
     }
     margin-bottom: 1em;
@@ -557,6 +582,13 @@ blockquote {
     user-select: none;
   }
 }
+
+.card.search-info {
+  width: 85%;
+  border: #eaddff solid 0.15em;
+}
+
+
 
 input[type="text"],
 input[type="number"],
@@ -657,3 +689,23 @@ input::-webkit-inner-spin-button {
   padding: 0px;
   border: none;
 }
+
+.loader {
+  width: 10dvh;
+  height: 10dvh;
+  border: 1dvh solid #eaddff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  } 

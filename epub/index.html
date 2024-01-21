@@ -2,15 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,
-    maximum-scale=1.0, user-scalable=0"">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+    maximum-scale=1.0, user-scalable=0"
+    />
     <title>Epub Explorer</title>
 
+    <link rel="manifest" href="manifest.json" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
     <!--Material Icons-->
-    <link
+    <!--link
       rel=" stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+    /-->
+    <link rel="stylesheet" href="assets/material_icons.css" />
     <style>
       .material-symbols-rounded {
         user-select: none;
@@ -29,20 +36,23 @@
   </head>
 
   <body>
+    <script>
+      if (typeof navigator.serviceWorker !== "undefined") {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
+
     <header class="title-bar">
-      <button
-        id="button-import"
-        onclick="window.location.href = 'file:\/\/\/storage/emulated/0/Downloads/test.txt'"
-      >
+      <button id="button-import">
         <span class="material-symbols-rounded"> folder_open </span>
       </button>
-      <a href="/epub/">Work Index</a>
+      <a href="/" class="static">Work Index</a>
       <button id="button-search">
         <span class="material-symbols-rounded"> search </span>
       </button>
     </header>
     <div class="main-content" id="main-content">
-      <div id="search-card" class="card disabled">
+      <div id="search-card" class="card search-info">
         <p class="info-title">
           <span>Search Results</span>
           <span class="material-symbols-rounded"> search </span>
@@ -52,126 +62,22 @@
         <div class="spacer"></div>
         <p class="info bold" id="search-info-amount">Found 100 results</p>
       </div>
-      <!--
-                <div class="card">
-                        <div class="section-title">
-                                <h2 class="title">(Un)Balanced</h2>
-                                <p class="date">01 January 2000</p>
-                        </div>
-                        <div class="authors">
-                                <p>by</p>
-                                <a class="author">Someone</a>
-                                <a class="author">Another one</a>
-                        </div>
-                        <div class="fandoms">
-                                <a class="fandom">Moon Knight (TV 2022)</a>
-                                <a class="fandom">Moon Knight (Comics)</a>
-                        </div>
-
-                        <div class="spacer"></div>
-
-                        <ul class="tags">
-                                <li class="warnings">
-                                        <strong><a class="tag static">Creator Chose Not To Use Archive
-                                                        Warnings</a></strong>
-                                </li>
-                                <li class="relationships">
-                                        <a class="tag">Steven Grant &amp; Marc Spector</a>
-                                </li>
-                                <li class="relationships">
-                                        <a class="tag">Steven Grant &amp; Jake Lockley</a>
-                                </li>
-                                <li class="relationships">
-                                        <a class="tag">Jake Lockley &amp; Marc Spector</a>
-                                </li>
-                                <li class="relationships">
-                                        <a class="tag">Steven Grant &amp; Jake Lockley &amp; Marc Spector</a>
-                                </li>
-                                <li class="characters"><a class="tag">Steven Grant (Marvel)</a></li>
-                                <li class="characters"><a class="tag">Marc Spector</a></li>
-                                <li class="characters"><a class="tag">Jake Lockley</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">Other characters get cameos</a>
-                                </li>
-                                <li class="freeforms">
-                                        <a class="tag">including one I stole from Iron Fist s2</a>
-                                </li>
-                                <li class="freeforms">
-                                        <a class="tag">if you know who then you win</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Child Abuse</a></li>
-                                <li class="freeforms"><a class="tag">Physical Abuse</a></li>
-                                <li class="freeforms"><a class="tag">Abusive Relationships</a></li>
-                                <li class="freeforms"><a class="tag">Suicide Attempt</a></li>
-                                <li class="freeforms"><a class="tag">Self Harm</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">Implied/Referenced Self-Harm</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Violence</a></li>
-                                <li class="freeforms"><a class="tag">Strangulation</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">alcohol as a means of coping</a>
-                                </li>
-                                <li class="freeforms">
-                                        <a class="tag">mention of involuntary psych hold</a>
-                                </li>
-                                <li class="freeforms">
-                                        <a class="tag">khonshu is a manipulative asshole</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Protective Jake Lockley</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">Protective Steven Grant (Marvel)</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Google Translate Spanish</a></li>
-                                <li class="freeforms"><a class="tag">Author does not have DID</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">no beta reader we rise and live again</a>
-                                </li>
-                                <li class="freeforms">
-                                        <a class="tag">I spent all day editing this instead of doing literally anything
-                                                else lmao</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Swearing</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">rated for dark themes NOT for sex</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">Angst</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">Angst with a Happy Ending</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">post-show</a></li>
-                                <li class="freeforms">
-                                        <a class="tag">this whole system needs a damn hug</a>
-                                </li>
-                                <li class="freeforms"><a class="tag">headcanon based</a></li>
-                        </ul>
-
-                        <div class="spacer"></div>
-
-                        <p class="synopsis">
-                                what if Steven hadn’t run off to his childhood bedroom’s memory in
-                                episode 5, giving Marc a chance to explain? Might their scales have
-                                balanced in a far smoother fashion? Or would it have only hastened a
-                                far worse fate…
-                        </p>
-
-                        <div class="spacer"></div>
-
-                        <div class="series">
-                                <p>Part 3 of</p>
-                                <a class="name">Series</a>
-                        </div>
-                        <p class="stats">
-                                Published: 2022-10-04 Completed: 2023-08-02 Words: 120,313 Chapters:
-                                13/13
-                        </p>
-                </div>
-        -->
     </div>
 
     <div id="popup-search" class="popup disabled">
       <div class="search card">
-        <h1>Search</h1>
+        <div class="children-fill first">
+          <h1>Search</h1>
+
+          <button
+            id="search-clear"
+            class="clear"
+            style="font-weight: bold; font-size: 1em; vertical-align: bottom"
+          >
+            Clear
+          </button>
+        </div>
+
         <div class="contents">
           <h2>Any</h2>
           <input type="text" name="any" id="search-any" />
@@ -255,7 +161,7 @@
 
         <div
           style="width: 100%; box-sizing: border-box; gap: 0.5em"
-          class="children-fill row"
+          class="children-fill row equal"
         >
           <button
             id="search-cancel"
@@ -291,7 +197,7 @@
     <div id="popup-confirm" class="popup disabled">
       <div class="card import">
         <h2>Are you sure?</h2>
-        <div class="buttons children-fill row">
+        <div class="buttons children-fill row equal">
           <button
             class="clear"
             onclick="confirmDialog_button(false)"
@@ -309,6 +215,11 @@
         </div>
       </div>
     </div>
+
+    <div class="popup disabled" id="popup-loading">
+      <span class="loader"></span>
+    </div>
+
     <input
       style="display: none"
       type="file"

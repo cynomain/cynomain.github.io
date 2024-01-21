@@ -1,0 +1,270 @@
+epubdata: series as class, stats as class
+indexdb
+search
+display
+
+architecture
+home = search none
+search
+
+any
+fandom
+title
+author
+
+any:
+[AND] "sds"
+[NOT] "ADSD"
+[OR] "ADA"
+
+Syntax = // A B "C D" E||F "E||F" "E"||"F" -G -"H" -"I||J" -A&&B//
+Yes = A B "C D" E F "E||F" "E" "F"
+No = G "H" "I||J" A&&B
+
+      <!--
+                <div class="card">
+                        <div class="section-title">
+                                <h2 class="title">(Un)Balanced</h2>
+                                <p class="date">01 January 2000</p>
+                        </div>
+                        <div class="authors">
+                                <p>by</p>
+                                <a class="author">Someone</a>
+                                <a class="author">Another one</a>
+                        </div>
+                        <div class="fandoms">
+                                <a class="fandom">Moon Knight (TV 2022)</a>
+                                <a class="fandom">Moon Knight (Comics)</a>
+                        </div>
+
+                        <div class="spacer"></div>
+
+                        <ul class="tags">
+                                <li class="warnings">
+                                        <strong><a class="tag static">Creator Chose Not To Use Archive
+                                                        Warnings</a></strong>
+                                </li>
+                                <li class="relationships">
+                                        <a class="tag">Steven Grant &amp; Marc Spector</a>
+                                </li>
+                                <li class="relationships">
+                                        <a class="tag">Steven Grant &amp; Jake Lockley</a>
+                                </li>
+                                <li class="relationships">
+                                        <a class="tag">Jake Lockley &amp; Marc Spector</a>
+                                </li>
+                                <li class="relationships">
+                                        <a class="tag">Steven Grant &amp; Jake Lockley &amp; Marc Spector</a>
+                                </li>
+                                <li class="characters"><a class="tag">Steven Grant (Marvel)</a></li>
+                                <li class="characters"><a class="tag">Marc Spector</a></li>
+                                <li class="characters"><a class="tag">Jake Lockley</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">Other characters get cameos</a>
+                                </li>
+                                <li class="freeforms">
+                                        <a class="tag">including one I stole from Iron Fist s2</a>
+                                </li>
+                                <li class="freeforms">
+                                        <a class="tag">if you know who then you win</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Child Abuse</a></li>
+                                <li class="freeforms"><a class="tag">Physical Abuse</a></li>
+                                <li class="freeforms"><a class="tag">Abusive Relationships</a></li>
+                                <li class="freeforms"><a class="tag">Suicide Attempt</a></li>
+                                <li class="freeforms"><a class="tag">Self Harm</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">Implied/Referenced Self-Harm</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Violence</a></li>
+                                <li class="freeforms"><a class="tag">Strangulation</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">alcohol as a means of coping</a>
+                                </li>
+                                <li class="freeforms">
+                                        <a class="tag">mention of involuntary psych hold</a>
+                                </li>
+                                <li class="freeforms">
+                                        <a class="tag">khonshu is a manipulative asshole</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Protective Jake Lockley</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">Protective Steven Grant (Marvel)</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Google Translate Spanish</a></li>
+                                <li class="freeforms"><a class="tag">Author does not have DID</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">no beta reader we rise and live again</a>
+                                </li>
+                                <li class="freeforms">
+                                        <a class="tag">I spent all day editing this instead of doing literally anything
+                                                else lmao</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Swearing</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">rated for dark themes NOT for sex</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">Angst</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">Angst with a Happy Ending</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">post-show</a></li>
+                                <li class="freeforms">
+                                        <a class="tag">this whole system needs a damn hug</a>
+                                </li>
+                                <li class="freeforms"><a class="tag">headcanon based</a></li>
+                        </ul>
+
+                        <div class="spacer"></div>
+
+                        <p class="synopsis">
+                                what if Steven hadn’t run off to his childhood bedroom’s memory in
+                                episode 5, giving Marc a chance to explain? Might their scales have
+                                balanced in a far smoother fashion? Or would it have only hastened a
+                                far worse fate…
+                        </p>
+
+                        <div class="spacer"></div>
+
+                        <div class="series">
+                                <p>Part 3 of</p>
+                                <a class="name">Series</a>
+                        </div>
+                        <p class="stats">
+                                Published: 2022-10-04 Completed: 2023-08-02 Words: 120,313 Chapters:
+                                13/13
+                        </p>
+                </div>
+        -->
+
+      <div class="search card">
+        <h1>Search</h1>
+        <h2>Any</h2>
+        <input type="text" name="any" id="search-any" />
+
+        <h2>Title</h2>
+        <input type="text" name="title" id="search-title"  />
+
+        <h2>Authors</h2>
+        <input type="text" name="authors" id="search-authors" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"/>
+        <div class="recommendation" id="authors-recommmendation">
+          <div class="bit">
+            <p>Moon Knight (2021)</p>
+            <button>
+              <span class="material-symbols-rounded"> close </span>
+            </button>
+          </div>
+        </div>
+
+        <h2>Fandoms</h2>
+
+        <input type="text" name="fandoms" id="search-fandoms" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"/>
+        <div class="recommendation" id="fandoms-recommmendation">
+          <div class="bit">
+            <p>Moon Knight (2021)</p>
+            <button>
+              <span class="material-symbols-rounded"> close </span>
+            </button>
+          </div>
+        </div>
+
+        <h2>Characters</h2>
+        <input type="text" name="characters" id="search-characters" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"/>
+        <div class="recommendation" id="characters-recommmendation">
+          <div class="bit">
+            <p>Moon Knight (2021)</p>
+            <button>
+              <span class="material-symbols-rounded"> close </span>
+            </button>
+          </div>
+        </div>
+
+        <h2>Relationships</h2>
+        <input type="text" name="relationships" id="search-relationships" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"/>
+        <div class="recommendation" id="relationships-recommendation">
+          <div class="bit">
+            <p>Moon Knight (2021)</p>
+            <button>
+              <span class="material-symbols-rounded"> close </span>
+            </button>
+          </div>
+        </div>
+
+        <h2>Tags</h2>
+        <input type="text" name="tags" id="search-tags" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"/>
+        <div class="recommendation" id="tags-recommendation"></div>
+
+        <h2>Completion</h2>
+        <select class="inverse" name="complete" id="search-completion">
+          <option value="all">All Works</option>
+          <option value="completed">Only Completed</option>
+          <option value="in-progress">Only In-Progress</option>
+        </select>
+        <h2>Crossovers</h2>
+        <select class="inverse" name="crossover" id="search-crossover">
+          <option value="include">Include Crossovers</option>
+          <option value="exclude">Exclude Crossovers</option>
+          <option value="only">Only Crossovers</option>
+        </select>
+        <h2>Single Chapter</h2>
+        <select
+          class="inverse"
+          name="single-chapter"
+          id="search-single-chapter"
+        >
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+        <h2>Word Count</h2>
+        <div class="label-content">
+          <select
+            class="inverse"
+            name="wordcount-comparator"
+            id="search-wordcount-comparator"
+          >
+            <option value="equal">&equals;</option>
+            <option value="greater">&gt;</option>
+            <option value="less">&lt;</option>
+            <option value="greater-equal">&geq;</option>
+            <option value="less-equal">&leq;</option>
+          </select>
+          <input type="number" name="wordcount" id="search-wordcount" />
+        </div>
+
+        <h2>Sort By</h2>
+        <select class="inverse" name="sort-by" id="search-by">
+          <option value="title">Title</option>
+          <option value="author">Author</option>
+          <option value="wordcount">Word Count</option>
+          <option value="date-posted">Date Posted</option>
+          <option value="date-updated">Date Updated</option>
+          <option value="date-updated">Random</option>
+        </select>
+
+        <h2>Sort Direction</h2>
+        <select class="inverse" name="sort-direction" id="search-direction">
+          <option value="descending">Descending</option>
+          <option value="ascending">Ascending</option>
+        </select>
+
+        <div
+          style="
+            margin-top: 2em;
+            width: 100%;
+            box-sizing: border-box;
+            gap: 0.5em;
+          "
+          class="children-fill row"
+        >
+          <button
+            class="inverse"
+            style="font-weight: bold; font-size: 1em; box-sizing: border-box"
+          >
+            Cancel
+          </button>
+          <button
+            style="font-weight: bold; font-size: 1em; box-sizing: border-box"
+          >
+            Search
+          </button>
+        </div>

@@ -4,10 +4,14 @@ const $I = (id) => document.getElementById(id);
 
 var button_import;
 var button_search;
+var button_clear_search;
+
 var input_file_folder;
 var div_main_content;
 var popup_import;
 var popup_confirm;
+var popup_loading;
+
 var button_clear_library;
 var button_add_to_library;
 var button_search;
@@ -30,11 +34,14 @@ window.addEventListener("load", () => {
   popup_search = $I("popup-search");
   button_clear_library = $I("button-clear-library");
   button_add_to_library = $I("button-add-to-library");
+  button_clear_search = $I("search-clear");
   button_search = $I("button-search");
-
   search_card = $I("search-card");
+
   search_info = $I("search-info");
   search_info_amount = $I("search-info-amount");
+
+  popup_loading = $I("popup-loading");
 
   button_import.onclick = () => {
     popup_import.classList.remove("disabled");
@@ -49,7 +56,12 @@ window.addEventListener("load", () => {
   button_clear_library.onclick = () => {
     ConfirmDialog((b) => {
       popup_import.classList.add("disabled");
-      if (b) db.Clear();
+      if (b) {
+        db.Clear();
+        db.ClearCache();
+        localStorage.clear();
+        window.location.reload();
+      }
     });
   };
 
@@ -60,6 +72,10 @@ window.addEventListener("load", () => {
 
   button_search.onclick = () => {
     popup_search.classList.remove("disabled");
+  };
+
+  button_clear_search.onclick = () => {
+    searchUI.Clear();
   };
 
   $I("button-close-library").onclick = () => {
@@ -133,7 +149,10 @@ function GetQuery() {
   return qs;
 }
 
+var saveTimeoutId = 1938293;
+
 function ProcessFolders(event) {
+  popup_loading.classList.remove("disabled");
   let files = event.target.files;
   console.log(files);
   for (let i = 0; i < files.length; i++) {
@@ -143,12 +162,20 @@ function ProcessFolders(event) {
         ProcessEpubFile(f).then((e) => /*epubs.push(e)*/ {
           console.log(e);
           db.Push(e);
-          if (i == files.length - 1) {
+
+          clearTimeout(saveTimeoutId);
+          saveTimeoutId = setTimeout(() => {
+            popup_loading.classList.add("disabled");
             db.Save();
-          }
+            db.ClearCache();
+            db.BuildCache();
+            console.log("saved");
+            window.location.reload();
+          }, 3000);
         });
       } catch (Ex) {
         console.log(Ex);
+        popup_loading.classList.add("disabled");
       }
     }
   }
@@ -321,7 +348,7 @@ function ProcessEpubFile(file) {
                   let tempch = split[1].trim().split("/");
                   chapters = new EpubChapter(
                     Number(tempch[0]),
-                    tempch[1] == "?" ? 0 : Number(tempch[0])
+                    tempch[1] == "?" ? 0 : Number(tempch[1])
                   );
                   break;
                 default:
@@ -504,12 +531,12 @@ class DOMHelper {
         "",
         "",
         "",
-        "all",
-        "no",
-        "equal",
-        "0",
-        "author",
-        "ascending"
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       );
       authors.appendChild(author);
     });
@@ -537,12 +564,12 @@ class DOMHelper {
         "",
         "",
         "",
-        "all",
-        "no",
-        "equal",
-        "0",
-        "author",
-        "ascending"
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       );
       fandoms.appendChild(fandom);
     });
@@ -555,11 +582,13 @@ class DOMHelper {
    * @param {EpubData} data
    */
   static CreateTags(data) {
-    let tags = this.dcec("ul", "tags");
+    //let tags = this.dcec("ul", "tags");
+    let tags = this.dcec("div", "tags");
 
     //Warnings
 
-    let warnings = this.dcec("li", "warnings");
+    //let warnings = this.dcec("li", "warnings");
+    //let strong = this.dce("strong");
     let strong = this.dce("strong");
 
     data.warnings.forEach((element) => {
@@ -568,14 +597,16 @@ class DOMHelper {
       strong.appendChild(warning);
     });
 
-    warnings.appendChild(strong);
-    tags.appendChild(warnings);
+    //warnings.appendChild(strong);
+    //tags.appendChild(warnings);
+    tags.appendChild(strong);
 
     //Relationships
 
     data.relationships.forEach((r) => {
-      let relationships = this.dcec("li", "relationships");
-      let reltag = this.dcec("a", "tag");
+      //let relationships = this.dcec("li", "relationships");
+      //let reltag = this.dcec("a", "tag");
+      let reltag = this.dcec("a", "relationships tag");
       //TODO: Relationship href
       reltag.href = GetQueryString(
         "",
@@ -586,24 +617,26 @@ class DOMHelper {
         `"${r}"`,
         "",
         "",
-        "all",
-        "no",
-        "equal",
-        "0",
-        "title",
-        "ascending"
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       );
 
       reltag.innerText = r;
-      relationships.appendChild(reltag);
-      tags.appendChild(relationships);
+      //relationships.appendChild(reltag);
+      //tags.appendChild(relationships);
+      tags.appendChild(reltag);
     });
 
     //Characters
 
     data.characters.forEach((c) => {
-      let characters = this.dcec("li", "characters");
-      let chartag = this.dcec("a", "tag");
+      //let characters = this.dcec("li", "characters");
+      //let chartag = this.dcec("a", "tag");
+      let chartag = this.dcec("a", "characters tag");
       //TODO: Characters href
       chartag.href = GetQueryString(
         "",
@@ -614,24 +647,26 @@ class DOMHelper {
         "",
         "",
         "",
-        "all",
-        "no",
-        "equal",
-        "0",
-        "title",
-        "ascending"
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       );
 
       chartag.innerText = c;
-      characters.appendChild(chartag);
-      tags.appendChild(characters);
+      //characters.appendChild(chartag);
+      //tags.appendChild(characters);
+      tags.appendChild(chartag);
     });
 
     //Freeforms
 
     data.freeforms.forEach((f) => {
-      let freeforms = this.dcec("li", "freeforms");
-      let ftag = this.dcec("a", "tag");
+      //let freeforms = this.dcec("li", "freeforms");
+      //let ftag = this.dcec("a", "tag");
+      let ftag = this.dcec("a", "freeforms tag");
       //TODO: Freeform href
       ftag.href = GetQueryString(
         "",
@@ -642,16 +677,17 @@ class DOMHelper {
         "",
         `"${f}"`,
         "",
-        "all",
-        "no",
-        "equal",
-        "0",
-        "title",
-        "ascending"
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       );
       ftag.innerText = f;
-      freeforms.appendChild(ftag);
-      tags.appendChild(freeforms);
+      //freeforms.appendChild(ftag);
+      //tags.appendChild(freeforms);
+      tags.appendChild(ftag);
     });
 
     return tags;
@@ -754,7 +790,7 @@ class SearchUI {
 
     if (typeof query !== "string") {
       input_any.value = query["any"] ?? "";
-      input_title.value = query["title"] ?? ""
+      input_title.value = query["title"] ?? "";
       input_authors.value = query["authors"] ?? "";
       input_fandoms.value = query["fandoms"] ?? "";
       input_characters.value = query["characters"] ?? "";
@@ -765,10 +801,28 @@ class SearchUI {
       // select_crossovers.value = query["crossovers"];
       select_singlechapter.value = query["singlechapter"] ?? "no";
       select_wordcount_comparator.value = query["wordcount_compare"] ?? "equal";
-      input_wordcount.value = Number(query["wordcount"] ?? "0") ;
-      select_sortby.value = query["sortby"]  ?? "title";
-      select_sortdir.value = query["sortdir"]  ?? "ascending";
+      input_wordcount.value = Number(query["wordcount"] ?? "0");
+      select_sortby.value = query["sortby"] ?? "title";
+      select_sortdir.value = query["sortdir"] ?? "ascending";
     }
+  }
+
+  Clear() {
+    this.input_any.value = "";
+    this.input_title.value = "";
+    this.input_authors.value = "";
+    this.input_fandoms.value = "";
+    this.input_characters.value = "";
+    this.input_relationships.value = "";
+    this.input_tags.value = "";
+    this.input_series.value = "";
+    this.select_completion.value = "all";
+    // this.select_crossovers.value = query["crossovers"];
+    this.select_singlechapter.value = "no";
+    this.select_wordcount_comparator.value = "equal";
+    this.input_wordcount.value = 0;
+    this.select_sortby.value = "title";
+    this.select_sortdir.value = "ascending";
   }
 }
 
@@ -895,248 +949,244 @@ class Search {
 
 class SearchService {
   static QueryWorks(query) {
-    let q_any = Search.ParseSearch(query["any"]);
-    let q_title = Search.ParseSearch(query["title"]);
-    let q_authors = Search.ParseSearch(query["authors"]);
-    let q_fandoms = Search.ParseSearch(query["fandoms"]);
-    let q_characters = Search.ParseSearch(query["characters"]);
-    let q_relationships = Search.ParseSearch(query["relationships"]);
-    let q_tags = Search.ParseSearch(query["tags"]);
-    let q_series = Search.ParseSearch(query["series"]);
-    let q_completion = query["completion"];
-    //let q_crossovers = (query["crossovers"]);
-    let q_singlechapter = query["singlechapter"];
-    let q_wordcount_comparator = query["wordcount_compare"];
-    let q_wordcount = Number(query["wordcount"]);
-    let q_sortby = query["sortby"];
-    let q_sortdir = query["sortdir"];
+    popup_loading.classList.remove("disabled");
+    try {
+      let q_any = Search.ParseSearch(query["any"] ?? "");
+      let q_title = Search.ParseSearch(query["title"] ?? "");
+      let q_authors = Search.ParseSearch(query["authors"] ?? "");
+      let q_fandoms = Search.ParseSearch(query["fandoms"] ?? "");
+      let q_characters = Search.ParseSearch(query["characters"] ?? "");
+      let q_relationships = Search.ParseSearch(query["relationships"] ?? "");
+      let q_tags = Search.ParseSearch(query["tags"] ?? "");
+      let q_series = Search.ParseSearch(query["series"] ?? "");
+      let q_completion = query["completion"] ?? "all";
+      //let q_crossovers = (query["crossovers"]);
+      let q_singlechapter = query["singlechapter"] ?? "no";
+      let q_wordcount_comparator = query["wordcount_compare"] ?? "equal";
+      let q_wordcount = Number(query["wordcount"] ?? "0");
+      let q_sortby = query["sortby"] ?? "title";
+      let q_sortdir = query["sortdir"] ?? "ascending";
 
-    /*
-    let globalq = new SearchToken("$AND", [
-      q_any,
-      q_title,
-      q_authors,
-      q_fandoms,
-      q_characters,
-      q_relationships,
-      q_tags,
-    ]);
-    */
+      /*
+      let globalq = new SearchToken("$AND", [
+        q_any,
+        q_title,
+        q_authors,
+        q_fandoms,
+        q_characters,
+        q_relationships,
+        q_tags,
+      ]);
+      */
 
-    let cached = db.GetCache();
+      let cached = db.GetCache();
 
-    let resultCached = cached.filter((w) => {
-      if (q_singlechapter == "yes") {
-        return w.issinglechapter;
-      }
-      //console.log(w.id + " did not fail singlechapter");
+      let resultCached = cached.filter((w) => {
+        if (q_singlechapter == "yes") {
+          return w.issinglechapter;
+        }
+        //console.log(w.id + " did not fail singlechapter");
 
-      switch (q_completion) {
-        case "all":
-          break;
-        case "completed":
-          if (!w.iscomplete) return false;
-          break;
-        case "in-progress":
-          if (w.iscomplete) return false;
-          break;
-        default:
-          break;
-      }
-      //console.log(w.id + " didnot fail completion");
-
-      if (q_wordcount > 0) {
-        switch (q_wordcount_comparator) {
-          case "equal":
-            if (w.wordCount != q_wordcount) return false;
+        switch (q_completion) {
+          case "all":
             break;
-          case "greater":
-            if (!(w.wordCount > q_wordcount)) return false;
+          case "completed":
+            if (!w.iscomplete) return false;
             break;
-          case "less":
-            if (!(w.wordCount < q_wordcount)) return false;
-            break;
-          case "greater-equal":
-            if (!(w.wordCount >= q_wordcount)) return false;
-            break;
-          case "less-equal":
-            if (!(w.wordCount <= q_wordcount)) return false;
+          case "in-progress":
+            if (w.iscomplete) return false;
             break;
           default:
-            if (w.wordCount != q_wordcount) return false;
             break;
         }
-      }
-      console.log(w.id + " didnot fail wordcount" + w.wordCount + q_wordcount);
+        //console.log(w.id + " didnot fail completion");
 
-      if (q_title.values.length > 0) {
-        if (!q_title.Evaluate(w.title)) {
-          console.log(w.id + " failed title");
-          return false;
+        if (q_wordcount > 0) {
+          switch (q_wordcount_comparator) {
+            case "equal":
+              if (w.wordCount != q_wordcount) return false;
+              break;
+            case "greater":
+              if (!(w.wordCount > q_wordcount)) return false;
+              break;
+            case "less":
+              if (!(w.wordCount < q_wordcount)) return false;
+              break;
+            case "greater-equal":
+              if (!(w.wordCount >= q_wordcount)) return false;
+              break;
+            case "less-equal":
+              if (!(w.wordCount <= q_wordcount)) return false;
+              break;
+            default:
+              if (w.wordCount != q_wordcount) return false;
+              break;
+          }
         }
-      }
-      if (q_authors.values.length > 0) {
-        if (!q_authors.Evaluate(w.authors)) {
-          console.log(w.id + " failed authors");
-          return false;
-        }
-      }
-      if (q_fandoms.values.length > 0) {
-        if (!q_fandoms.Evaluate(w.fandoms)) {
-          console.log(w.id + " failed fandoms");
-          return false;
-        }
-      }
-      if (q_characters.values.length > 0) {
-        if (!q_characters.Evaluate(w.characters)) {
-          console.log(w.id + " failed chars");
-          return false;
-        }
-      }
-      if (q_relationships.values.length > 0) {
-        if (!q_relationships.Evaluate(w.relationships)) {
-          console.log(w.id + " failed relationships");
-          return false;
-        }
-      }
-      if (q_tags.values.length > 0) {
-        if (!q_tags.Evaluate(w.freeforms)) {
-          console.log(w.id + " failed tags");
-          return false;
-        }
-      }
-      if (q_series.values.length > 0) {
-        if (!q_series.Evaluate(w.series)) {
-          console.log(w.id + " failed series");
-          return false;
-        }
-      }
-      if (q_any.values.length > 0) {
-        if (!q_any.Evaluate(EpubCache.GetConcatted(w))) {
-          console.log(w.id + " failed any");
-          return false;
-        }
-      }
-      return true;
-    });
+        //console.log(w.id + " didnot fail wordcount" + w.wordCount + q_wordcount);
 
-    //Default asceding
-    switch (q_sortby) {
-      case "title":
-        resultCached = resultCached.sort((a, b) =>
-          ("" + a.title.attr).localeCompare(b.title.attr)
-        );
-        break;
-      case "author":
-        resultCached = resultCached.sort((a, b) =>
-          ("" + a.authors.attr).localeCompare(b.authors.attr)
-        );
-        break;
-      case "wordcount":
-        resultCached = resultCached.sort((a, b) => a.wordCount - b.wordCount);
-        break;
-      case "date-posted":
-        resultCached = resultCached.sort(
-          (a, b) => a.date_published - b.date_published
-        );
-        break;
-      case "date-updated":
-        resultCached = resultCached.sort(
-          (a, b) => a.date_updated - b.date_updated
-        );
-        break;
-      case "random":
-        resultCached = shuffle(resultCached);
-        break;
-      default:
-        resultCached = resultCached.sort((a, b) =>
-          ("" + a.title.attr).localeCompare(b.title.attr)
-        );
-        break;
-    }
+        if (q_title.values.length > 0) {
+          if (!q_title.Evaluate(w.title)) {
+            console.log(w.id + " failed title");
+            return false;
+          }
+        }
+        if (q_authors.values.length > 0) {
+          if (!q_authors.Evaluate(w.authors)) {
+            console.log(w.id + " failed authors");
+            return false;
+          }
+        }
+        if (q_fandoms.values.length > 0) {
+          if (!q_fandoms.Evaluate(w.fandoms)) {
+            console.log(w.id + " failed fandoms");
+            return false;
+          }
+        }
+        if (q_characters.values.length > 0) {
+          if (!q_characters.Evaluate(w.characters)) {
+            console.log(w.id + " failed chars");
+            return false;
+          }
+        }
+        if (q_relationships.values.length > 0) {
+          if (!q_relationships.Evaluate(w.relationships)) {
+            console.log(w.id + " failed relationships");
+            return false;
+          }
+        }
+        if (q_tags.values.length > 0) {
+          if (!q_tags.Evaluate(w.freeforms)) {
+            console.log(w.id + " failed tags");
+            return false;
+          }
+        }
+        if (q_series.values.length > 0) {
+          if (!q_series.Evaluate(w.series)) {
+            console.log(w.id + " failed series");
+            return false;
+          }
+        }
+        if (q_any.values.length > 0) {
+          if (!q_any.Evaluate(EpubCache.GetConcatted(w))) {
+            console.log(w.id + " failed any");
+            return false;
+          }
+        }
+        return true;
+      });
 
-    if (q_sortdir === "descending") {
-      console.log("descend");
-      resultCached = resultCached.reverse();
-    }
-
-    let results = [];
-    resultCached.forEach((rc) => {
-      let found = db.Works.find((x) => x.id === rc.id);
-      if (found) {
-        results.push(found);
+      //Default asceding
+      switch (q_sortby) {
+        case "title":
+          resultCached = resultCached.sort((a, b) =>
+            //("" + a.title.attr).localeCompare(b.title)
+            a.title.localeCompare(b.title)
+          );
+          break;
+        case "author":
+          resultCached = resultCached.sort((a, b) =>
+            a.authors.localeCompare(b.authors)
+          );
+          break;
+        case "wordcount":
+          resultCached = resultCached.sort((a, b) => a.wordCount - b.wordCount);
+          break;
+        case "date-posted":
+          resultCached = resultCached.sort(
+            (a, b) => a.date_published - b.date_published
+          );
+          break;
+        case "date-updated":
+          resultCached = resultCached.sort(
+            (a, b) => a.date_updated - b.date_updated
+          );
+          break;
+        case "random":
+          resultCached = shuffle(resultCached);
+          break;
+        default:
+          resultCached = resultCached.sort((a, b) =>
+            a.title.localeCompare(b.title)
+          );
+          break;
       }
-    });
 
-    let infos = [];
-    if (query["any"] != "" && typeof query["any"] !== "undefined") {
-      infos.push("Any: " + query["any"]);
-    }
+      if (q_sortdir === "descending") {
+        console.log("descend");
+        resultCached = resultCached.reverse();
+      }
 
-    if (query["title"] != "" && typeof query["title"] !== "undefined") {
-      infos.push("Title: " + query["title"]);
-    }
+      let results = [];
+      resultCached.forEach((rc) => {
+        let found = db.Works.find((x) => x.id === rc.id);
+        if (found) {
+          results.push(found);
+        }
+      });
 
-    if (query["authors"] != "" && typeof query["authors"] !== "undefined") {
-      infos.push("Authors: " + query["authors"]);
-    }
-    if (query["fandoms"] != "" && typeof query["fandoms"] !== "undefined") {
-      infos.push("Fandoms: " + query["fandoms"]);
-    }
-    if (
-      query["characters"] != "" &&
-      typeof query["characters"] !== "undefined"
-    ) {
-      infos.push("Characters: " + query["characters"]);
-    }
-    if (
-      query["relationships"] != "" &&
-      typeof query["relationships"] !== "undefined"
-    ) {
-      infos.push("Relationships: " + query["relationships"]);
-    }
-    if (query["tags"] != "" && typeof query["tags"] !== "undefined") {
-      infos.push("Tags: " + query["tags"]);
-    }
-    if (
-      query["completion"] != "all" &&
-      typeof query["completion"] !== "undefined"
-    ) {
-      infos.push("Completion: " + query["completion"]);
-    }
-    if (
-      query["singlechapter"] === "yes" &&
-      typeof query["singlechapter"] !== "undefined"
-    ) {
-      infos.push("Only Single Chapters?: " + query["singlechapter"]);
-    }
-    if (
-      query["wordcount"] !== "0" &&
-      query["wordcount"] !== "" &&
-      typeof query["wordcount"] !== "undefined"
-    ) {
-      infos.push(
-        `Word count: ${query["wordcount_compare"]} | ${query["wordcount"]}}`
-      );
-    }
-    if (
-      query["sortby"] !== "0" &&
-      query["sortby"] !== "" &&
-      typeof query["sortby"] !== "undefined"
-    ) {
-      infos.push("Sort by: " + query["sortby"]);
-    }
-    if (
-      query["sortdir"] !== "0" &&
-      query["sortdir"] !== "" &&
-      typeof query["sortdir"] !== "undefined"
-    ) {
-      infos.push("Sort direction: " + query["sortdir"]);
-    }
-    search_info.innerText = infos.join("\n");
-    search_info_amount.innerText = `Found ${results.length} result(s).`;
+      let infos = [];
 
-    return results;
+      const pushIfNotEmpty = (index, prefix) => {
+        if (!isEmpty(query[index])) {
+          infos.push(prefix + ": " + query[index]);
+        }
+      };
+
+      const pushIfNotEmptyCap = (index, prefix) => {
+        if (!isEmpty(query[index])) {
+          infos.push(prefix + ": " + capitalizeFirstLetter(query[index]));
+        }
+      };
+
+      pushIfNotEmpty("any", "Any");
+      pushIfNotEmpty("title", "Title");
+      pushIfNotEmpty("authors", "Authors");
+      pushIfNotEmpty("fandoms", "Fandoms");
+      pushIfNotEmpty("characters", "Characters");
+      pushIfNotEmpty("relationships", "Relationships");
+      pushIfNotEmpty("tags", "Tags");
+      pushIfNotEmptyCap("completion", "Completion");
+      pushIfNotEmptyCap("singlechapter", "Only Single Chapter");
+
+      if (!isEmpty(query["wordcount"]) && query["wordcount"] !== "0") {
+        let sign = "";
+
+        switch (query["wordcount_compare"]) {
+          case "equal":
+            sign = "=";
+            break;
+          case "greater":
+            sign = ">";
+            break;
+          case "less":
+            sign = "<";
+            break;
+          case "greater-equal":
+            sign = "≥";
+            break;
+          case "less-equal":
+            sign = "≤";
+            break;
+          default:
+            sign = "?";
+        }
+
+        infos.push(`Word count: ${sign}${Number(query["wordcount"] ?? "0")}`);
+      }
+
+      pushIfNotEmptyCap("sortby", "Sort by");
+      pushIfNotEmptyCap("sortdir", "Sort direction");
+      search_info.innerText = infos.join("\n");
+      search_info_amount.innerText = `Found ${results.length} result(s).`;
+      popup_loading.classList.add("disabled");
+
+      return results;
+    } catch (ex) {
+      console.log(ex);
+      popup_loading.classList.add("disabled");
+      return [];
+    }
   }
 
   static DisplayResults(results) {
@@ -1161,7 +1211,41 @@ function GetQueryString(
   sortby,
   sortdir
 ) {
-  return `?any="${any}"&&title="${title}"&&authors="${authors}"&&fandoms="${fandoms}"&&characters="${characters}"&&relationships="${relationships}"&&tags="${tags}"&&series="${series}"&&completion="${completion}"&&singlechapter="${singlechapter}"&&wordcount_compare="${wordcount_compare}"&&wordcount="${wordcount}"&&sortby="${sortby}"&&sortdir="${sortdir}"`;
+  //return `?any="${any}"&&title="${title}"&&authors="${authors}"&&fandoms="${fandoms}"&&characters="${characters}"&&relationships="${relationships}"&&tags="${tags}"&&series="${series}"&&completion="${completion}"&&singlechapter="${singlechapter}"&&wordcount_compare="${wordcount_compare}"&&wordcount="${wordcount}"&&sortby="${sortby}"&&sortdir="${sortdir}"`;
+  let q = [];
+
+  const appendINE = (str, key) => {
+    if (!isEmpty(str)) {
+      q.push(`${key}="${str}"`);
+    }
+  };
+
+  appendINE(any, "any");
+  appendINE(title, "title");
+  appendINE(authors, "authors");
+  appendINE(fandoms, "fandoms");
+  appendINE(characters, "characters");
+  appendINE(relationships, "relationships");
+  appendINE(tags, "tags");
+  appendINE(series, "series");
+  appendINE(completion, "completion");
+  appendINE(singlechapter, "singlechapter");
+  appendINE(wordcount_compare, "wordcount_compare");
+  appendINE(wordcount, "wordcount");
+  appendINE(sortby, "sortby");
+  appendINE(sortdir, "sortdir");
+
+  return "?" + q.join("&&");
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function isEmpty(str) {
+  return (
+    typeof str === "undefined" || str === null || str === "" || str.length < 1
+  );
 }
 
 class SearchToken {
@@ -1262,9 +1346,13 @@ class AppDB {
       return;
     }
 
+    popup_loading.classList.remove("disabled");
+
     this.Works = JSON.parse(localStorage.getItem("works"));
 
     this.BuildCache();
+
+    popup_loading.classList.add("disabled");
   }
 
   Save() {
@@ -1387,8 +1475,8 @@ class AppDB {
       w.id,
       w.title,
       w.authors.join(""),
-      Date.parse(w.stats.date_published),
-      Date.parse(w.stats.date_updated),
+      Date.parse(w.stats.publishedDate),
+      Date.parse(w.stats.updatedDate),
       w.fandoms.join(""),
       w.relationships.join(""),
       w.characters.join(""),
