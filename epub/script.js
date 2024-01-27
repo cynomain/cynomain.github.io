@@ -14,7 +14,8 @@ var popup_loading;
 
 var button_clear_library;
 var button_add_to_library;
-var button_search;
+var button_rebuild_cache;
+var button_refresh_app;
 
 var search_card;
 var search_info;
@@ -34,6 +35,9 @@ window.addEventListener("load", () => {
   popup_search = $I("popup-search");
   button_clear_library = $I("button-clear-library");
   button_add_to_library = $I("button-add-to-library");
+  button_rebuild_cache = $I("button-rebuild-cache");
+  button_refresh_app = $I("button-refresh-app");
+
   button_clear_search = $I("search-clear");
   button_search = $I("button-search");
   search_card = $I("search-card");
@@ -55,8 +59,8 @@ window.addEventListener("load", () => {
 
   button_clear_library.onclick = () => {
     ConfirmDialog((b) => {
-      popup_import.classList.add("disabled");
       if (b) {
+        popup_import.classList.add("disabled");
         db.Clear();
         db.ClearCache();
         localStorage.clear();
@@ -70,12 +74,40 @@ window.addEventListener("load", () => {
     input_file_folder.click();
   };
 
+  button_rebuild_cache.onclick = () => {
+    ConfirmDialog((b) => {
+      if (b) {
+        popup_import.classList.add("disabled");
+        popup_loading.classList.remove("disabled");
+        db.ClearCache();
+        db.BuildCache();
+        popup_loading.classList.remove("disabled");
+        window.location.reload();
+      }
+    });
+  };
+
+  button_refresh_app.onclick = () => {
+    ConfirmDialog((b) => {
+      if (b) {
+        popup_import.classList.add("disabled");
+        caches.delete("cynomain-epub-v1").then((c) => {
+          window.location.reload(true);
+        });
+      }
+    });
+  };
+
   button_search.onclick = () => {
     popup_search.classList.remove("disabled");
   };
 
   button_clear_search.onclick = () => {
-    searchUI.Clear();
+    ConfirmDialog((b) => {
+      if (b) {
+        searchUI.Clear();
+      }
+    });
   };
 
   $I("button-close-library").onclick = () => {
@@ -171,7 +203,7 @@ function ProcessFolders(event) {
             db.BuildCache();
             console.log("saved");
             window.location.reload();
-          }, 3000);
+          }, 1000);
         });
       } catch (Ex) {
         console.log(Ex);
@@ -275,7 +307,7 @@ function ProcessEpubFile(file) {
             "DEC",
           ];
           date = `${date_obj.getDate()} ${
-            months[date_obj.getMonth() - 1]
+            months[date_obj.getMonth()]
           } ${date_obj.getFullYear()}`;
 
           return zip.file(/000.xhtml/)[0].async("string");
@@ -479,6 +511,23 @@ class DOMHelper {
 
       let name = this.dcec("a", "name");
       name.innerText = data.series.name;
+      name.href = GetQueryString(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        data.series.name,
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      );
+
       series.appendChild(name);
 
       card.appendChild(series);
@@ -1027,49 +1076,49 @@ class SearchService {
 
         if (q_title.values.length > 0) {
           if (!q_title.Evaluate(w.title)) {
-            console.log(w.id + " failed title");
+            //console.log(w.id + " failed title");
             return false;
           }
         }
         if (q_authors.values.length > 0) {
           if (!q_authors.Evaluate(w.authors)) {
-            console.log(w.id + " failed authors");
+            //console.log(w.id + " failed authors");
             return false;
           }
         }
         if (q_fandoms.values.length > 0) {
           if (!q_fandoms.Evaluate(w.fandoms)) {
-            console.log(w.id + " failed fandoms");
+            //console.log(w.id + " failed fandoms");
             return false;
           }
         }
         if (q_characters.values.length > 0) {
           if (!q_characters.Evaluate(w.characters)) {
-            console.log(w.id + " failed chars");
+           // console.log(w.id + " failed chars");
             return false;
           }
         }
         if (q_relationships.values.length > 0) {
           if (!q_relationships.Evaluate(w.relationships)) {
-            console.log(w.id + " failed relationships");
+            //console.log(w.id + " failed relationships");
             return false;
           }
         }
         if (q_tags.values.length > 0) {
           if (!q_tags.Evaluate(w.freeforms)) {
-            console.log(w.id + " failed tags");
+            //console.log(w.id + " failed tags");
             return false;
           }
         }
         if (q_series.values.length > 0) {
           if (!q_series.Evaluate(w.series)) {
-            console.log(w.id + " failed series");
+            //console.log(w.id + " failed series");
             return false;
           }
         }
         if (q_any.values.length > 0) {
           if (!q_any.Evaluate(EpubCache.GetConcatted(w))) {
-            console.log(w.id + " failed any");
+           // console.log(w.id + " failed any");
             return false;
           }
         }
@@ -1143,6 +1192,7 @@ class SearchService {
       pushIfNotEmpty("title", "Title");
       pushIfNotEmpty("authors", "Authors");
       pushIfNotEmpty("fandoms", "Fandoms");
+      pushIfNotEmpty("series", "Series");
       pushIfNotEmpty("characters", "Characters");
       pushIfNotEmpty("relationships", "Relationships");
       pushIfNotEmpty("tags", "Tags");

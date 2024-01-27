@@ -279,6 +279,12 @@ a.fandom:not(:last-child)::after {
   text-decoration: none;
 }
 
+.tag:not(:last-child)::after{
+  content: ", ";
+
+}
+
+/*
 *:not(:last-child) > .tag::after {
   content: ", ";
   margin-right: 0.25em;
@@ -288,6 +294,7 @@ a.fandom:not(:last-child)::after {
   content: ", ";
   margin-right: 0.25em;
 }
+*/
 
 .tags {
   margin: 0.5em;

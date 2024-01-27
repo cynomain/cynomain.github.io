@@ -1,11 +1,11 @@
 const staticPage = "cynomain-epub-v1";
 const assets = [
-  "/assets/material_icons.css",
-  "/assets/material_icons.woff2",
-  "/libs/jszip.min.js",
-  "/index.html",
-  "/style.css",
-  "/script.js",
+  "assets/material_icons.css",
+  "assets/material_icons.woff2",
+  "libs/jszip.min.js",
+  "index.html",
+  "style.css",
+  "script.js",
 ];
 
 self.addEventListener("install", (installEvent) => {
