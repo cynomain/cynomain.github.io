@@ -6,6 +6,7 @@ const assets = [
   "index.html",
   "style.css",
   "script.js",
+  "sw.js"
 ];
 
 self.addEventListener("install", (installEvent) => {

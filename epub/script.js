@@ -2,56 +2,61 @@ const $Q = (q) => document.querySelector(q);
 const $A = (q) => document.querySelectorAll(q);
 const $I = (id) => document.getElementById(id);
 
+/*
 var button_import;
 var button_search;
 var button_clear_search;
+*/
 
 var input_file_folder;
 var div_main_content;
+
 var popup_import;
 var popup_confirm;
 var popup_loading;
+var popup_settings;
+var popup_search;
 
+/*
 var button_clear_library;
 var button_add_to_library;
 var button_rebuild_cache;
 var button_refresh_app;
+*/
+var button_offlinemode;
 
 var search_card;
 var search_info;
 var search_info_amount;
+var search_info_offlinemode;
 
 var db;
 var query;
 var searchUI;
 
+var button_offlinemode;
+
 window.addEventListener("load", OnLoad);
 
 function OnLoad() {
-  button_import = $I("button-import");
-  button_search = $I("button-search");
+  //Get elements
   input_file_folder = $I("input-folder");
   div_main_content = $I("main-content");
+
+  search_card = $I("search-card");
+  search_info = $I("search-info");
+  search_info_amount = $I("search-info-amount");
+  search_info_offlinemode = $I("search-info-offlinemode");
+
   popup_import = $I("popup-import");
   popup_confirm = $I("popup-confirm");
   popup_search = $I("popup-search");
-  button_clear_library = $I("button-clear-library");
-  button_add_to_library = $I("button-add-to-library");
-  button_rebuild_cache = $I("button-rebuild-cache");
-  button_refresh_app = $I("button-refresh-app");
-
-  button_clear_search = $I("search-clear");
-  button_search = $I("button-search");
-  search_card = $I("search-card");
-
-  search_info = $I("search-info");
-  search_info_amount = $I("search-info-amount");
-
   popup_loading = $I("popup-loading");
+  popup_settings = $I("popup-settings");
 
-  button_import.onclick = () => {
-    popup_import.classList.remove("disabled");
-  };
+  button_offlinemode = $I("button-offlinemode");
+
+  //Input file
   input_file_folder.onchange = ProcessFolders;
 
   if (isMobile()) {
@@ -59,7 +64,18 @@ function OnLoad() {
     input_file_folder.removeAttribute("webkitdirectory");
   }
 
-  button_clear_library.onclick = () => {
+  //La buttons
+  //Main Buttons
+  $I("button-import").onclick = () => {
+    popup_import.classList.remove("disabled");
+  };
+
+  $I("button-search").onclick = () => {
+    popup_search.classList.remove("disabled");
+  };
+
+  //Import Buttons
+  $I("button-clear-library").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
         popup_import.classList.add("disabled");
@@ -72,12 +88,22 @@ function OnLoad() {
     });
   };
 
-  button_add_to_library.onclick = () => {
+  $I("button-add-to-library").onclick = () => {
     popup_import.classList.add("disabled");
     input_file_folder.click();
   };
 
-  button_rebuild_cache.onclick = () => {
+  $I("button-close-library").onclick = () => {
+    popup_import.classList.add("disabled");
+  };
+
+  $I("button-open-settings").onclick = () => {
+    popup_settings.classList.remove("disabled");
+    popup_import.classList.add("disabled");
+  };
+
+  //Settings Buttons
+  $I("button-rebuild-cache").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
         popup_import.classList.add("disabled");
@@ -91,23 +117,28 @@ function OnLoad() {
     });
   };
 
-  button_refresh_app.onclick = () => {
+  $I("button-refresh-app").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
         popup_import.classList.add("disabled");
         caches.delete("cynomain-epub-v1").then((c) => {
-          //window.location.reload(true);
-          Reload(true);
+          window.location.reload(true);
+          //Reload(true);
         });
       }
     });
   };
 
-  button_search.onclick = () => {
-    popup_search.classList.remove("disabled");
+  button_offlinemode.onclick = () => {
+    toggleOfflineMode();
   };
 
-  button_clear_search.onclick = () => {
+  $I("button-close-settings").onclick = () => {
+    popup_settings.classList.add("disabled");
+  };
+
+  //Search buttons
+  $I("search-clear").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
         searchUI.Clear();
@@ -115,13 +146,11 @@ function OnLoad() {
     });
   };
 
-  $I("button-close-library").onclick = () => {
-    popup_import.classList.add("disabled");
-  };
-
+  //Database
   db = new AppDB();
   db.Load();
 
+  //Query
   query = GetQuery();
   if (typeof query !== "string") {
     let res = SearchService.QueryWorks(query);
@@ -131,6 +160,15 @@ function OnLoad() {
     SearchService.DisplayResults(db.Works);
   }
 
+  //Offline mode
+  let offlinemode = isOfflineMode();
+  if (offlinemode) {
+    search_info_offlinemode.classList.remove("disabled");
+    button_offlinemode.innerText = "Disable Offline Mode";
+    interceptOfflineEvents(offlinemode);
+  }
+
+  //Search UI
   searchUI = new SearchUI(
     $I("search-any"),
     $I("search-title"),
@@ -152,6 +190,7 @@ function OnLoad() {
   );
 }
 
+//Debug
 window.addEventListener("keyup", (e) => {
   if (e.key == "\\") {
     document.body.classList.toggle("dotted");
@@ -164,42 +203,78 @@ function isMobile() {
   );
 }
 
-function GoTo(url) {
-  CheckIfAccesible(url).then((b) => {
-    if (b) {
-      window.location.href = url;
-    } else {
-      window.history.pushState("", "Epub Library", url);
+function toggleOfflineMode() {
+  let offlinemode = isOfflineMode();
+  if (!offlinemode) {
+    //If disabled
+    //Enable
+    localStorage.setItem("isOfflineMode", true);
+    button_offlinemode.innerText = "Disable Offline Mode";
+    search_info_offlinemode.classList.remove("disabled");
+  } else {
+    //If enabled
+    //Disable
+    localStorage.removeItem("isOfflineMode");
+    button_offlinemode.innerText = "Enable Offline Mode";
+    search_info_offlinemode.classList.add("disabled");
+  }
+
+  interceptOfflineEvents(!offlinemode);
+}
+
+function interceptOfflineEvents(isofflinemode) {
+  window.onpopstate = (e) => {
+    setTimeout(() => {
+      e.preventDefault();
+      console.log("POP");
       Reload();
-    }
-  });
+    }, 0);
+  };
+
+  if (isofflinemode) {
+    document.querySelectorAll("a").forEach((a) => {
+      a.onclick = (e) => {
+        e.preventDefault();
+        GoTo(e.target.href);
+      };
+    });
+  } else {
+    document.querySelectorAll("a").forEach((a) => {
+      a.onclick = () => {};
+    });
+  }
+}
+
+function isOfflineMode() {
+  return localStorage.getItem("isOfflineMode") !== null;
+}
+
+function GoTo(url) {
+  let b = !isOfflineMode();
+  if (b) {
+    window.location.href = url;
+  } else {
+    window.history.pushState({}, "Epub Library", url);
+    Reload();
+  }
 }
 
 function Reload(force) {
-  CheckIfAccesible(window.location.href).then((b) => {
-    if (b) {
-      window.location.reload(force);
-    } else {
-      //Fake reload
-      popup_confirm.classList.add("disabled");
-      popup_import.classList.add("disabled");
-      popup_loading.classList.add("disabled");
+  let b = !isOfflineMode();
+  if (b) {
+    window.location.reload(force);
+  } else {
+    //Fake reload
+    console.log("fake reload");
+    popup_confirm.classList.add("disabled");
+    popup_import.classList.add("disabled");
+    popup_loading.classList.add("disabled");
+    popup_settings.classList.add("disabled");
+    popup_search.classList.add("disabled");
 
-      div_main_content.innerHTML = `      <div id="search-card" class="card search-info">
-      <p class="info-title">
-        <span>Search Results</span>
-        <span class="material-symbols-rounded"> search </span>
-      </p>
-      <div class="spacer"></div>
-      <p class="info thin" id="search-info">The library is loading...</p>
-      <div class="spacer"></div>
-      <p class="info bold" id="search-info-amount">Please wait...</p>
-    </div>
-  </div>`;
-
-      OnLoad();
-    }
-  });
+    div_main_content.innerHTML = GetDefaultMainContent();
+    OnLoad();
+  }
 }
 
 async function CheckIfAccesible(url) {
@@ -695,7 +770,7 @@ class DOMHelper {
     let strong = this.dce("strong");
 
     data.warnings.forEach((element) => {
-      let warning = this.dcec("a", "tag static");
+      let warning = this.dcec("a", "warnings tag static");
       warning.innerText = element;
       strong.appendChild(warning);
     });
@@ -1839,4 +1914,21 @@ function TestSearch() {
   ];
   var search_results = Search.SearchInStringArray([token], search_dict);
   console.log(search_results);
+}
+
+function GetDefaultMainContent() {
+  return `      <div id="search-card" class="card search-info">
+  <p class="info-title">
+    <span>Search Results</span>
+    <span class="material-symbols-rounded"> search </span>
+  </p>
+  <div class="spacer"></div>
+  <p class="info thin" id="search-info">The library is loading...</p>
+  <div class="spacer"></div>
+  <p class="info thin disabled" id="search-info-offlinemode">
+    <span class="material-symbols-rounded" style="font-size: .75em;">wifi_off</span> Offline mode
+  </p>
+  <p class="info bold" id="search-info-amount">Please wait...</p>
+</div>
+</div>`;
 }
