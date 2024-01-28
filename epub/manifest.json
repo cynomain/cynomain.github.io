@@ -4,11 +4,11 @@
   "dir": "ltr",
   "display": "standalone",
   "name": "AO3 Epub Library",
-  "orientation": "portrait",
+  "orientation": "any",
   "scope": "/epub/",
   "short_name": "Epub Library",
   "start_url": "/epub/index.html",
-  "theme_color": "#2b2930",
+  "theme_color": "#4f378b",
   "categories": ["books"],
   "screenshots": [],
   "icons": [

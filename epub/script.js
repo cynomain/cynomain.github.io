@@ -25,7 +25,9 @@ var db;
 var query;
 var searchUI;
 
-window.addEventListener("load", () => {
+window.addEventListener("load", OnLoad);
+
+function OnLoad() {
   button_import = $I("button-import");
   button_search = $I("button-search");
   input_file_folder = $I("input-folder");
@@ -64,7 +66,8 @@ window.addEventListener("load", () => {
         db.Clear();
         db.ClearCache();
         localStorage.clear();
-        window.location.reload();
+        //window.location.reload();
+        Reload();
       }
     });
   };
@@ -82,7 +85,8 @@ window.addEventListener("load", () => {
         db.ClearCache();
         db.BuildCache();
         popup_loading.classList.remove("disabled");
-        window.location.reload();
+        //window.location.reload();
+        Reload();
       }
     });
   };
@@ -92,7 +96,8 @@ window.addEventListener("load", () => {
       if (b) {
         popup_import.classList.add("disabled");
         caches.delete("cynomain-epub-v1").then((c) => {
-          window.location.reload(true);
+          //window.location.reload(true);
+          Reload(true);
         });
       }
     });
@@ -145,7 +150,7 @@ window.addEventListener("load", () => {
     $I("search-cancel"),
     $I("search-go")
   );
-});
+}
 
 window.addEventListener("keyup", (e) => {
   if (e.key == "\\") {
@@ -157,6 +162,54 @@ function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
+}
+
+function GoTo(url) {
+  CheckIfAccesible(url).then((b) => {
+    if (b) {
+      window.location.href = url;
+    } else {
+      window.history.pushState("", "Epub Library", url);
+      Reload();
+    }
+  });
+}
+
+function Reload(force) {
+  CheckIfAccesible(window.location.href).then((b) => {
+    if (b) {
+      window.location.reload(force);
+    } else {
+      //Fake reload
+      popup_confirm.classList.add("disabled");
+      popup_import.classList.add("disabled");
+      popup_loading.classList.add("disabled");
+
+      div_main_content.innerHTML = `      <div id="search-card" class="card search-info">
+      <p class="info-title">
+        <span>Search Results</span>
+        <span class="material-symbols-rounded"> search </span>
+      </p>
+      <div class="spacer"></div>
+      <p class="info thin" id="search-info">The library is loading...</p>
+      <div class="spacer"></div>
+      <p class="info bold" id="search-info-amount">Please wait...</p>
+    </div>
+  </div>`;
+
+      OnLoad();
+    }
+  });
+}
+
+async function CheckIfAccesible(url) {
+  return await fetch(url, { mode: "no-cors" })
+    .then((r) => {
+      return true;
+    })
+    .catch((e) => {
+      return false;
+    });
 }
 
 function GetQuery() {
@@ -202,7 +255,8 @@ function ProcessFolders(event) {
             db.ClearCache();
             db.BuildCache();
             console.log("saved");
-            window.location.reload();
+            //window.location.reload();
+            Reload();
           }, 1000);
         });
       } catch (Ex) {
@@ -817,22 +871,25 @@ class SearchUI {
 
     button_search.onclick = () => {
       //&crossovers=${select_crossovers.value}
-      window.location.href = encodeURI(
-        GetQueryString(
-          input_any.value,
-          input_title.value,
-          input_authors.value,
-          input_fandoms.value,
-          input_characters.value,
-          input_relationships.value,
-          input_tags.value,
-          input_series.value,
-          select_completion.value,
-          select_singlechapter.value,
-          select_wordcount_comparator.value,
-          input_wordcount.value,
-          select_sortby.value,
-          select_sortdir.value
+      //window.location.href = encodeURI(
+      GoTo(
+        encodeURI(
+          GetQueryString(
+            input_any.value,
+            input_title.value,
+            input_authors.value,
+            input_fandoms.value,
+            input_characters.value,
+            input_relationships.value,
+            input_tags.value,
+            input_series.value,
+            select_completion.value,
+            select_singlechapter.value,
+            select_wordcount_comparator.value,
+            input_wordcount.value,
+            select_sortby.value,
+            select_sortdir.value
+          )
         )
       );
     };
@@ -1094,7 +1151,7 @@ class SearchService {
         }
         if (q_characters.values.length > 0) {
           if (!q_characters.Evaluate(w.characters)) {
-           // console.log(w.id + " failed chars");
+            // console.log(w.id + " failed chars");
             return false;
           }
         }
@@ -1118,7 +1175,7 @@ class SearchService {
         }
         if (q_any.values.length > 0) {
           if (!q_any.Evaluate(EpubCache.GetConcatted(w))) {
-           // console.log(w.id + " failed any");
+            // console.log(w.id + " failed any");
             return false;
           }
         }
