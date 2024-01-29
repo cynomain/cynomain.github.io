@@ -38,12 +38,15 @@ var searchUI;
 
 var button_offlinemode;
 
+var default_main_content;
+
 window.addEventListener("load", OnLoad);
 
 function OnLoad() {
   //Get elements
   input_file_folder = $I("input-folder");
   div_main_content = $I("main-content");
+  default_main_content = div_main_content.innerHTML;
 
   search_card = $I("search-card");
   search_info = $I("search-info");
@@ -293,7 +296,7 @@ function Reload(force) {
     popup_settings.classList.add("disabled");
     popup_search.classList.add("disabled");
 
-    div_main_content.innerHTML = GetDefaultMainContent();
+    div_main_content.innerHTML = default_main_content;
     OnLoad();
   }
 }
@@ -2059,21 +2062,4 @@ function TestSearch() {
   ];
   var search_results = Search.SearchInStringArray([token], search_dict);
   console.log(search_results);
-}
-
-function GetDefaultMainContent() {
-  return `      <div id="search-card" class="card search-info">
-  <p class="info-title">
-    <span>Search Results</span>
-    <span class="material-symbols-rounded"> search </span>
-  </p>
-  <div class="spacer"></div>
-  <p class="info thin" id="search-info">The library is loading...</p>
-  <div class="spacer"></div>
-  <p class="info thin disabled" id="search-info-offlinemode">
-    <span class="material-symbols-rounded" style="font-size: .75em;">wifi_off</span> Offline mode
-  </p>
-  <p class="info bold" id="search-info-amount">Please wait...</p>
-</div>
-</div>`;
 }
