@@ -12,10 +12,12 @@ var input_file_folder;
 var div_main_content;
 
 var popup_import;
-var popup_confirm;
-var popup_loading;
 var popup_settings;
 var popup_search;
+
+var popup_loading;
+var popup_confirm;
+var confirm_description;
 
 /*
 var button_clear_library;
@@ -54,6 +56,8 @@ function OnLoad() {
   popup_loading = $I("popup-loading");
   popup_settings = $I("popup-settings");
 
+  confirm_description = $I("popup-confirm-description");
+
   button_offlinemode = $I("button-offlinemode");
 
   //Input file
@@ -85,7 +89,19 @@ function OnLoad() {
         //window.location.reload();
         Reload();
       }
-    });
+    }, "This will clear your imported works!\n(Your bookmarks won't be affected)");
+  };
+
+  $I("button-clear-bookmarks").onclick = () => {
+    ConfirmDialog((b) => {
+      if (b) {
+        popup_import.classList.add("disabled");
+        db.ClearBookmarks();
+        db.Save();
+        //window.location.reload();
+        Reload();
+      }
+    }, "This will clear your bookmarks!\n(Your library won't be affected)");
   };
 
   $I("button-add-to-library").onclick = () => {
@@ -114,7 +130,7 @@ function OnLoad() {
         //window.location.reload();
         Reload();
       }
-    });
+    }, "This will rebuild the search cache.");
   };
 
   $I("button-refresh-app").onclick = () => {
@@ -126,7 +142,7 @@ function OnLoad() {
           //Reload(true);
         });
       }
-    });
+    }, "This will refresh the cached version of this app.\nDO NOT PROCEED IF OFFLINE!");
   };
 
   button_offlinemode.onclick = () => {
@@ -178,6 +194,7 @@ function OnLoad() {
     $I("search-relationships"),
     $I("search-tags"),
     $I("search-series"),
+    $I("search-bookmarked"),
     $I("search-completion"),
     //$I("search-crossover"),
     $I("search-single-chapter"),
@@ -188,6 +205,10 @@ function OnLoad() {
     $I("search-cancel"),
     $I("search-go")
   );
+
+  document.querySelectorAll("img").forEach((i) => {
+    i.draggable = false;
+  });
 }
 
 //Debug
@@ -312,9 +333,18 @@ function GetQuery() {
 var saveTimeoutId = 1938293;
 
 function ProcessFolders(event) {
-  popup_loading.classList.remove("disabled");
   let files = event.target.files;
   console.log(files);
+
+  ConfirmDialog((b) => {
+    if (b){
+      ProcessFiles(files);
+    }
+  }, `Found ${files.length} file(s).\nAdd to library?`)
+}
+
+function ProcessFiles(files){
+  popup_loading.classList.remove("disabled");
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     if (f.name.endsWith("epub")) {
@@ -551,8 +581,10 @@ function ProcessEpubFile(file) {
 }
 
 var confirmAction = () => {};
-function ConfirmDialog(action) {
+function ConfirmDialog(action, desc) {
   confirmAction = action;
+  confirm_description.innerText = isEmpty(desc) ? "" : desc;
+
   popup_confirm.classList.remove("disabled");
 }
 
@@ -612,11 +644,13 @@ class DOMHelper {
     card.className = "card";
 
     //Title
-    card.appendChild(this.CreateTitleAndDate(data));
+    card.appendChild(this.CreateTitle(data));
+
     //Authors
-    card.appendChild(this.CreateAuthors(data));
+    //card.appendChild(this.CreateAuthors(data));
+
     //Fandoms
-    card.appendChild(this.CreateFandoms(data));
+    //card.appendChild(this.CreateFandoms(data));
 
     card.appendChild(spacer());
 
@@ -654,6 +688,7 @@ class DOMHelper {
         "",
         "",
         "",
+        "",
         ""
       );
 
@@ -671,17 +706,52 @@ class DOMHelper {
    *
    * @param {EpubData} data
    */
-  static CreateTitleAndDate(data) {
+  static CreateTitle(data) {
     let section_title = this.dcec("div", "section-title");
+
+    let metadatas = this.dce("div");
 
     let title = this.dcec("h2", "title");
     title.innerText = data.title;
-    section_title.appendChild(title);
 
+    metadatas.appendChild(title);
+    metadatas.appendChild(this.CreateAuthors(data));
+    metadatas.appendChild(this.CreateFandoms(data));
+
+    section_title.appendChild(metadatas);
+
+    let bookmark_btn = this.dcec("button", "bookmark-button");
+    bookmark_btn.onclick = (e) => {
+      let b = db.ToggleBookmark(data.id);
+      let target = e.target;
+      target = target.tagName === "IMG" ? target : target.querySelector("img");
+
+      target.src = b
+        ? "assets/icon_bookmark_filled.svg"
+        : "assets/icon_bookmark_empty.svg";
+
+      target.className = b ? "tint-light" : "tint-light off";
+    };
+
+    let bookmark_icon = this.dcec("img", "tint-light");
+    let isbookmarked = db.IsBookmarked(data.id);
+    bookmark_icon.src = isbookmarked
+      ? "assets/icon_bookmark_filled.svg"
+      : "assets/icon_bookmark_empty.svg";
+
+    if (!isbookmarked) {
+      bookmark_icon.classList.add("off");
+    }
+
+    bookmark_btn.appendChild(bookmark_icon);
+
+    section_title.appendChild(bookmark_btn);
+
+    /*
     let date = this.dcec("p", "date");
     date.innerText = data.date;
     section_title.appendChild(date);
-
+*/
     return section_title;
   }
 
@@ -704,6 +774,7 @@ class DOMHelper {
         "",
         "",
         `"${element}"`,
+        "",
         "",
         "",
         "",
@@ -738,6 +809,7 @@ class DOMHelper {
         "",
         "",
         `"${element}"`,
+        "",
         "",
         "",
         "",
@@ -800,6 +872,7 @@ class DOMHelper {
         "",
         "",
         "",
+        "",
         ""
       );
 
@@ -822,6 +895,7 @@ class DOMHelper {
         "",
         "",
         `"${c}"`,
+        "",
         "",
         "",
         "",
@@ -854,6 +928,7 @@ class DOMHelper {
         "",
         "",
         `"${f}"`,
+        "",
         "",
         "",
         "",
@@ -907,6 +982,7 @@ class SearchUI {
     input_tags,
     //rec_tags,
     input_series,
+    select_bookmarked,
     select_completion,
     //select_crossovers,
     select_singlechapter,
@@ -930,6 +1006,7 @@ class SearchUI {
     this.input_tags = input_tags;
     //this.rec_tags = rec_tags;
     this.input_series = input_series;
+    this.select_bookmarked = select_bookmarked;
     this.select_completion = select_completion;
     //this.select_crossovers = select_crossovers;
     this.select_singlechapter = select_singlechapter;
@@ -963,7 +1040,8 @@ class SearchUI {
             select_wordcount_comparator.value,
             input_wordcount.value,
             select_sortby.value,
-            select_sortdir.value
+            select_sortdir.value,
+            select_bookmarked.value
           )
         )
       );
@@ -1147,6 +1225,7 @@ class SearchService {
       let q_wordcount = Number(query["wordcount"] ?? "0");
       let q_sortby = query["sortby"] ?? "title";
       let q_sortdir = query["sortdir"] ?? "ascending";
+      let q_bookmarked = query["bookmarked"] ?? "all";
 
       /*
       let globalq = new SearchToken("$AND", [
@@ -1164,7 +1243,9 @@ class SearchService {
 
       let resultCached = cached.filter((w) => {
         if (q_singlechapter == "yes") {
-          return w.issinglechapter;
+          if (!w.issinglechapter) {
+            return false;
+          }
         }
         //console.log(w.id + " did not fail singlechapter");
 
@@ -1205,6 +1286,19 @@ class SearchService {
           }
         }
         //console.log(w.id + " didnot fail wordcount" + w.wordCount + q_wordcount);
+
+        switch (q_bookmarked) {
+          case "only":
+            if (!db.IsBookmarked(w.id)) {
+              return false;
+            }
+            break;
+          case "exclude":
+            if (db.IsBookmarked(w.id)) {
+              return false;
+            }
+            break;
+        }
 
         if (q_title.values.length > 0) {
           if (!q_title.Evaluate(w.title)) {
@@ -1357,8 +1451,9 @@ class SearchService {
         infos.push(`Word count: ${sign}${Number(query["wordcount"] ?? "0")}`);
       }
 
-      pushIfNotEmptyCap("sortby", "Sort by");
-      pushIfNotEmptyCap("sortdir", "Sort direction");
+      pushIfNotEmptyCap("sortby", "Sort By");
+      pushIfNotEmptyCap("sortdir", "Sort Direction");
+      pushIfNotEmptyCap("bookmarked", "Bookmarked");
       search_info.innerText = infos.join("\n");
       search_info_amount.innerText = `Found ${results.length} result(s).`;
       popup_loading.classList.add("disabled");
@@ -1391,7 +1486,8 @@ function GetQueryString(
   wordcount_compare,
   wordcount,
   sortby,
-  sortdir
+  sortdir,
+  bookmarked
 ) {
   //return `?any="${any}"&&title="${title}"&&authors="${authors}"&&fandoms="${fandoms}"&&characters="${characters}"&&relationships="${relationships}"&&tags="${tags}"&&series="${series}"&&completion="${completion}"&&singlechapter="${singlechapter}"&&wordcount_compare="${wordcount_compare}"&&wordcount="${wordcount}"&&sortby="${sortby}"&&sortdir="${sortdir}"`;
   let q = [];
@@ -1402,6 +1498,7 @@ function GetQueryString(
     }
   };
 
+  appendINE(bookmarked, "bookmarked");
   appendINE(any, "any");
   appendINE(title, "title");
   appendINE(authors, "authors");
@@ -1520,6 +1617,7 @@ DB{
 class AppDB {
   constructor() {
     this.Clear();
+    this.ClearBookmarks();
   }
 
   Load() {
@@ -1530,9 +1628,13 @@ class AppDB {
 
     popup_loading.classList.remove("disabled");
 
-    this.Works = JSON.parse(localStorage.getItem("works"));
+    this.Works = JSON.parse(localStorage.getItem("works") ?? "[]");
 
     this.BuildCache();
+
+    this.Bookmarks = new Set(
+      JSON.parse(localStorage.getItem("bookmarks") ?? "[]")
+    );
 
     popup_loading.classList.add("disabled");
   }
@@ -1540,6 +1642,45 @@ class AppDB {
   Save() {
     localStorage.setItem("exists", "true");
     localStorage.setItem("works", JSON.stringify(this.Works));
+    localStorage.setItem(
+      "bookmarks",
+      JSON.stringify(Array.from(this.Bookmarks))
+    );
+  }
+
+  SaveBookmarks() {
+    localStorage.setItem(
+      "bookmarks",
+      JSON.stringify(Array.from(this.Bookmarks))
+    );
+  }
+
+  SetBookmark(id, bookmarked) {
+    if (!bookmarked && this.Bookmarks.has(id)) {
+      this.Bookmarks.delete(id);
+      //Save
+      this.SaveBookmarks();
+    }
+
+    if (bookmarked && !this.Bookmarks.has(id)) {
+      this.Bookmarks.add(id);
+      //Save
+      this.SaveBookmarks();
+    }
+  }
+
+  IsBookmarked(id) {
+    return this.Bookmarks.has(id);
+  }
+
+  ToggleBookmark(id) {
+    if (this.IsBookmarked(id)) {
+      this.SetBookmark(id, false);
+      return false;
+    } else {
+      this.SetBookmark(id, true);
+      return true;
+    }
   }
 
   BuildCache() {
@@ -1598,6 +1739,10 @@ class AppDB {
     //this.Relationships = [];
     //this.Tags = [];
     //this.Series = [];
+  }
+
+  ClearBookmarks() {
+    this.Bookmarks = new Set();
   }
 
   Sort() {

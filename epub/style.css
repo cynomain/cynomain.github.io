@@ -39,6 +39,25 @@ html {
   width: 100dvw;
 }
 
+img {
+  width: 1.5em;
+  height: 1.5em;
+  filter: invert();
+  user-select: none;
+
+
+
+  &.tint-light{
+    filter: invert(70%) sepia(49%) saturate(1681%)
+    hue-rotate(201deg) brightness(111%) contrast(112%);
+  }
+
+  &.tint-dark{
+    filter: invert(18%) sepia(34%) saturate(2853%)
+    hue-rotate(237deg) brightness(90%) contrast(108%);
+  }
+}
+
 @media only screen and (min-width: 800px) {
   .main-content > * {
     max-width: 70%;
@@ -110,7 +129,6 @@ h6 {
   padding: 0 !important;
   border: none !important;
   outline: none !important;
-
 }
 
 button,
@@ -122,6 +140,11 @@ input[type="submit"] {
   outline: none;
   border: none;
   transition: filter 0.25s;
+  vertical-align: middle;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
   &.clear {
     background-color: transparent;
@@ -132,6 +155,7 @@ input[type="submit"] {
   &.inverse {
     background-color: #d0bcff;
     color: #381e72;
+    padding: 0.75em;
   }
 
   &:enabled {
@@ -186,6 +210,10 @@ input[type="submit"] {
       padding: 0 0.05em 0 0.05em;
     }
   }
+
+  img{
+    scale: 1.25;
+  }
 }
 
 .main-content {
@@ -205,6 +233,8 @@ input[type="submit"] {
 }
 
 .card {
+  box-sizing: content-box;
+
   background-color: #211f26;
   color: #e6e0e9;
   border: none;
@@ -219,8 +249,13 @@ input[type="submit"] {
 }
 
 .section-title {
+
   display: flex;
   flex-direction: row;
+
+  > *:first-child {
+    flex: 100;
+  }
 
   .title {
     flex: 100;
@@ -256,12 +291,12 @@ a.author {
 }
 
 .author:not(:last-child)::after {
-  content: ", ";
+  content: ",";
   margin-right: 0.25em;
 }
 
 .fandoms {
-  margin-top: 0.5em;
+  margin-top: 0.25em;
   font-size: 1.1em;
   color: #d3cdd6;
 }
@@ -272,7 +307,7 @@ a.fandom {
 
 a.fandom:not(:last-child)::after {
   content: ", ";
-  margin-right: 0.25em;
+  margin-right: 0.1em;
 }
 
 .tag {
@@ -280,9 +315,9 @@ a.fandom:not(:last-child)::after {
   text-decoration: none;
 }
 
-.tag:not(:last-child)::after{
+.tag:not(:last-child)::after {
   content: ", ";
-
+  margin-right: 0.1em;
 }
 
 /*
@@ -298,6 +333,7 @@ a.fandom:not(:last-child)::after {
 */
 
 .tags {
+  max-width: 100%;
   margin: 0.5em;
   padding: 0;
 
@@ -314,7 +350,7 @@ a.fandom:not(:last-child)::after {
 .warnings {
   font-size: 1em;
   display: inline-block;
-  margin-right: .5em;
+  margin-right: 0.5em;
 }
 
 .warnings a {
@@ -348,7 +384,6 @@ a.fandom:not(:last-child)::after {
 
 .series {
   display: inline;
-  word-wrap: normal;
 
   > * {
     display: inline;
@@ -511,13 +546,23 @@ blockquote {
 .children-fill {
   display: flex;
 
-  &.equal{
+  &.equal {
     > * {
       flex: 1;
     }
   }
 
-  &.first{
+  &.second {
+    > *:nth-child(2) {
+      flex: 100;
+    }
+
+    > *:not(:nth-child(2)) {
+      flex: 1;
+    }
+  }
+
+  &.first {
     > *:first-child {
       flex: 100;
     }
@@ -529,10 +574,13 @@ blockquote {
 
   &.col {
     flex-direction: column;
+    justify-items: center;
   }
 
   &.row {
     flex-direction: row;
+    justify-items: center;
+    align-items: center;
   }
 }
 
@@ -589,14 +637,16 @@ blockquote {
     margin-top: 0.5em;
     user-select: none;
   }
+
+  img {
+    font-size: 0.5em;
+  }
 }
 
 .card.search-info {
   width: 85%;
   border: #eaddff solid 0.15em;
 }
-
-
 
 input[type="text"],
 input[type="number"],
@@ -698,6 +748,32 @@ input::-webkit-inner-spin-button {
   border: none;
 }
 
+.bookmark-button {
+  flex: 1;
+  background-color: transparent;
+  padding: 0.1em;
+  font-size: 2em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  padding-top: .25em;
+  height: fit-content;
+
+  border-radius: 0;
+
+  user-select: none;
+
+
+  img {
+    /*transition: filter .25s;*/
+    transition: opacity .25s;
+    &.off{
+      opacity: 75%;
+    }
+  }
+}
+
 .loader {
   width: 10dvh;
   height: 10dvh;
@@ -707,13 +783,13 @@ input::-webkit-inner-spin-button {
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
-  }
+}
 
-  @keyframes rotation {
+@keyframes rotation {
   0% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
-  } 
+}

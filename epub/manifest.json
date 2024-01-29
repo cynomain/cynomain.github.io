@@ -4,7 +4,7 @@
   "dir": "ltr",
   "display": "standalone",
   "name": "AO3 Epub Library",
-  "orientation": "any",
+  "orientation": "portrait",
   "scope": "/epub/",
   "short_name": "Epub Library",
   "start_url": "/epub/index.html",
