@@ -455,8 +455,8 @@ blockquote {
   z-index: 1000;
   display: flex;
   position: absolute;
-  width: 200%;
-  height: 200%;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   justify-content: center;
   justify-self: center;
