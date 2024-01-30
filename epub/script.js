@@ -340,13 +340,13 @@ function ProcessFolders(event) {
   console.log(files);
 
   ConfirmDialog((b) => {
-    if (b){
+    if (b) {
       ProcessFiles(files);
     }
-  }, `Found ${files.length} file(s).\nAdd to library?`)
+  }, `Found ${files.length} file(s).\nAdd to library?`);
 }
 
-function ProcessFiles(files){
+function ProcessFiles(files) {
   popup_loading.classList.remove("disabled");
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
@@ -475,6 +475,9 @@ function ProcessEpubFile(file) {
           return zip.file(/000.xhtml/)[0].async("string");
         })
         .then((firsthtml) => {
+          let xdoc = parser.parseFromString(firsthtml, "text/html");
+          let dts = xdoc.querySelectorAll("dt");
+
           const parseA = (element) => {
             let As = element.getElementsByTagName("a");
             let temparr = [];
@@ -485,30 +488,80 @@ function ProcessEpubFile(file) {
             return temparr;
           };
 
-          let xdoc = parser.parseFromString(firsthtml, "text/html");
+          const getElementByText = (text) => {
+            for (let i = 0; i < dts.length; i++) {
+              if (dts[i].innerText == text) {
+                return dts[i];
+              }
+            }
+            return null;
+          };
 
+          const parseB = (label) => {
+            let element = getElementByText(label);
+
+            if (element === null) {
+              return [];
+            }
+
+            let nextsibling = element.nextElementSibling;
+            if (nextsibling == null) {
+              console.log("Not found nextsibling of " + label + " " + file.name);
+              return [];
+            }
+
+            return parseA(nextsibling);
+          };
+
+          /*
           warnings = parseA(
-            xdoc.querySelector("#preface > div > dl > dd:nth-child(4)")
-          );
+            //xdoc.querySelector("#preface > div > dl > dd:nth-child(4)")
+            );
           fandoms = parseA(
-            xdoc.querySelector("#preface > div > dl > dd:nth-child(8)")
+            //xdoc.querySelector("#preface > div > dl > dd:nth-child(8)")
           );
           relationships = parseA(
-            xdoc.querySelector("#preface > div > dl > dd:nth-child(10)")
+            //xdoc.querySelector("#preface > div > dl > dd:nth-child(10)")
           );
           characters = parseA(
-            xdoc.querySelector("#preface > div > dl > dd:nth-child(12)")
+            //xdoc.querySelector("#preface > div > dl > dd:nth-child(12)")
           );
           freeforms = parseA(
-            xdoc.querySelector("#preface > div > dl > dd:nth-child(14)")
+            //xdoc.querySelector("#preface > div > dl > dd:nth-child(14)")
           );
-          tags = xdoc.querySelector("#preface > div > dl > dd.calibre5")
+          */
+
+          warnings = parseB("Archive Warning:");
+          fandoms = parseB("Fandoms:");
+          if (fandoms.length < 1){
+            //Try this - legacy
+            fandoms = parseB("Fandom:");
+          }
+          relationships = parseB("Relationships:");
+          if (relationships.length < 1){
+            //Legacy
+            relationships = parseB("Relationship:");
+          }
+          characters = parseB("Characters:");
+          if (characters.length < 1){
+            characters = parseB("Character:");
+          }
+          freeforms = parseB("Additional Tags:");
+
+          /*
+          tags = 
+          //xdoc.querySelector("#preface > div > dl > dd.calibre5")
             .childNodes[0].nodeValue;
+          */
 
           //Stats
+          /*
           let statsstr = xdoc
             .querySelector("#preface > div > dl > dd.calibre5")
             .childNodes[0].nodeValue.trim();
+            */
+          let statsstr =
+            getElementByText("Stats:").nextElementSibling.childNodes[0].nodeValue.trim();
 
           let statsarr = statsstr.split("\n");
           //console.log(statsarr);
@@ -616,6 +669,10 @@ function shuffle(array) {
   return array;
 }
 
+function strcpy(str) {
+  return (" " + str).slice(1);
+}
+
 class DOMHelper {
   static MakeWorks(works) {
     works.forEach((w) => {
@@ -630,6 +687,13 @@ class DOMHelper {
     let d = document.createElement(tagname);
     d.className = classes;
     return d;
+  }
+
+  static Sanitize(str) {
+    return str
+      .replaceAll('"', '\\"')
+      .replaceAll("&&", "\\&&")
+      .replaceAll("||", "\\||");
   }
 
   /**
@@ -685,7 +749,7 @@ class DOMHelper {
         "",
         "",
         "",
-        data.series.name,
+        this.Sanitize(data.series.name),
         "",
         "",
         "",
@@ -724,7 +788,7 @@ class DOMHelper {
     section_title.appendChild(metadatas);
 
     let bookmark_btn = this.dcec("button", "bookmark-button");
-    let id = ("" + data.id).slice(1);
+    let id = strcpy(data.id);
     bookmark_btn.onclick = (e) => {
       let b = db.ToggleBookmark(id);
       let target = e.target;
@@ -777,7 +841,7 @@ class DOMHelper {
       author.href = GetQueryString(
         "",
         "",
-        `"${element}"`,
+        `"${this.Sanitize(element)}"`,
         "",
         "",
         "",
@@ -812,7 +876,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${element}"`,
+        `"${this.Sanitize(element)}"`,
         "",
         "",
         "",
@@ -868,7 +932,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${r}"`,
+        `"${this.Sanitize(r)}"`,
         "",
         "",
         "",
@@ -898,7 +962,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${c}"`,
+        `"${this.Sanitize(c)}"`,
         "",
         "",
         "",
@@ -931,7 +995,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${f}"`,
+        `"${this.Sanitize(f)}"`,
         "",
         "",
         "",
@@ -1099,17 +1163,26 @@ class Search {
     const SYMBOL_AND = "\uE016";
     const SYMBOL_OR = "\uE032";
     const SYMBOL_QUOTE = "\uE064";
+    const SYMBOL_ESCAPED_AND = "\uF016";
+    const SYMBOL_ESCAPED_OR = "\uF032";
+    const SYMBOL_ESCAPED_QUOTE = "\uF064";
     //const SYMBOL_NOT = "\uE999"; //No way that many quotes
 
     let registerQuotes = [];
 
-    let tmptext = text;
-    if (typeof text === "undefined") {
+    if (isEmpty(text)) {
       return new SearchToken("$AND", []);
     }
+
+    let tmptext = text
+      .replaceAll('\\"', SYMBOL_ESCAPED_QUOTE)
+      .replaceAll("\\&&", SYMBOL_ESCAPED_AND)
+      .replaceAll("\\||", SYMBOL_ESCAPED_OR);
+
     // console.log(text);
 
-    let matches = [...text.matchAll(MATCH_QUOTES)];
+    let matches = [...tmptext.matchAll(MATCH_QUOTES)];
+
     for (let i = 0; i < matches.length; i++) {
       registerQuotes.push(matches[i][0]);
       //tmptext = tmptext.replace(matches[i][0], SYMBOL_QUOTE + i);
@@ -1135,6 +1208,11 @@ class Search {
         quot.substring(1, quot.length - 1)
       );
     }
+
+    tmptext = tmptext
+      .replaceAll(SYMBOL_ESCAPED_AND, "&&")
+      .replaceAll(SYMBOL_ESCAPED_OR, "||")
+      .replaceAll(SYMBOL_ESCAPED_QUOTE, '"');
 
     // console.log(tmptext);
 
@@ -1166,6 +1244,7 @@ class Search {
       }
     }
 
+    console.log(tokens);
     return new SearchToken("$AND", tokens);
     //Replace spaces
   }
@@ -1462,6 +1541,7 @@ class SearchService {
       search_info_amount.innerText = `Found ${results.length} result(s).`;
       popup_loading.classList.add("disabled");
 
+      cached = undefined;
       return results;
     } catch (ex) {
       console.log(ex);
@@ -1592,16 +1672,22 @@ class SearchToken {
 function MakeRegex(str) {
   return new RegExp(
     str
-      .replace(".", "\\.")
-      .replace("*", ".*")
-      .replace("(", "\\(")
-      .replace(")", "\\)")
-      .replace("[", "\\[")
-      .replace("]", "\\]")
-      .replace("^", "\\^")
-      .replace("+", "\\+")
-      .replace("?", "\\?")
-      .replace("|", "\\|")
+      .replaceAll(".", "\\.")
+      .replaceAll("*", ".*")
+      .replaceAll("(", "\\(")
+      .replaceAll(")", "\\)")
+      .replaceAll("[", "\\[")
+      .replaceAll("]", "\\]")
+      .replaceAll("^", "\\^")
+      .replaceAll("+", "\\+")
+      .replaceAll("?", "\\?")
+      .replaceAll("|", "\\|")
+      .replaceAll('"', '\\"')
+      .replaceAll(":", "\\:")
+      .replaceAll("?", "\\?")
+      .replaceAll("=", "\\=")
+      .replaceAll("{", "\\{")
+      .replaceAll("}", "\\}")
       .toLowerCase()
   );
 }

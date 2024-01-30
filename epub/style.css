@@ -59,6 +59,7 @@ img {
 @media only screen and (min-width: 800px) {
   .main-content > * {
     max-width: 70%;
+    --max_width: calc(70% + 4em); /* HACK??? */
   }
 }
 
@@ -217,6 +218,9 @@ input[type="submit"] {
 .main-content {
   flex: 100;
 
+  max-width: 100%;
+  --max_width: 100%;
+
   overflow-x: hidden;
 
   display: flex;
@@ -224,6 +228,7 @@ input[type="submit"] {
 
   align-items: center;
   align-content: center;
+
   vertical-align: top;
   box-sizing: content-box;
 
@@ -243,6 +248,11 @@ input[type="submit"] {
 
   a {
     display: inline;
+  }
+
+  &:not(.search-info):not(.import):not(.search) {
+    width: calc(var(--max_width) - 4em);
+    max-width: calc(var(--max_width) - 4em);
   }
 }
 
@@ -641,7 +651,8 @@ blockquote {
 }
 
 .card.search-info {
-  width: 85%;
+  width: calc(var(--max_width) - 4em);
+  max-width: calc(var(--max_width) - 4em);
   border: #eaddff solid 0.15em;
 }
 

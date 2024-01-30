@@ -47,7 +47,7 @@ const assets = [
   "./style.css",
   "./script.js",
   "./sw.js",
-  "./"
+  "./",
 ];
 
 self.addEventListener("install", (installEvent) => {
@@ -60,9 +60,27 @@ self.addEventListener("install", (installEvent) => {
 });
 
 self.addEventListener("fetch", (fetchEvent) => {
+  let req = fetchEvent.request;
+  /*
+  if (fetchEvent.request.url.includes("?")){
+    let first = fetchEvent.request.url.split("?")[0];
+  }
+*/
   fetchEvent.respondWith(
-    caches.match(fetchEvent.request).then((res) => {
-      return res || fetch(fetchEvent.request);
+    caches.match(req).then((res) => {
+      return res || fetch(req);
     })
   );
 });
+
+async function getDecryptedResponse(request) {
+  const response = await fetch(request);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+
+  return new Response(
+    new Blob([decryptMp4Bytes(bytes)], { type: "application/mp4" }),
+    {
+      headers: response.headers, // possibly required for this case
+    }
+  );
+}
