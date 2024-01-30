@@ -183,7 +183,7 @@ function OnLoad() {
   let offlinemode = isOfflineMode();
   if (offlinemode) {
     search_info_offlinemode.classList.remove("disabled");
-    button_offlinemode.innerText = "Disable Offline Mode";
+    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
     interceptOfflineEvents(offlinemode);
   }
 
@@ -233,13 +233,13 @@ function toggleOfflineMode() {
     //If disabled
     //Enable
     localStorage.setItem("isOfflineMode", true);
-    button_offlinemode.innerText = "Disable Offline Mode";
+    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
     search_info_offlinemode.classList.remove("disabled");
   } else {
     //If enabled
     //Disable
     localStorage.removeItem("isOfflineMode");
-    button_offlinemode.innerText = "Enable Offline Mode";
+    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Enable Offline Mode`;
     search_info_offlinemode.classList.add("disabled");
   }
 
@@ -264,7 +264,7 @@ function interceptOfflineEvents(isofflinemode) {
     });
   } else {
     document.querySelectorAll("a").forEach((a) => {
-      a.onclick = () => {};
+      a.onclick = null;
     });
   }
 }
@@ -724,8 +724,9 @@ class DOMHelper {
     section_title.appendChild(metadatas);
 
     let bookmark_btn = this.dcec("button", "bookmark-button");
+    let id = ("" + data.id).slice(1);
     bookmark_btn.onclick = (e) => {
-      let b = db.ToggleBookmark(data.id);
+      let b = db.ToggleBookmark(id);
       let target = e.target;
       target = target.tagName === "IMG" ? target : target.querySelector("img");
 
@@ -737,7 +738,7 @@ class DOMHelper {
     };
 
     let bookmark_icon = this.dcec("img", "tint-light");
-    let isbookmarked = db.IsBookmarked(data.id);
+    let isbookmarked = db.IsBookmarked(id);
     bookmark_icon.src = isbookmarked
       ? "assets/icon_bookmark_filled.svg"
       : "assets/icon_bookmark_empty.svg";
