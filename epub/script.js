@@ -42,6 +42,8 @@ var default_main_content;
 
 window.addEventListener("load", OnLoad);
 
+window.addEventListener("message", OnMessage);
+
 function OnLoad() {
   //Get elements
   input_file_folder = $I("input-folder");
@@ -140,10 +142,13 @@ function OnLoad() {
     ConfirmDialog((b) => {
       if (b) {
         popup_import.classList.add("disabled");
+        /*
         caches.delete("cynomain-epub-v1").then((c) => {
           window.location.reload(true);
           //Reload(true);
         });
+        */
+        RefreshAppCache();
       }
     }, "This will refresh the cached version of this app.\nDO NOT PROCEED IF OFFLINE!");
   };
@@ -212,12 +217,79 @@ function OnLoad() {
   document.querySelectorAll("img").forEach((i) => {
     i.draggable = false;
   });
+
+  if (!navigator.serviceWorker.controller) {
+    window.location.reload();
+  }
+}
+
+function RefreshAppCache() {
+  sendMessage("cache_rebuild").then((x) => {
+    console.log(x);
+    if (x == "refresh") {
+      Reload();
+    } else if (x == "refresh_f") {
+      window.location.reload();
+    }
+  });
+}
+
+function sendMessage(message) {
+  // This wraps the message posting/response in a promise, which will
+  // resolve if the response doesn't contain an error, and reject with
+  // the error if it does. If you'd prefer, it's possible to call
+  // controller.postMessage() and set up the onmessage handler
+  // independently of a promise, but this is a convenient wrapper.
+  return new Promise(function (resolve, reject) {
+    var messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function (event) {
+      if (event.data.error) {
+        reject(event.data.error);
+      } else {
+        resolve(event.data);
+      }
+    };
+    // This sends the message data as well as transferring
+    // messageChannel.port2 to the service worker.
+    // The service worker can then use the transferred port to reply
+    // via postMessage(), which will in turn trigger the onmessage
+    // handler on messageChannel.port1.
+    // See
+    // https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage
+    navigator.serviceWorker.controller.postMessage(message, [
+      messageChannel.port2,
+    ]);
+  });
+}
+
+function OnMessage(e) {
+  switch (e.data) {
+    case "refresh":
+      {
+        Reload();
+      }
+      break;
+    case "refresh_f":
+      {
+        window.location.reload();
+      }
+      break;
+    case "ping":
+      {
+        alert("ping got from " + e.source);
+      }
+      break;
+  }
 }
 
 //Debug
 window.addEventListener("keyup", (e) => {
-  if (e.key == "\\") {
+  if (e.ctrlKey && e.key == "\\") {
     document.body.classList.toggle("dotted");
+  }
+
+  if (e.ctrlKey && e.key == "|") {
+    RefreshAppCache();
   }
 });
 
@@ -506,7 +578,9 @@ function ProcessEpubFile(file) {
 
             let nextsibling = element.nextElementSibling;
             if (nextsibling == null) {
-              console.log("Not found nextsibling of " + label + " " + file.name);
+              console.log(
+                "Not found nextsibling of " + label + " " + file.name
+              );
               return [];
             }
 
@@ -533,17 +607,17 @@ function ProcessEpubFile(file) {
 
           warnings = parseB("Archive Warning:");
           fandoms = parseB("Fandoms:");
-          if (fandoms.length < 1){
+          if (fandoms.length < 1) {
             //Try this - legacy
             fandoms = parseB("Fandom:");
           }
           relationships = parseB("Relationships:");
-          if (relationships.length < 1){
+          if (relationships.length < 1) {
             //Legacy
             relationships = parseB("Relationship:");
           }
           characters = parseB("Characters:");
-          if (characters.length < 1){
+          if (characters.length < 1) {
             characters = parseB("Character:");
           }
           freeforms = parseB("Additional Tags:");
@@ -561,7 +635,9 @@ function ProcessEpubFile(file) {
             .childNodes[0].nodeValue.trim();
             */
           let statsstr =
-            getElementByText("Stats:").nextElementSibling.childNodes[0].nodeValue.trim();
+            getElementByText(
+              "Stats:"
+            ).nextElementSibling.childNodes[0].nodeValue.trim();
 
           let statsarr = statsstr.split("\n");
           //console.log(statsarr);

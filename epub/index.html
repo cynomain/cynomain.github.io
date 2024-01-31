@@ -118,7 +118,7 @@
           <input type="text" name="series" id="search-series" />
 
           <h2><img src="assets/icon_bookmarks.svg" /> Bookmarked</h2>
-          <select class="inverse" name="bookmarked" id="search-bookmarked">
+          <select class="input-like" name="bookmarked" id="search-bookmarked">
             <option value="all">All Works</option>
             <option value="only">Only Bookmarked</option>
             <option value="exclude">Exclude Bookmarked</option>
@@ -127,7 +127,7 @@
           <h2>
             <img src="assets/icon_check.svg" style="scale: 1.5" /> Completion
           </h2>
-          <select class="inverse" name="complete" id="search-completion">
+          <select class="input-like" name="complete" id="search-completion">
             <option value="all">All Works</option>
             <option value="completed">Only Completed</option>
             <option value="in-progress">Only In-Progress</option>
@@ -142,7 +142,7 @@
         -->
           <h2><img src="assets/icon_singlepage.svg" /> Only Single Chapter</h2>
           <select
-            class="inverse"
+            class="input-like"
             name="single-chapter"
             id="search-single-chapter"
           >
@@ -158,7 +158,7 @@
           </h2>
           <div class="label-content">
             <select
-              class="inverse"
+              class="input-like dont-fill"
               name="wordcount-comparator"
               id="search-wordcount-comparator"
             >
@@ -172,7 +172,7 @@
           </div>
 
           <h2><img src="assets/icon_sort_by.svg" /> Sort By</h2>
-          <select class="inverse" name="sort-by" id="search-by">
+          <select class="input-like" name="sort-by" id="search-by">
             <option value="title">Title</option>
             <option value="author">Author</option>
             <option value="wordcount">Word Count</option>
@@ -182,7 +182,7 @@
           </select>
 
           <h2><img src="assets/icon_sort_dir.svg" /> Sort Direction</h2>
-          <select class="inverse" name="sort-direction" id="search-direction">
+          <select class="input-like" name="sort-direction" id="search-direction">
             <option value="descending">Descending</option>
             <option value="ascending">Ascending</option>
           </select>
@@ -195,7 +195,7 @@
           <button
             id="search-cancel"
             class="inverse"
-            style="font-weight: bold; font-size: 1em; box-sizing: border-box"
+            style="font-weight: bold; font-size: 1em; box-sizing: border-box; padding: 1em;"
           >
             Cancel
           </button>

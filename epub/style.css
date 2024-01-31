@@ -154,7 +154,6 @@ input[type="submit"] {
   &.inverse {
     background-color: #d0bcff;
     color: #381e72;
-    padding: 0.75em;
   }
 
   &:enabled {
@@ -593,7 +592,7 @@ blockquote {
 
 .card.search {
   z-index: inherit;
-  border: #eaddff solid 0.15em;
+  border: #eaddff solid .15em;
 
   width: 80%;
   height: 80%;
@@ -620,26 +619,6 @@ blockquote {
     margin-bottom: 1em;
   }
 
-  .entry {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5em;
-    margin-right: 0.5em;
-
-    select {
-      flex: 1;
-    }
-
-    .content-box {
-      flex: 100;
-      display: block;
-
-      > * {
-        width: 100%;
-      }
-    }
-  }
-
   h2 {
     margin-top: 0.5em;
     user-select: none;
@@ -647,6 +626,23 @@ blockquote {
 
   img {
     font-size: 0.5em;
+  }
+}
+
+div.input-area{
+  display: flex !important;
+  flex-direction: row;
+  gap: 1em;
+
+  justify-items: center;
+  align-items: center;
+
+  >*:first-child{
+    flex: 100;
+  }
+
+  >*:not(:first-child){
+    flex: 1;
   }
 }
 
@@ -691,15 +687,36 @@ select.inverse {
   color: #381e72;
 }
 
+select.input-like{
+  background-color: #36343b;
+  color: #d0bcff;
+  border: none;
+  border-right: .5em transparent solid;
+  border-radius: 0.25em 0.25em 0.1em 0.1em;
+  padding: 0.5em;
+  border-bottom: #49454f 0.15em solid;
+
+  transition: border 0.1s;
+
+  &:hover {
+    border-bottom: #d0bcff 0.15em solid;
+  }
+}
+
+select:not(.dont-fill){
+  width: 100%;
+}
+
+
 select:enabled {
   cursor: pointer;
 }
 
-select:enabled:hover {
+select:enabled:not(.input-like):hover {
   filter: brightness(80%);
 }
 
-select:enabled:active {
+select:enabled:not(.input-like):active {
   filter: brightness(70%);
 }
 
