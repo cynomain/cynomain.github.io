@@ -40,9 +40,60 @@ var button_offlinemode;
 
 var default_main_content;
 
-window.addEventListener("load", OnLoad);
+function RefreshAppCache() {
+  sendMessage("cache_rebuild").then((x) => {
+    console.log(x);
+    if (x == "refresh") {
+      Reload();
+    } else if (x == "refresh_f") {
+      window.location.reload();
+    }
+  });
+}
+
+function sendMessage(message) {
+  // This wraps the message posting/response in a promise, which will
+  // resolve if the response doesn't contain an error, and reject with
+  // the error if it does. If you'd prefer, it's possible to call
+  // controller.postMessage() and set up the onmessage handler
+  // independently of a promise, but this is a convenient wrapper.
+  return new Promise(function (resolve, reject) {
+    var messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function (event) {
+      if (event.data.error) {
+        reject(event.data.error);
+      } else {
+        resolve(event.data);
+      }
+    };
+    // This sends the message data as well as transferring
+    // messageChannel.port2 to the service worker.
+    // The service worker can then use the transferred port to reply
+    // via postMessage(), which will in turn trigger the onmessage
+    // handler on messageChannel.port1.
+    // See
+    // https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage
+    navigator.serviceWorker.controller.postMessage(message, [
+      messageChannel.port2,
+    ]);
+  });
+}
+
+//Debug
+window.addEventListener("keyup", (e) => {
+  if (e.ctrlKey && e.altKey && e.key == "\\") {
+    document.body.classList.toggle("dotted");
+  }
+
+  if (e.ctrlKey && e.shiftKey && e.altKey && e.key == "F5") {
+    e.preventDefault();
+    RefreshAppCache();
+  }
+});
 
 window.addEventListener("message", OnMessage);
+
+window.addEventListener("load", OnLoad);
 
 function OnLoad() {
   //Get elements
@@ -223,45 +274,6 @@ function OnLoad() {
   }
 }
 
-function RefreshAppCache() {
-  sendMessage("cache_rebuild").then((x) => {
-    console.log(x);
-    if (x == "refresh") {
-      Reload();
-    } else if (x == "refresh_f") {
-      window.location.reload();
-    }
-  });
-}
-
-function sendMessage(message) {
-  // This wraps the message posting/response in a promise, which will
-  // resolve if the response doesn't contain an error, and reject with
-  // the error if it does. If you'd prefer, it's possible to call
-  // controller.postMessage() and set up the onmessage handler
-  // independently of a promise, but this is a convenient wrapper.
-  return new Promise(function (resolve, reject) {
-    var messageChannel = new MessageChannel();
-    messageChannel.port1.onmessage = function (event) {
-      if (event.data.error) {
-        reject(event.data.error);
-      } else {
-        resolve(event.data);
-      }
-    };
-    // This sends the message data as well as transferring
-    // messageChannel.port2 to the service worker.
-    // The service worker can then use the transferred port to reply
-    // via postMessage(), which will in turn trigger the onmessage
-    // handler on messageChannel.port1.
-    // See
-    // https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage
-    navigator.serviceWorker.controller.postMessage(message, [
-      messageChannel.port2,
-    ]);
-  });
-}
-
 function OnMessage(e) {
   switch (e.data) {
     case "refresh":
@@ -281,17 +293,6 @@ function OnMessage(e) {
       break;
   }
 }
-
-//Debug
-window.addEventListener("keyup", (e) => {
-  if (e.ctrlKey && e.key == "\\") {
-    document.body.classList.toggle("dotted");
-  }
-
-  if (e.ctrlKey && e.key == "|") {
-    RefreshAppCache();
-  }
-});
 
 function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -420,6 +421,7 @@ function ProcessFolders(event) {
 
 function ProcessFiles(files) {
   popup_loading.classList.remove("disabled");
+  //let errors = [];
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     if (f.name.endsWith("epub")) {
@@ -441,9 +443,15 @@ function ProcessFiles(files) {
         });
       } catch (Ex) {
         console.log(Ex);
-        popup_loading.classList.add("disabled");
+        //errors.push({name: f.name, error: Ex});
+        //popup_loading.classList.add("disabled");
       }
     }
+    /*
+    else{
+     errors.push({name: f.name, error: "Is not an epub"});
+    }
+    */
   }
 }
 
@@ -713,9 +721,13 @@ function ProcessEpubFile(file) {
 }
 
 var confirmAction = () => {};
-function ConfirmDialog(action, desc) {
+function ConfirmDialog(action, desc, html) {
   confirmAction = action;
-  confirm_description.innerText = isEmpty(desc) ? "" : desc;
+  if (html) {
+    confirm_description.innerHTML = isEmpty(desc) ? "" : desc;
+  } else {
+    confirm_description.innerText = isEmpty(desc) ? "" : desc;
+  }
 
   popup_confirm.classList.remove("disabled");
 }
@@ -765,11 +777,18 @@ class DOMHelper {
     return d;
   }
 
-  static Sanitize(str) {
+  static SanitizeSearchValue(str) {
     return str
       .replaceAll('"', '\\"')
       .replaceAll("&&", "\\&&")
       .replaceAll("||", "\\||");
+  }
+
+  static DesanitizeSearchValue(str) {
+    return str
+      .replaceAll('\\"', '"')
+      .replaceAll("\\&&", "&&")
+      .replaceAll("\\||", "||");
   }
 
   /**
@@ -825,12 +844,12 @@ class DOMHelper {
         "",
         "",
         "",
-        this.Sanitize(data.series.name),
+        this.SanitizeSearchValue(data.series.name),
         "",
         "",
         "",
         "",
-        "",
+        "series-number",
         "",
         ""
       );
@@ -917,7 +936,7 @@ class DOMHelper {
       author.href = GetQueryString(
         "",
         "",
-        `"${this.Sanitize(element)}"`,
+        `"${this.SanitizeSearchValue(element)}"`,
         "",
         "",
         "",
@@ -952,7 +971,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${this.Sanitize(element)}"`,
+        `"${this.SanitizeSearchValue(element)}"`,
         "",
         "",
         "",
@@ -1008,7 +1027,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${this.Sanitize(r)}"`,
+        `"${this.SanitizeSearchValue(r)}"`,
         "",
         "",
         "",
@@ -1038,7 +1057,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${this.Sanitize(c)}"`,
+        `"${this.SanitizeSearchValue(c)}"`,
         "",
         "",
         "",
@@ -1071,7 +1090,7 @@ class DOMHelper {
         "",
         "",
         "",
-        `"${this.Sanitize(f)}"`,
+        `"${this.SanitizeSearchValue(f)}"`,
         "",
         "",
         "",
@@ -1106,12 +1125,32 @@ class DOMHelper {
    */
   static CreateStats(data) {
     let stats = this.dcec("p", "stats");
-    stats.innerText = EpubStats.toString(data.stats);
+    stats.innerHTML = EpubStats.toString(data.stats);
     return stats;
   }
 }
 
 class SearchUI {
+  /**
+   *
+   * @param {Element} input_any
+   * @param {Element} input_title
+   * @param {Element} input_authors
+   * @param {Element} input_fandoms
+   * @param {Element} input_characters
+   * @param {Element} input_relationships
+   * @param {Element} input_tags
+   * @param {Element} input_series
+   * @param {Element} select_bookmarked
+   * @param {Element} select_completion
+   * @param {Element} select_singlechapter
+   * @param {Element} select_wordcount_comparator
+   * @param {Element} input_wordcount
+   * @param {Element} select_sortby
+   * @param {Element} select_sortdir
+   * @param {Element} button_cancel
+   * @param {Element} button_search
+   */
   constructor(
     input_any,
     input_title,
@@ -1161,6 +1200,17 @@ class SearchUI {
     this.button_cancel = button_cancel;
     this.button_search = button_search;
 
+    this.option_sortby_series = select_sortby.querySelector(
+      'option[value="series-number"]'
+    );
+
+    input_series.addEventListener("change", (e) => {
+      this.option_sortby_series.disabled = isEmpty(this.input_series.value);
+      if (select_sortby.value === "series-number") {
+        select_sortby.value = "title";
+      }
+    });
+
     button_cancel.onclick = () => {
       popup_search.classList.add("disabled");
     };
@@ -1207,7 +1257,10 @@ class SearchUI {
       input_wordcount.value = Number(query["wordcount"] ?? "0");
       select_sortby.value = query["sortby"] ?? "title";
       select_sortdir.value = query["sortdir"] ?? "ascending";
+      select_bookmarked.value = query["bookmarked"] ?? "all";
     }
+
+    this.option_sortby_series.disabled = isEmpty(this.input_series.value);
   }
 
   Clear() {
@@ -1539,6 +1592,15 @@ class SearchService {
         case "random":
           resultCached = shuffle(resultCached);
           break;
+        case "series-number":
+          resultCached = resultCached.sort((a, b) => {
+            if (a.seriesnumber < 1 || b.seriesnumber < 1) {
+              //If either has no series, title
+              return a.title.localeCompare(b.title);
+            }
+            return a.seriesnumber - b.seriesnumber;
+          });
+          break;
         default:
           resultCached = resultCached.sort((a, b) =>
             a.title.localeCompare(b.title)
@@ -1559,17 +1621,27 @@ class SearchService {
         }
       });
 
+      //Search Info
+
       let infos = [];
 
       const pushIfNotEmpty = (index, prefix) => {
         if (!isEmpty(query[index])) {
-          infos.push(prefix + ": " + query[index]);
+          infos.push(
+            prefix + ": " + DOMHelper.DesanitizeSearchValue(query[index])
+          );
         }
       };
 
       const pushIfNotEmptyCap = (index, prefix) => {
         if (!isEmpty(query[index])) {
-          infos.push(prefix + ": " + capitalizeFirstLetter(query[index]));
+          infos.push(
+            prefix +
+              ": " +
+              capitalizeFirstLetter(
+                DOMHelper.DesanitizeSearchValue(query[index])
+              )
+          );
         }
       };
 
@@ -1649,7 +1721,6 @@ function GetQueryString(
   sortdir,
   bookmarked
 ) {
-  //return `?any="${any}"&&title="${title}"&&authors="${authors}"&&fandoms="${fandoms}"&&characters="${characters}"&&relationships="${relationships}"&&tags="${tags}"&&series="${series}"&&completion="${completion}"&&singlechapter="${singlechapter}"&&wordcount_compare="${wordcount_compare}"&&wordcount="${wordcount}"&&sortby="${sortby}"&&sortdir="${sortdir}"`;
   let q = [];
 
   const appendINE = (str, key) => {
@@ -1978,7 +2049,8 @@ class AppDB {
       typeof w.series === "undefined" || w.series === null ? "" : w.series.name,
       w.stats.wordCount,
       w.stats.chapters.currentChapter === w.stats.chapters.maxChapter,
-      w.stats.chapters.currentChapter === 1
+      w.stats.chapters.currentChapter === 1,
+      w.series ? w.series.part : 0
     );
   }
 }
@@ -2028,22 +2100,24 @@ class EpubStats {
     this.chapters = chapters;
   }
 
-  static toString(s) {
+  static toString(s, styled) {
+    const st = (str) => (styled ? `<u>${str}</u>` : str);
+
     let stringbuilder = "";
     if (s.publishedDate != null) {
-      stringbuilder += `Published: ${s.publishedDate} \xa0\xa0`;
+      stringbuilder += `Published: ${st(s.publishedDate)} \xa0\xa0`;
     }
 
     if (s.completedDate != null) {
-      stringbuilder += `Compeleted: ${s.completedDate} \xa0\xa0`;
+      stringbuilder += `Compeleted: ${st(s.completedDate)} \xa0\xa0`;
     }
 
     if (s.updatedDate != null) {
-      stringbuilder += `Updated: ${s.updatedDate} \xa0\xa0`;
+      stringbuilder += `Updated: ${st(s.updatedDate)} \xa0\xa0`;
     }
 
     if (s.wordCount != null) {
-      stringbuilder += `Words: ${s.wordCount.toLocaleString()} \xa0\xa0`;
+      stringbuilder += `Words: ${st(s.wordCount.toLocaleString())} \xa0\xa0`;
     }
 
     if (s.chapters != null) {
@@ -2116,6 +2190,7 @@ class EpubCache {
    * @param {number} wordCount
    * @param {boolean} iscomplete
    * @param {boolean} issinglechapter
+   * @param {number} seriesnumber
    */
   constructor(
     id,
@@ -2131,7 +2206,8 @@ class EpubCache {
     series,
     wordCount,
     iscomplete,
-    issinglechapter
+    issinglechapter,
+    seriesnumber
   ) {
     this.id = id;
     this.title = title;
@@ -2147,6 +2223,7 @@ class EpubCache {
     this.wordCount = wordCount;
     this.iscomplete = iscomplete;
     this.issinglechapter = issinglechapter;
+    this.seriesnumber = seriesnumber;
   }
 
   static GetConcatted(c) {
@@ -2161,68 +2238,4 @@ class EpubCache {
       c.series
     );
   }
-}
-
-function TestCard() {
-  var epubtest1 = new EpubData(
-    "id1",
-    "Test Title",
-    ["Author A", "Author B"],
-    ["Fandom A", "Fandom B"],
-    "01 JAN 2023",
-    ["Warning 1", "Warning 2"],
-    ["A/B", "A & B"],
-    ["A", "B"],
-    ["Angst", "Fluff", "Hurt", "Whump"],
-    "Lorem ipsum dolor sit amet.",
-    new EpubSeries(10, "ABCDEFG"),
-    new EpubStats(
-      "2022-10-04",
-      "2023-08-02",
-      "2323-23-23",
-      120313,
-      new EpubChapter(10, 100)
-    )
-  );
-  var epubtest2 = new EpubData(
-    "id2",
-    "Test Title",
-    ["Author A", "Author B"],
-    ["Fandom A", "Fandom B"],
-    "01 JAN 2023",
-    ["Warning 1", "Warning 2"],
-    ["A/B", "A & B"],
-    ["A", "B"],
-    ["Angst", "Fluff", "Hurt", "Whump"],
-    "Lorem ipsum dolor sit amet.",
-    null,
-    new EpubStats(
-      "2022-10-04",
-      "2023-08-02",
-      "2323-23-23",
-      120313,
-      new EpubChapter(99, 0)
-    )
-  );
-
-  var elem1 = createCard(epubtest1);
-  var elem2 = createCard(epubtest2);
-
-  document.body.getElementsByClassName("main-content")[0].appendChild(elem1);
-  document.body.getElementsByClassName("main-content")[0].appendChild(elem2);
-}
-
-function TestSearch() {
-  window.search_query = `WordA WordB Word C "Word D" -"Word E" -WordF -G WordH||I||K -WordL||WordM`;
-  console.log(search_query);
-  window.token = Search.ParseSearch(search_query);
-  console.log(token);
-  window.search_dict = [
-    "WordA WordB",
-    `WordA WordB Word C "Word D" -"Word E" -WordF G WordH||I||K -WordL||WordM`,
-    `WordA WordB Word C Word E Word D F WordH WordM`,
-    `WordA WordB Word C Word D F K`,
-  ];
-  var search_results = Search.SearchInStringArray([token], search_dict);
-  console.log(search_results);
 }

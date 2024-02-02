@@ -42,14 +42,17 @@ const assets = [
   "/epub/assets/icon_star.svg",
   "/epub/assets/icon_tag.svg",
   "/epub/assets/icon_title.svg",
+  "/epub/assets/icon_warning.svg",
   "/epub/libs/jszip.min.js",
   "/epub/index.html",
   "/epub/style.css",
   "/epub/script.js",
   "/epub/sw.js",
   "/epub/favicon.ico",
-  "/epub/manifest.json"
+  "/epub/manifest.json",
 ];
+
+const testFile = "/epub/assets/test.file";
 
 self.addEventListener("message", (e) => {
   console.log("[SW] Message recieved!");
@@ -81,7 +84,7 @@ self.addEventListener("message", (e) => {
 
 self.addEventListener("activate", (e) => {
   console.log("[SW] Activated!");
-})
+});
 
 self.addEventListener("install", (installEvent) => {
   console.log("[SW] Installed!");
@@ -101,7 +104,12 @@ self.addEventListener("fetch", (fetchEvent) => {
 function BuildCache() {
   console.log("[SW] Cache building!");
   return caches.open(staticPage).then((cache) => {
-    cache.addAll(assets);
+    try {
+      cache.add(testFile);
+      cache.addAll(assets);
+    } catch (E) {
+      console.log(`[SW] Failed to cache! ${E}`);
+    }
     //cache.add("/");
   });
 }

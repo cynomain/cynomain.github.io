@@ -94,7 +94,7 @@
 
         <div class="contents">
           <h2><img src="assets/icon_star.svg" /> Any</h2>
-          <input type="text" name="any" id="search-any" />
+          <input type="text" name="any" id="search-any">
 
           <h2><img src="assets/icon_title.svg" /> Title</h2>
           <input type="text" name="title" id="search-title" />
@@ -179,10 +179,15 @@
             <option value="date-posted">Date Posted</option>
             <option value="date-updated">Date Updated</option>
             <option value="random">Random</option>
+            <option value="series-number" disabled>Series: Part</option>
           </select>
 
           <h2><img src="assets/icon_sort_dir.svg" /> Sort Direction</h2>
-          <select class="input-like" name="sort-direction" id="search-direction">
+          <select
+            class="input-like"
+            name="sort-direction"
+            id="search-direction"
+          >
             <option value="descending">Descending</option>
             <option value="ascending">Ascending</option>
           </select>
@@ -195,7 +200,12 @@
           <button
             id="search-cancel"
             class="inverse"
-            style="font-weight: bold; font-size: 1em; box-sizing: border-box; padding: 1em;"
+            style="
+              font-weight: bold;
+              font-size: 1em;
+              box-sizing: border-box;
+              padding: 1em;
+            "
           >
             Cancel
           </button>
@@ -305,16 +315,12 @@
     </div>
 
     <div id="popup-confirm" class="popup disabled">
-      <div class="card import" style="text-align: center">
-        <h2 style="text-align: center">Are you sure?</h2>
-        <p
-          id="popup-confirm-description"
-          style="
-            &:empty {
-              height: 0;
-            }
-          "
-        ></p>
+      <div class="card import confirm" style="text-align: center">
+        <img src="assets/icon_warning.svg" />
+        <h2 class="confirm-header">Are you sure?</h2>
+        <div class="confirm-contents">
+          <p id="popup-confirm-description"></p>
+        </div>
         <div class="buttons children-fill row equal">
           <button
             class="clear"

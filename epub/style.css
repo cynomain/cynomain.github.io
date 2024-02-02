@@ -17,8 +17,8 @@ body {
   display: flex;
   flex-direction: column;
 
-  height: 100%;
-  width: 100%;
+  height: 100dvh;
+  width: 100dvw;
 
   overflow: hidden;
 
@@ -56,10 +56,15 @@ img {
   }
 }
 
+/* LARGE SCREEN */
 @media only screen and (min-width: 800px) {
   .main-content > * {
     max-width: 70%;
     --max_width: calc(70% + 4em); /* HACK??? */
+  }
+
+  .card {
+    max-width: 90dvw !important;
   }
 }
 
@@ -103,7 +108,14 @@ h6 {
 
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
+
+::-webkit-scrollbar-corner {
+  width: 0;
+  height: 0;
+}
+
 ::-webkit-scrollbar-thumb {
   background-color: #d0bcff80;
   border-radius: 1em;
@@ -232,9 +244,15 @@ input[type="submit"] {
   box-sizing: content-box;
 
   width: 100%;
+
+  > *:last-child {
+    margin-bottom: 10dvh !important;
+  }
 }
 
 .card {
+  max-width: 85dvw;
+
   box-sizing: content-box;
 
   background-color: #211f26;
@@ -298,7 +316,11 @@ a.author {
 
 .author:not(:last-child)::after {
   content: ",";
+  display: inline-block;
   margin-right: 0.25em;
+  text-decoration: none !important;
+  text-decoration-thickness: 0 !important;
+  text-decoration-style: none !important;
 }
 
 .fandoms {
@@ -313,7 +335,11 @@ a.fandom {
 
 a.fandom:not(:last-child)::after {
   content: ", ";
-  margin-right: 0.1em;
+  display: inline-block;
+  margin-right: 0.2em;
+  text-decoration: none !important;
+  text-decoration-thickness: 0 !important;
+  text-decoration-style: none !important;
 }
 
 .tag {
@@ -323,7 +349,11 @@ a.fandom:not(:last-child)::after {
 
 .tag:not(:last-child)::after {
   content: ", ";
-  margin-right: 0.1em;
+  display: inline-block;
+  margin-right: 0.2em;
+  text-decoration: none !important;
+  text-decoration-thickness: 0 !important;
+  text-decoration-style: none !important;
 }
 
 /*
@@ -531,6 +561,40 @@ blockquote {
   }
 }
 
+.card.confirm {
+  > img {
+      margin-top: .25em;
+      scale: 1.5;
+  }
+
+  .confirm-header {
+    margin-top: .25em;
+    text-align: center;
+  }
+
+  .confirm-contents {
+    max-height: 16em;
+    margin-bottom: 0.5em;
+
+    &:empty {
+      overflow: hidden;
+      height: 0;
+    }
+
+    &:not(:empty) {
+      overflow: auto;
+    }
+  }
+
+  p {
+    margin: 0 1em 0 1em;
+
+    &:empty {
+      height: 0;
+    }
+  }
+}
+
 .children-block {
   > * {
     display: block;
@@ -592,7 +656,7 @@ blockquote {
 
 .card.search {
   z-index: inherit;
-  border: #eaddff solid .15em;
+  border: #eaddff solid 0.15em;
 
   width: 80%;
   height: 80%;
@@ -629,7 +693,7 @@ blockquote {
   }
 }
 
-div.input-area{
+div.input-area {
   display: flex !important;
   flex-direction: row;
   gap: 1em;
@@ -637,11 +701,11 @@ div.input-area{
   justify-items: center;
   align-items: center;
 
-  >*:first-child{
+  > *:first-child {
     flex: 100;
   }
 
-  >*:not(:first-child){
+  > *:not(:first-child) {
     flex: 1;
   }
 }
@@ -687,11 +751,11 @@ select.inverse {
   color: #381e72;
 }
 
-select.input-like{
+select.input-like {
   background-color: #36343b;
   color: #d0bcff;
   border: none;
-  border-right: .5em transparent solid;
+  border-right: 0.5em transparent solid;
   border-radius: 0.25em 0.25em 0.1em 0.1em;
   padding: 0.5em;
   border-bottom: #49454f 0.15em solid;
@@ -703,10 +767,9 @@ select.input-like{
   }
 }
 
-select:not(.dont-fill){
+select:not(.dont-fill) {
   width: 100%;
 }
-
 
 select:enabled {
   cursor: pointer;
