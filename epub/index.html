@@ -52,36 +52,36 @@
     <!--span class="material-symbols-rounded"> search </span-->
     <header class="title-bar">
       <button id="button-import" style="font-size: 1em">
-        <img src="assets/icon_menu.svg" />
+        <img src="/epub/assets/icon_menu.svg" />
       </button>
 
       <a href="/epub" class="static">Catalog</a>
 
       <button id="button-search" style="font-size: 1em">
-        <img src="assets/icon_search.svg" />
+        <img src="/epub/assets/icon_search.svg" />
       </button>
     </header>
-    <div class="main-content" id="main-content">
+    <main class="main-content" id="main-content">
       <div id="search-card" class="card search-info">
         <p class="info-title">
           <span>Search Results</span>
-          <img src="assets/icon_search.svg" />
+          <img src="/epub/assets/icon_search.svg" />
         </p>
         <div class="spacer"></div>
         <p class="info thin" id="search-info">The library is loading...</p>
         <div class="spacer"></div>
         <p class="info thin disabled" id="search-info-offlinemode">
-          <img src="assets/icon_offline.svg" style="font-size: 0.75em" />
+          <img src="/epub/assets/icon_offline.svg" style="font-size: 0.75em" />
           Offline mode
         </p>
         <p class="info bold" id="search-info-amount">Please wait...</p>
       </div>
-    </div>
+    </main>
 
     <div id="popup-search" class="popup disabled">
       <div class="search card">
         <div class="children-fill first row">
-          <h1><img src="assets/icon_filter_alt_on.svg" /> Search Filter</h1>
+          <h1><img src="/epub/assets/icon_filter_alt_on.svg" /> Search Filter</h1>
 
           <button
             id="search-clear"
@@ -93,31 +93,31 @@
         </div>
 
         <div class="contents">
-          <h2><img src="assets/icon_star.svg" /> Any</h2>
+          <h2><img src="/epub/assets/icon_star.svg" /> Any</h2>
           <input type="text" name="any" id="search-any">
 
-          <h2><img src="assets/icon_title.svg" /> Title</h2>
+          <h2><img src="/epub/assets/icon_title.svg" /> Title</h2>
           <input type="text" name="title" id="search-title" />
 
-          <h2><img src="assets/icon_person.svg" /> Authors</h2>
+          <h2><img src="/epub/assets/icon_person.svg" /> Authors</h2>
           <input type="text" name="authors" id="search-authors" />
 
-          <h2><img src="assets/icon_fandoms.svg" /> Fandoms</h2>
+          <h2><img src="/epub/assets/icon_fandoms.svg" /> Fandoms</h2>
           <input type="text" name="fandoms" id="search-fandoms" />
 
-          <h2><img src="assets/icon_groups.svg" /> Characters</h2>
+          <h2><img src="/epub/assets/icon_groups.svg" /> Characters</h2>
           <input type="text" name="characters" id="search-characters" />
 
-          <h2><img src="assets/icon_favorite.svg" /> Relationships</h2>
+          <h2><img src="/epub/assets/icon_favorite.svg" /> Relationships</h2>
           <input type="text" name="relationships" id="search-relationships" />
 
-          <h2><img src="assets/icon_tag.svg" /> Tags</h2>
+          <h2><img src="/epub/assets/icon_tag.svg" /> Tags</h2>
           <input type="text" name="tags" id="search-tags" />
 
-          <h2><img src="assets/icon_box.svg" /> Series</h2>
+          <h2><img src="/epub/assets/icon_box.svg" /> Series</h2>
           <input type="text" name="series" id="search-series" />
 
-          <h2><img src="assets/icon_bookmarks.svg" /> Bookmarked</h2>
+          <h2><img src="/epub/assets/icon_bookmarks.svg" /> Bookmarked</h2>
           <select class="input-like" name="bookmarked" id="search-bookmarked">
             <option value="all">All Works</option>
             <option value="only">Only Bookmarked</option>
@@ -125,7 +125,7 @@
           </select>
 
           <h2>
-            <img src="assets/icon_check.svg" style="scale: 1.5" /> Completion
+            <img src="/epub/assets/icon_check.svg" style="scale: 1.5" /> Completion
           </h2>
           <select class="input-like" name="complete" id="search-completion">
             <option value="all">All Works</option>
@@ -140,7 +140,7 @@
             <option value="only">Only Crossovers</option>
           </select>
         -->
-          <h2><img src="assets/icon_singlepage.svg" /> Only Single Chapter</h2>
+          <h2><img src="/epub/assets/icon_singlepage.svg" /> Only Single Chapter</h2>
           <select
             class="input-like"
             name="single-chapter"
@@ -151,7 +151,7 @@
           </select>
           <h2>
             <img
-              src="assets/icon_count.svg"
+              src="/epub/assets/icon_count.svg"
               style="scale: 2; margin-right: 0.2em"
             />
             Word Count
@@ -171,7 +171,7 @@
             <input type="number" name="wordcount" id="search-wordcount" />
           </div>
 
-          <h2><img src="assets/icon_sort_by.svg" /> Sort By</h2>
+          <h2><img src="/epub/assets/icon_sort_by.svg" /> Sort By</h2>
           <select class="input-like" name="sort-by" id="search-by">
             <option value="title">Title</option>
             <option value="author">Author</option>
@@ -182,7 +182,7 @@
             <option value="series-number" disabled>Series: Part</option>
           </select>
 
-          <h2><img src="assets/icon_sort_dir.svg" /> Sort Direction</h2>
+          <h2><img src="/epub/assets/icon_sort_dir.svg" /> Sort Direction</h2>
           <select
             class="input-like"
             name="sort-direction"
@@ -224,14 +224,14 @@
         <div class="children-fill first row">
           <h2>Library</h2>
           <button class="clear" id="button-open-settings">
-            <img src="assets/icon_settings.svg" class="tint-light" />
+            <img src="/epub/assets/icon_settings.svg" class="tint-light" />
           </button>
         </div>
 
         <div class="buttons children-fill col equal">
           <button class="inverse" id="button-clear-library">
             <img
-              src="assets/icon_delete.svg"
+              src="/epub/assets/icon_delete.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
               ;
@@ -241,7 +241,7 @@
 
           <button class="inverse" id="button-clear-bookmarks">
             <img
-              src="assets/icon_bookmark_remove.svg"
+              src="/epub/assets/icon_bookmark_remove.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
               ;
@@ -251,7 +251,7 @@
 
           <button class="inverse" id="button-add-to-library">
             <img
-              src="assets/icon_library_add.svg"
+              src="/epub/assets/icon_library_add.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
               ;
@@ -279,21 +279,21 @@
         <div class="buttons children-fill col" style="text-align: left">
           <button class="inverse" id="button-rebuild-cache">
             <img
-              src="assets/icon_build.svg"
+              src="/epub/assets/icon_build.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
             />Rebuild Library Cache
           </button>
           <button class="inverse" id="button-refresh-app">
             <img
-              src="assets/icon_refresh.svg"
+              src="/epub/assets/icon_refresh.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
             />Refresh App Cache
           </button>
           <button class="inverse" id="button-offlinemode">
             <img
-              src="assets/icon_offline.svg"
+              src="/epub/assets/icon_offline.svg"
               style="margin-right: 0.2em; margin-left: -0.75em"
               class="tint-dark"
             />
@@ -316,7 +316,7 @@
 
     <div id="popup-confirm" class="popup disabled">
       <div class="card import confirm" style="text-align: center">
-        <img src="assets/icon_warning.svg" />
+        <img src="/epub/assets/icon_warning.svg" />
         <h2 class="confirm-header">Are you sure?</h2>
         <div class="confirm-contents">
           <p id="popup-confirm-description"></p>

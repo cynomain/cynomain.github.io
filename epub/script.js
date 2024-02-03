@@ -239,7 +239,7 @@ function OnLoad() {
   let offlinemode = isOfflineMode();
   if (offlinemode) {
     search_info_offlinemode.classList.remove("disabled");
-    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
+    button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
     interceptOfflineEvents(offlinemode);
   }
 
@@ -306,13 +306,13 @@ function toggleOfflineMode() {
     //If disabled
     //Enable
     localStorage.setItem("isOfflineMode", true);
-    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
+    button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
     search_info_offlinemode.classList.remove("disabled");
   } else {
     //If enabled
     //Disable
     localStorage.removeItem("isOfflineMode");
-    button_offlinemode.innerHTML = `<img src="assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Enable Offline Mode`;
+    button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Enable Offline Mode`;
     search_info_offlinemode.classList.add("disabled");
   }
 
@@ -371,6 +371,7 @@ function Reload(force) {
 
     div_main_content.innerHTML = default_main_content;
     OnLoad();
+    div_main_content.scrollTop = 0;
   }
 }
 
@@ -890,8 +891,8 @@ class DOMHelper {
       target = target.tagName === "IMG" ? target : target.querySelector("img");
 
       target.src = b
-        ? "assets/icon_bookmark_filled.svg"
-        : "assets/icon_bookmark_empty.svg";
+        ? "/epub/assets/icon_bookmark_filled.svg"
+        : "/epub/assets/icon_bookmark_empty.svg";
 
       target.className = b ? "tint-light" : "tint-light off";
     };
@@ -899,8 +900,8 @@ class DOMHelper {
     let bookmark_icon = this.dcec("img", "tint-light");
     let isbookmarked = db.IsBookmarked(id);
     bookmark_icon.src = isbookmarked
-      ? "assets/icon_bookmark_filled.svg"
-      : "assets/icon_bookmark_empty.svg";
+      ? "/epub/assets/icon_bookmark_filled.svg"
+      : "/epub/assets/icon_bookmark_empty.svg";
 
     if (!isbookmarked) {
       bookmark_icon.classList.add("off");

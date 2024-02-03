@@ -157,6 +157,8 @@ input[type="submit"] {
   align-items: center;
   justify-content: center;
 
+  user-select: none;
+
   &.clear {
     background-color: transparent;
     color: #d0bcff;
@@ -251,6 +253,7 @@ input[type="submit"] {
 }
 
 .card {
+  
   max-width: 85dvw;
 
   box-sizing: content-box;
@@ -540,6 +543,8 @@ blockquote {
 }
 
 .card.import {
+  border: #eaddff solid 0.1em;
+
   font-size: 1.25em;
 
   h1,
