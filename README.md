@@ -1,2 +1,2 @@
-[cynomain.github.io]## cynomain.github.io
-This repository hosts my small projects such as.
+# cynomain.github.io
+This repository holds my small web projects.
