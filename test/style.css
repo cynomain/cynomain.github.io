@@ -1,0 +1,203 @@
+:root {
+    --c-primary: #d0bcff;
+    --c-on-primary: #381e72;
+    --c-primary-container: #4f378b;
+    --c-primary-container-on: #eaddff;
+    --c-secondary: #ccc2dc;
+    --c-secondary-on: #332d41;
+    --c-secondary-container: #4a4458;
+    --c-secondary-container-on: #e8def8;
+    --c-tertiary: #efb8c8;
+    --c-tertirary-on: #492532;
+    --c-tertiary-container: #633b48;
+    --c-tertiary-container-on: #ffd8e4;
+    --c-error: #f2b8b5;
+    --c-error-on: #601410;
+    --c-error-container: #8c1d18;
+    --c-error-container-on: #f9dedc;
+    --c-surface: #141218;
+    --c-surface-on: #e6e0e9;
+    --c-surface-variant: #49454f;
+    --c-surface-variant-on: #cac4d0;
+    --c-surface-container-highest: #36343b;
+    --c-surface-container-high: #2b2930;
+    --c-surface-container: #211f26;
+    --c-surface-container-low: #1d1b20;
+    --c-surface-container-lowest: #0f0d13;
+    --c-surface-inverse: #e6e0e9;
+    --c-surface-inverse-on: #322f35;
+    --c-surface-tint: #d0bcff;
+    --c-outline: #938f99;
+    --c-outline-variant: #49454f;
+  }
+  
+  body {
+    color: #f6f6f6;
+    background-color: #1d1b20;
+    font: 100% system-ui;
+    margin: 0;
+  
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+  
+    align-items: center;
+    align-content: center;
+    align-self: center;
+  
+    vertical-align: middle;
+  
+    display: flex;
+    flex-direction: column;
+  
+    height: 100dvh;
+    width: 100dvw;
+  
+    overflow: hidden;
+  
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  ::backdrop {
+    background-color: var(--c-surface-container-lowest);
+  }
+  
+  html {
+    height: 100dvh;
+    width: 100dvw;
+  }
+  
+  a {
+    color: #222;
+    text-decoration: none;
+    /*transition: text-decoration 0.5s, filter 0.5s;*/
+    display: inline;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: var(--c-surface-on);
+      background: var(--c-surface-container-lowest);
+    }
+  
+    body a {
+      color: var(--c-surface-on);
+    }
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    padding: 0;
+    margin: 0.25em;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-corner {
+    width: 0;
+    height: 0;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #d0bcff80;
+    border-radius: 1em;
+  }
+  
+  ::-webkit-scrollbar-track-piece:start {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-track-piece:end {
+    background: transparent;
+  }
+  
+  .disabled {
+    display: none !important;
+    visibility: hidden !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  button,
+  input[type="submit"] {
+    border-radius: 1em;
+    padding: 1em;
+    background-color: #4f378b;
+    color: var(--c-primary-container-on);
+    outline: none;
+    border: none;
+    transition: filter 0.25s;
+    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  
+    user-select: none;
+  
+    &.clear {
+      background-color: transparent;
+      color: var(--c-primary);
+      padding: 0.5em;
+    }
+  
+    &.inverse {
+      background-color: var(--c-primary);
+      color: var(--c-on-primary);
+    }
+  
+    &:enabled {
+      cursor: pointer;
+    }
+  
+    &:enabled:hover {
+      filter: brightness(80%);
+    }
+  
+    &:enabled:active {
+      filter: brightness(70%);
+    }
+  }
+  
+  body {
+    > * {
+      width: 50dvw;
+    }
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="password"] {
+    font-size: 1.1em;
+    outline: none;
+    background-color: #36343b;
+    color: var(--c-surface-on);
+    border: none;
+    border-radius: 0.25em 0.25em 0.1em 0.1em;
+    padding: 0.5em;
+    border-bottom: #49454f 0.15em solid;
+  
+    transition: border 0.1s;
+  
+    &:hover {
+      border-bottom: var(--c-primary) 0.15em solid;
+    }
+  }

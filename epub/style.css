@@ -1,3 +1,36 @@
+:root {
+  --c-primary: #d0bcff;
+  --c-on-primary: #381e72;
+  --c-primary-container: #4f378b;
+  --c-primary-container-on: #eaddff;
+  --c-secondary: #ccc2dc;
+  --c-secondary-on: #332d41;
+  --c-secondary-container: #4a4458;
+  --c-secondary-container-on: #e8def8;
+  --c-tertiary: #efb8c8;
+  --c-tertirary-on: #492532;
+  --c-tertiary-container: #633b48;
+  --c-tertiary-container-on: #ffd8e4;
+  --c-error: #f2b8b5;
+  --c-error-on: #601410;
+  --c-error-container: #8c1d18;
+  --c-error-container-on: #f9dedc;
+  --c-surface: #141218;
+  --c-surface-on: #e6e0e9;
+  --c-surface-variant: #49454f;
+  --c-surface-variant-on: #cac4d0;
+  --c-surface-container-highest: #36343b;
+  --c-surface-container-high: #2b2930;
+  --c-surface-container: #211f26;
+  --c-surface-container-low: #1d1b20;
+  --c-surface-container-lowest: #0f0d13;
+  --c-surface-inverse: #e6e0e9;
+  --c-surface-inverse-on: #322f35;
+  --c-surface-tint: #d0bcff;
+  --c-outline: #938f99;
+  --c-outline-variant: #49454f;
+}
+
 body {
   color: #f6f6f6;
   background-color: #1d1b20;
@@ -31,7 +64,7 @@ body {
 }
 
 ::backdrop {
-  background-color: #0f0d13;
+  background-color: var(--c-surface-container-lowest);
 }
 
 html {
@@ -83,12 +116,12 @@ a {
 
 @media (prefers-color-scheme: dark) {
   body {
-    color: #e6e0e9;
-    background: #0f0d13;
+    color: var(--c-surface-on);
+    background: var(--c-surface-container-lowest);
   }
 
   body a {
-    color: #e6e0e9;
+    color: var(--c-surface-on);
   }
 }
 
@@ -147,7 +180,7 @@ input[type="submit"] {
   border-radius: 1em;
   padding: 1em;
   background-color: #4f378b;
-  color: #eaddff;
+  color: var(--c-primary-container-on);
   outline: none;
   border: none;
   transition: filter 0.25s;
@@ -161,13 +194,13 @@ input[type="submit"] {
 
   &.clear {
     background-color: transparent;
-    color: #d0bcff;
+    color: var(--c-primary);
     padding: 0.5em;
   }
 
   &.inverse {
-    background-color: #d0bcff;
-    color: #381e72;
+    background-color: var(--c-primary);
+    color: var(--c-on-primary);
   }
 
   &:enabled {
@@ -185,7 +218,7 @@ input[type="submit"] {
 
 .title-bar {
   user-select: none;
-  background-color: #2b2930;
+  background-color: var(--c-surface-container-high);
   width: 100%;
   flex: 2;
   flex-direction: row;
@@ -199,8 +232,9 @@ input[type="submit"] {
 
   font-size: clamp(0.5em, 3dvw, 1em);
 
-  > h1,
-  > a {
+  div,
+  h1,
+  a {
     margin: auto;
     text-align: center;
     flex: 100;
@@ -208,13 +242,14 @@ input[type="submit"] {
     overflow: hidden;
   }
 
-  > a {
+  a {
     font-size: 2em;
     font-weight: bolder;
     text-decoration: none;
   }
 
   > button {
+    flex: 1;
     margin: 0 1em 0 1em;
 
     > span.material-symbols-rounded {
@@ -253,12 +288,11 @@ input[type="submit"] {
 }
 
 .card {
-  
   max-width: 85dvw;
 
   box-sizing: content-box;
 
-  background-color: #211f26;
+  background-color: var(--c-surface-container);
   color: #e6e0e9;
   border: none;
   border-radius: 1em;
@@ -418,7 +452,7 @@ a.fandom:not(:last-child)::after {
   width: 100%;
   margin: 0.5em 0 0.5em 0;
   height: 0.1em;
-  background-color: #322f35;
+  background-color: #413d44;
 }
 
 .series {
@@ -543,7 +577,7 @@ blockquote {
 }
 
 .card.import {
-  border: #eaddff solid 0.1em;
+  border: var(--c-primary-container-on) solid 0.1em;
 
   font-size: 1.25em;
 
@@ -568,12 +602,12 @@ blockquote {
 
 .card.confirm {
   > img {
-      margin-top: .25em;
-      scale: 1.5;
+    margin-top: 0.25em;
+    scale: 1.5;
   }
 
   .confirm-header {
-    margin-top: .25em;
+    margin-top: 0.25em;
     text-align: center;
   }
 
@@ -661,7 +695,7 @@ blockquote {
 
 .card.search {
   z-index: inherit;
-  border: #eaddff solid 0.15em;
+  border: var(--c-primary-container-on) solid 0.15em;
 
   width: 80%;
   height: 80%;
@@ -671,7 +705,8 @@ blockquote {
 
   input[type="text"],
   input[type="number"],
-  input[type="password"] {
+  input[type="password"],
+  input[type="date"] {
     width: 100%;
     box-sizing: border-box;
   }
@@ -718,16 +753,17 @@ div.input-area {
 .card.search-info {
   width: calc(var(--max_width) - 4em);
   max-width: calc(var(--max_width) - 4em);
-  border: #eaddff solid 0.15em;
+  border: var(--c-primary-container-on) solid 0.15em;
 }
 
 input[type="text"],
 input[type="number"],
-input[type="password"] {
+input[type="password"],
+input[type="date"] {
   font-size: 1.1em;
   outline: none;
   background-color: #36343b;
-  color: #e6e0e9;
+  color: var(--c-surface-on);
   border: none;
   border-radius: 0.25em 0.25em 0.1em 0.1em;
   padding: 0.5em;
@@ -736,7 +772,7 @@ input[type="password"] {
   transition: border 0.1s;
 
   &:hover {
-    border-bottom: #d0bcff 0.15em solid;
+    border-bottom: var(--c-primary) 0.15em solid;
   }
 }
 
@@ -744,31 +780,31 @@ select {
   font-size: 1.1em;
   border-radius: 0.5em;
   padding: 0.5em;
-  background-color: #4f378b;
-  color: #eaddff;
+  background-color: var(--c-primary-container);
+  color: var(--c-primary-container-on);
   outline: none;
   border: none;
   transition: filter 0.25s;
 }
 
 select.inverse {
-  background-color: #d0bcff;
-  color: #381e72;
+  background-color: var(--c-primary);
+  color: var(--c-on-primary);
 }
 
 select.input-like {
-  background-color: #36343b;
-  color: #d0bcff;
+  background-color: var(--c-surface-container-highest);
+  color: var(--c-primary);
   border: none;
   border-right: 0.5em transparent solid;
   border-radius: 0.25em 0.25em 0.1em 0.1em;
   padding: 0.5em;
-  border-bottom: #49454f 0.15em solid;
+  border-bottom: var(--c-surface-variant) 0.15em solid;
 
   transition: border 0.1s;
 
   &:hover {
-    border-bottom: #d0bcff 0.15em solid;
+    border-bottom: var(--c-primary) 0.15em solid;
   }
 }
 
@@ -810,7 +846,7 @@ input::-webkit-inner-spin-button {
 
 .recommendation {
   margin: 0.5em 0 0.5em 0;
-  background-color: #36343b;
+  background-color: var(--c-surface-container-highest);
   border-radius: 0.25em;
   padding: 0.5em;
 
@@ -869,7 +905,7 @@ input::-webkit-inner-spin-button {
 .loader {
   width: 10dvh;
   height: 10dvh;
-  border: 1dvh solid #eaddff;
+  border: 1dvh solid var(--c-primary-container-on);
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

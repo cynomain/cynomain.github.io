@@ -43,6 +43,8 @@ const assets = [
   "/epub/assets/icon_tag.svg",
   "/epub/assets/icon_title.svg",
   "/epub/assets/icon_warning.svg",
+  "/epub/assets/icon_info.svg",
+  "/epub/assets/icon_help.svg",
   "/epub/libs/jszip.min.js",
   "/epub/index.html",
   "/epub/style.css",

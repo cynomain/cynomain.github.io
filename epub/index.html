@@ -81,7 +81,16 @@
     <div id="popup-search" class="popup disabled">
       <div class="search card">
         <div class="children-fill first row">
-          <h1><img src="/epub/assets/icon_filter_alt_on.svg" /> Search Filter</h1>
+          <h1>
+            <img src="/epub/assets/icon_filter_alt_on.svg" /> Search Filter
+            <button
+              id="button-search-help"
+              style="font-size: 0.75em; padding: 0; display: inline"
+              class="clear"
+            >
+              <img src="/epub/assets/icon_help.svg" />
+            </button>
+          </h1>
 
           <button
             id="search-clear"
@@ -94,7 +103,7 @@
 
         <div class="contents">
           <h2><img src="/epub/assets/icon_star.svg" /> Any</h2>
-          <input type="text" name="any" id="search-any">
+          <input type="text" name="any" id="search-any" />
 
           <h2><img src="/epub/assets/icon_title.svg" /> Title</h2>
           <input type="text" name="title" id="search-title" />
@@ -125,7 +134,8 @@
           </select>
 
           <h2>
-            <img src="/epub/assets/icon_check.svg" style="scale: 1.5" /> Completion
+            <img src="/epub/assets/icon_check.svg" style="scale: 1.5" />
+            Completion
           </h2>
           <select class="input-like" name="complete" id="search-completion">
             <option value="all">All Works</option>
@@ -140,7 +150,9 @@
             <option value="only">Only Crossovers</option>
           </select>
         -->
-          <h2><img src="/epub/assets/icon_singlepage.svg" /> Only Single Chapter</h2>
+          <h2>
+            <img src="/epub/assets/icon_singlepage.svg" /> Only Single Chapter
+          </h2>
           <select
             class="input-like"
             name="single-chapter"
@@ -223,6 +235,11 @@
       <div class="card import">
         <div class="children-fill first row">
           <h2>Library</h2>
+
+          <button id="button-help" class="clear">
+            <img src="/epub/assets/icon_help.svg" class="tint-light" />
+          </button>
+
           <button class="clear" id="button-open-settings">
             <img src="/epub/assets/icon_settings.svg" class="tint-light" />
           </button>
@@ -264,6 +281,7 @@
               padding-left: 5em;
               padding-right: 5em;
               margin-top: 0.75em;
+              font-weight: bold;
             "
             id="button-close-library"
           >
@@ -305,6 +323,7 @@
               padding-left: 7em;
               padding-right: 7em;
               margin-top: 0.75em;
+              font-weight: bold;
             "
             id="button-close-settings"
           >
@@ -323,18 +342,39 @@
         </div>
         <div class="buttons children-fill row equal">
           <button
-            class="clear"
+            class="inverse"
+            style="padding: 0.75em; font-weight: bold"
             onclick="confirmDialog_button(false)"
             id="button-confirm-no"
           >
             No
           </button>
           <button
-            class="clear"
+            class="inverse"
+            style="padding: 0.75em; font-weight: bold"
             onclick="confirmDialog_button(true)"
             id="button-confirm-no"
           >
             Yes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup-info" class="popup disabled">
+      <div class="card import confirm" style="text-align: center">
+        <img src="/epub/assets/icon_info.svg" />
+        <h2 class="confirm-header">Information</h2>
+        <div class="confirm-contents">
+          <p id="popup-info-description"></p>
+        </div>
+        <div class="buttons children-fill row equal">
+          <button
+            class="inverse"
+            style="padding: 0.5em; margin-top: 0.5em; margin-bottom: 0.2em"
+            onclick="infoDialog_close()"
+          >
+            Ok
           </button>
         </div>
       </div>

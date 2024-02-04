@@ -19,6 +19,9 @@ var popup_loading;
 var popup_confirm;
 var confirm_description;
 
+var popup_info;
+var infopopup_description;
+
 /*
 var button_clear_library;
 var button_add_to_library;
@@ -91,6 +94,16 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
+if (window.location.origin.includes("127")){
+  //DEBUG
+  window.addEventListener("keyup", (e) => {
+    if (e.key == ";") {
+      e.preventDefault();
+      RefreshAppCache();
+    }
+  });
+}
+
 window.addEventListener("message", OnMessage);
 
 window.addEventListener("load", OnLoad);
@@ -111,8 +124,10 @@ function OnLoad() {
   popup_search = $I("popup-search");
   popup_loading = $I("popup-loading");
   popup_settings = $I("popup-settings");
+  popup_info = $I("popup-info");
 
   confirm_description = $I("popup-confirm-description");
+  infopopup_description = $I("popup-info-description");
 
   button_offlinemode = $I("button-offlinemode");
 
@@ -135,6 +150,14 @@ function OnLoad() {
   };
 
   //Import Buttons
+  $I("button-help").onclick = () => {
+    popup_import.classList.add("disabled");
+    InfoDialog(
+      `This is a webapp to catalog<br>downloaded <a href="https://archiveofourown.org">AO3</a> works (as epub).<br><br>Made by <a href="/">cynomain</a>`,
+      true
+    );
+  };
+
   $I("button-clear-library").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
@@ -219,6 +242,21 @@ function OnLoad() {
         searchUI.Clear();
       }
     });
+  };
+
+  $I("button-search-help").onclick = () => {
+    InfoDialog(
+      `
+      <article style="text-align: left">
+      <strong>Search filter</strong><br>
+      Use <code>*</code> as wildcards.<br>
+      Use <code>&&</code> or <code>space</code> as AND.<br>
+      Use <code>||</code> as OR.<br>
+      Use <code>parentheses</code> as groups.<br>
+      Use <code>-</code> to exclude the word after it.<br>
+     </article>`,
+      true
+    );
   };
 
   //Database
@@ -413,11 +451,15 @@ function ProcessFolders(event) {
   let files = event.target.files;
   console.log(files);
 
-  ConfirmDialog((b) => {
-    if (b) {
-      ProcessFiles(files);
-    }
-  }, `Found ${files.length} file(s).\nAdd to library?`);
+  ConfirmDialog(
+    (b) => {
+      if (b) {
+        ProcessFiles(files);
+      }
+    },
+    `<strong>Found ${files.length} file(s).</strong><br>Add to library? (this can't be undone!)`,
+    true
+  );
 }
 
 function ProcessFiles(files) {
@@ -719,6 +761,19 @@ function ProcessEpubFile(file) {
         stats
       );
     });
+}
+
+function InfoDialog(description, html) {
+  popup_info.classList.remove("disabled");
+  if (html) {
+    infopopup_description.innerHTML = description;
+  } else {
+    infopopup_description.innerText = description;
+  }
+}
+
+function infoDialog_close() {
+  popup_info.classList.add("disabled");
 }
 
 var confirmAction = () => {};
