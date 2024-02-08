@@ -494,7 +494,7 @@ class MediaControls {
     if (document.fullscreenElement == null) {
       document.body.requestFullscreen();
       fs_text.innerText = "fullscreen_exit";
-    }else{
+    } else {
       document.exitFullscreen();
       fs_text.innerText = "fullscreen";
     }
@@ -875,6 +875,7 @@ class ImportMenu {
   static checkEnableOkButton() {
     document.getElementById("import-button-ok").disabled = !(
       hasSelectedSong && hasSelectedLyric
+      //(hasSelectedSong || hasSelectedLyric)
     );
   }
 
@@ -892,8 +893,10 @@ class ImportMenu {
   }
 
   static LoadFiles() {
-    MediaControls.LoadCurrentAudio();
-    LyricsControls.LoadTTML();
+   // if (hasSelectedSong && hasSelectedLyric) {
+      MediaControls.LoadCurrentAudio();
+      LyricsControls.LoadTTML();
+   // } 
     audio_player.addEventListener(
       "canplay",
       () => {
