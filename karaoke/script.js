@@ -418,12 +418,19 @@ var import_status_song;
 var import_status_lyric;
 var import_selected_song;
 var import_selected_lyric;
+var import_selected_lyric_text;
 var audio_player;
 var button_playpause;
-var button_playpause_span;
+//var button_playpause_span;
 var progress_bar;
 var bottom_bar;
-var fs_text;
+//var fs_text;
+var fs_img;
+var playpause_img;
+
+var import_dialog_separate;
+var import_dialog_package;
+var import_dialog_main;
 
 var playback_time;
 var playback_time_left;
@@ -443,12 +450,18 @@ window.addEventListener("load", () => {
   import_status_song = document.getElementById("import-status-song");
   audio_player = document.getElementById("audio-player");
   button_playpause = document.getElementById("playback-playpause-button");
-  button_playpause_span = button_playpause.children[0];
+  //button_playpause_span = button_playpause.children[0];
   progress_bar = document.getElementById("playback-progress");
   playback_time = document.getElementById("playback-time-current");
   playback_time_left = document.getElementById("playback-time-remaining");
   bottom_bar = document.getElementById("bottom-bar");
-  fs_text = document.getElementById("fullscreen-text");
+  //fs_text = document.getElementById("fullscreen-text");
+  fs_img = document.getElementById("fullscreen-icon");
+  playpause_img = document.getElementById("playpause-icon");
+
+  import_dialog_main = document.getElementById("import-dialog-main");
+  import_dialog_separate = document.getElementById("import-dialog-separate");
+  import_dialog_package = document.getElementById("import-dialog-package");
 
   progress_bar.disabled = true;
   button_playpause.disabled = true;
@@ -489,20 +502,25 @@ lastStartTime = 0;
 //NEW LOGIC
 mostRecentLyric = null;
 lastMostRecentLyric = null;
+
 class MediaControls {
   static ToggleFullscreen() {
     if (document.fullscreenElement == null) {
       document.body.requestFullscreen();
-      fs_text.innerText = "fullscreen_exit";
+      //fs_text.innerText = "fullscreen_exit";
+      fs_img.src = "./assets/icon_fullscreen_exit.svg";
     } else {
       document.exitFullscreen();
-      fs_text.innerText = "fullscreen";
+      //fs_text.innerText = "fullscreen";
+      fs_img.src = "./assets/icon_fullscreen_enter.svg";
     }
   }
 
   static LoadCurrentAudio() {
-    button_playpause_span.innerText = "play_arrow";
+    //button_playpause_span.innerText = "play_arrow";
+    playpause_img.src = "./assets/icon_play.svg";
     audio_player.pause();
+
     audio_player.src = URL.createObjectURL(import_selected_song);
     audio_player.load();
     progress_bar.disabled = false;
@@ -522,11 +540,13 @@ class MediaControls {
         this.ProcessLyrics();
       }, 10);
       audio_player.play();
-      button_playpause_span.innerText = "pause";
+      //button_playpause_span.innerText = "pause";
+      playpause_img.src = "./assets/icon_pause.svg";
     } else {
       clearInterval(intervalId);
       audio_player.pause();
-      button_playpause_span.innerText = "play_arrow";
+      //button_playpause_span.innerText = "play_arrow";
+      playpause_img.src = "./assets/icon_play.svg";
     }
   }
 
@@ -723,7 +743,8 @@ class MediaControls {
 
   static onEnd(ev) {
     audio_player.pause();
-    button_playpause_span.innerText = "play_arrow";
+    //button_playpause_span.innerText = "play_arrow";
+    playpause_img.src = "./assets/icon_play.svg";
   }
 
   static onProgressBarChange(value) {
@@ -748,21 +769,13 @@ class MediaControls {
     }
     this.lastTimeout = setTimeout(() => {
       bottom_bar.classList.add("hidden");
-    }, 1000);
+    }, 2000);
   }
 }
 
 class LyricsControls {
   static LoadTTML() {
-    var reader = new FileReader();
-
-    reader.onload = function (e) {
-      var content = reader.result;
-      currentLyrics = undefined;
-      currentLyrics = MAKE(content);
-    };
-
-    reader.readAsText(import_selected_lyric);
+    currentLyrics = MAKE(import_selected_lyric_text);
   }
 }
 
@@ -790,6 +803,16 @@ function RenderTTML(ttml) {
 hasSelectedSong = false;
 hasSelectedLyric = false;
 class ImportMenu {
+  static readLyric() {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      import_selected_lyric_text = reader.result;
+    };
+
+    reader.readAsText(import_selected_lyric);
+  }
+
   static buttonSong() {
     document.getElementById("input-file-song").click();
   }
@@ -868,6 +891,7 @@ class ImportMenu {
     console.log(e.target.files);
     import_status_lyric.innerText = "Lyric: " + e.target.files[0].name;
     import_selected_lyric = e.target.files[0];
+
     hasSelectedLyric = true;
     this.checkEnableOkButton();
   }
@@ -875,7 +899,6 @@ class ImportMenu {
   static checkEnableOkButton() {
     document.getElementById("import-button-ok").disabled = !(
       hasSelectedSong && hasSelectedLyric
-      //(hasSelectedSong || hasSelectedLyric)
     );
   }
 
@@ -893,10 +916,152 @@ class ImportMenu {
   }
 
   static LoadFiles() {
-   // if (hasSelectedSong && hasSelectedLyric) {
-      MediaControls.LoadCurrentAudio();
-      LyricsControls.LoadTTML();
-   // } 
+    MediaControls.LoadCurrentAudio();
+    this.readLyric();
+    LyricsControls.LoadTTML();
+    audio_player.addEventListener(
+      "canplay",
+      () => {
+        MediaControls.TogglePausePlay();
+      },
+      { once: true }
+    );
+  }
+}
+
+class ImportMenuEx {
+  static buttonSong() {
+    document.getElementById("input-file-song").click();
+  }
+
+  static buttonLyric() {
+    document.getElementById("input-file-lyric").click();
+  }
+
+  static buttonPackage() {
+    document.getElementById("input-file-package").click();
+  }
+
+  static inputChangeSong(e) {
+    console.log(e.target.files);
+    var file = e.target.files[0];
+    import_status_song.innerText = "Song: " + file.name;
+    import_selected_song = file;
+    hasSelectedSong = true;
+    this.checkEnableOkButton();
+    //}
+  }
+
+  static inputChangeLyric(e) {
+    console.log(e.target.files);
+    import_status_lyric.innerText = "Lyric: " + e.target.files[0].name;
+    import_selected_lyric = e.target.files[0];
+    this.readLyric();
+    hasSelectedLyric = true;
+    this.checkEnableOkButton();
+  }
+
+  static inputChangePackage(e) {
+    const file = e.target.files[0];
+
+    if (file.name.toLowerCase().endsWith("pkp")) {
+      //It is a zip file
+
+      try {
+        JSZip.loadAsync(file).then(
+          function (zip) {
+            console.log("loaded zip");
+
+            zip
+              .file("meta.json")
+              .async("string")
+              .then((m) => {
+                let json = JSON.parse(m);
+                let files = json.files;
+                let songPath = files.song;
+                let ttmlPath = files.ttml;
+
+                zip
+                  .file(songPath)
+                  .async("blob")
+                  .then((blob) => {
+                    //console.log(blob);
+                    import_selected_song = blob;
+                    zip
+                      .file(ttmlPath)
+                      .async("string")
+                      .then((s) => {
+                        import_selected_lyric_text = s;
+                        ImportMenuEx.LoadFiles();
+                      });
+                  });
+              });
+          },
+          function (e) {
+            alert("Error reading zip! " + e.message);
+          }
+        );
+      } catch (e) {
+        alert("an error occured: " + e);
+      }
+    }
+  }
+
+  static readLyric() {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      import_selected_lyric_text = reader.result;
+    };
+
+    reader.readAsText(import_selected_lyric);
+  }
+
+  static checkEnableOkButton() {
+    document.getElementById("import-button-ok").disabled = !(
+      hasSelectedSong && hasSelectedLyric
+    );
+  }
+
+  static openImportMenu() {
+    import_dialog_main.classList.remove("closed");
+  }
+
+  static openImportMenuSeparate() {
+    import_dialog_separate.classList.remove("closed");
+    import_status_song.innerText = "Song: -";
+    import_status_lyric.innerText = "Lyric: -";
+    hasSelectedLyric = false;
+    hasSelectedSong = false;
+    this.checkEnableOkButton();
+  }
+
+  static openImportMenuPackage() {
+    import_dialog_package.classList.remove("closed");
+  }
+
+  static closeImportMenu() {
+    import_dialog_main.classList.add("closed");
+  }
+
+  static closeImportMenuSeparate() {
+    import_dialog_separate.classList.add("closed");
+  }
+
+  static closeImportMenuPackage() {
+    import_dialog_package.classList.add("closed");
+  }
+
+  static closeAll() {
+    this.closeImportMenu();
+    this.closeImportMenuSeparate();
+    this.closeImportMenuPackage();
+  }
+
+  static LoadFiles() {
+    this.closeAll();
+    MediaControls.LoadCurrentAudio();
+    LyricsControls.LoadTTML();
     audio_player.addEventListener(
       "canplay",
       () => {

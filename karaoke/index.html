@@ -1,112 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Karaoke</title>
-    <link rel="stylesheet"
+    <!--link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <style>
-        .material-symbols-rounded {
-            font-variation-settings:
+        <style>
+            .material-symbols-rounded {
+                font-variation-settings:
                 'FILL' 1,
                 'wght' 700,
                 'GRAD' 200,
                 'opsz' 64
-        }
-    </style>
-    <link rel="stylesheet" href="styles.css">
-    <!--script src="./lib/jszip.min.js"></script -->
-    <script src="libs/silentaudio.js"></script>
+            }
+        </style-->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="./lib/jszip.min.js"></script>
+    <script src="tauri-fix.js"></script>
     <script src="script.js"></script>
-</head>
+  </head>
 
-<body>
-    <audio id="audio-player" style="display: none;"></audio>
+  <body>
+    <audio id="audio-player" style="display: none"></audio>
     <div class="lyrics-area masked" id="lyrics-area">
-        <p class="lyrics left display" style="--progress: 100%; --lyrics-reached: #ffffff;">
-            <span class="lyrics-word">Waiting for</span>
-            <span class="lyrics-word special-import" onclick="ImportMenu.openImportMenu();">import</span>
+      <p
+        class="lyrics left display"
+        style="--progress: 100%; --lyrics-reached: #ffffff"
+      >
+        <span class="lyrics-word">Waiting for</span>
+        <span
+          class="lyrics-word special-import"
+          onclick="ImportMenuEx.openImportMenu();"
+          >import</span
+        >
+      </p>
+      <p
+        class="lyrics left display small"
+        style="
+          --lyrics-reached: #ffffff;
+          --progress: 100%;
+          font-size: 2em;
+          text-align: center;
+        "
+      >
+        <span class="lyrics-word">(hover over the bottom of the screen)</span>
+      </p>
+    </div>
+
+    <div
+      class="touch-bar"
+      id="touch-bar"
+      onpointerenter="MediaControls.onTouchBarEnter();"
+      onpointerleave="MediaControls.onTouchBarExit();"
+    >
+      <div class="bottom-bar hidden" id="bottom-bar">
+        <button
+          class="playback-button"
+          id="playback-playpause-button"
+          onclick="MediaControls.TogglePausePlay();"
+        >
+          <!--span class="material-symbols-rounded"> play_arrow </span-->
+          <img
+            id="playpause-icon"
+            src="./assets/icon_play.svg"
+            class="tint-dark"
+          />
+        </button>
+
+        <p
+          class="playback-time"
+          style="text-align: left"
+          id="playback-time-current"
+        >
+          00:00
         </p>
-        <p class="lyrics left display small"
-            style=" --lyrics-reached: #ffffff; --progress: 100%; font-size: 2em; text-align:center;">
-            <span class="lyrics-word">(hover over the bottom of the screen)</span>
+
+        <input
+          type="range"
+          class="playback-progress styled-slider slider-progress"
+          name="playback-progress"
+          id="playback-progress"
+          onpointerup="MediaControls.onProgressBarChange(this.value);"
+          onpointerdown="MediaControls.onProgressBarClick();"
+          on
+          min="0"
+          max="1"
+          step=".00001"
+          value="0"
+        />
+
+        <p
+          class="playback-time"
+          style="text-align: right"
+          id="playback-time-remaining"
+        >
+          -00:00
         </p>
+
+        <button onclick="ImportMenuEx.openImportMenu();">
+          <!--span class="material-symbols-rounded"> file_open </span-->
+          <img src="./assets/icon_file_open.svg" class="tint-dark" />
+        </button>
+
+        <button onclick="MediaControls.ToggleFullscreen();">
+          <!--span class="material-symbols-rounded" id="fullscreen-text">
+            fullscreen
+          </span-->
+          <img
+            id="fullscreen-icon"
+            src="./assets/icon_fullscreen_enter.svg"
+            class="tint-dark"
+          />
+        </button>
+      </div>
     </div>
 
-    <div class="touch-bar" id="touch-bar" onpointerenter="MediaControls.onTouchBarEnter();"
-        onpointerleave="MediaControls.onTouchBarExit();">
-        <div class="bottom-bar hidden" id="bottom-bar">
+    <div class="import-dialog closed" id="import-dialog-main">
+      <div class="card import children-fill col">
+        <h1 style="text-align: center">Load Files</h1>
+        <button class="normal children-fill row second" id="import-package" onclick="ImportMenuEx.openImportMenuPackage();">
+          <img
+            src="./assets/icon_package.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Via Karaoke Package (.pkp)</span>
+        </button>
+        <button
+          class="normal children-fill row second"
+          id="import-separatefiles"
+          onclick="ImportMenuEx.openImportMenuSeparate();"
+        >
+          <img
+            src="./assets/icon_media.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Via separate files</span>
+        </button>
+        <br />
+        <button class="inverse" onclick="ImportMenuEx.closeAll();"><b>Cancel</b></button>
+      </div>
+    </div>
 
-            <button class="playback-button" id="playback-playpause-button" onclick="MediaControls.TogglePausePlay();">
-                <span class="material-symbols-rounded">
-                    play_arrow
-                </span>
-            </button>
+    <div class="import-dialog closed" id="import-dialog-separate">
+      <div class="card import children-fill col">
+        <h1 style="text-align: center">Load Files (Separate)</h1>
+        <p id="import-status-song">Song: -</p>
+        <p id="import-status-lyric">Lyric: -</p>
+        <br />
+        <button class="normal" id="import-separate-music" onclick="ImportMenuEx.buttonSong()">
+          <img
+            src="./assets/icon_music.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Select music file</span>
+        </button>
 
-            <p class="playback-time" style="text-align:left;" id="playback-time-current">
-                00:00
-            </p>
+        <button class="normal" id="import-separate-ttml" onclick="ImportMenuEx.buttonLyric()">
+          <img
+            src="./assets/icon_lyrics.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Select TTML file</span>
+        </button>
 
-            <input type="range" class="playback-progress styled-slider slider-progress" name="playback-progress"
-                id="playback-progress" onpointerup="MediaControls.onProgressBarChange(this.value);"
-                onpointerdown="MediaControls.onProgressBarClick();" on min="0" max="1" step=".00001" value="0">
-
-            <p class="playback-time" style="text-align:right;" id="playback-time-remaining">
-                -00:00
-            </p>
-
-            <button onclick="ImportMenu.openImportMenu();">
-                <span class="material-symbols-rounded">
-                    file_open
-                </span>
-            </button>
-
-            <button onclick="MediaControls.ToggleFullscreen();">
-                <span class="material-symbols-rounded" id="fullscreen-text">
-                    fullscreen
-                </span>
-            </button>
+        <div
+          class="children-fill row equal"
+          style="margin-top: 1em; font-weight: bold"
+        >
+          <button class="inverse" onclick="ImportMenuEx.closeImportMenuSeparate()"><b>Cancel</b></button>
+          <button class="inverse" id="import-button-ok" onclick="ImportMenuEx.LoadFiles();"><b>OK</b></button>
         </div>
+      </div>
     </div>
 
-    <div class="import-dialog closed" id="import-dialog">
-        <div class="import-card" id="import-card">
-            <h1>Load files</h1>
-            <p>
-                Upload any music file and a ttml lyrics file.
-            </p>
-            <p id="import-status-song">
-                Song: -
-            </p>
-            <p id="import-status-lyric">
-                Lyric: -
-            </p>
-            <br />
-            <div class="import-buttons">
-                <button id="import-button-cancel" onclick="ImportMenu.closeImportMenu();">
-                    Cancel
-                </button>
-                <br />
-                <button id="import-button-song" onclick="ImportMenu.buttonSong();">
-                    Select song
-                </button>
-                <button id="import-button-lyric" onclick="ImportMenu.buttonLyric();">
-                    Select lyric
-                </button>
-                <br />
-                <button id="import-button-ok" onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); ">
-                    OK
-                </button>
-            </div>
-            <input type="file" id="input-file-song" accept="audio/*" style="display: none;"
-                onchange="ImportMenu.inputChangeSong(event)">
-            <input type="file" id="input-file-lyric" accept=".ttml" style="display: none;"
-                onchange="ImportMenu.inputChangeLyric(event)">
+    <div class="import-dialog closed" id="import-dialog-package">
+      <div class="card import children-fill col">
+        <h1 style="text-align: center">Load Files (Package)</h1>
+        <button
+          class="normal"
+          id="import-separate-music"
+          onclick="ImportMenuEx.buttonPackage();"
+        >
+          <img
+            src="./assets/icon_package.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Select package file</span>
+        </button>
+
+        <div
+          class="children-fill row equal"
+          style="margin-top: 1em; font-weight: bold"
+        >
+          <button class="inverse" onclick="ImportMenuEx.closeImportMenuPackage();"><b>Cancel</b></button>
         </div>
+      </div>
     </div>
-</body>
 
+    <input
+      type="file"
+      id="input-file-song"
+      accept="audio/*"
+      style="display: none"
+      onchange="ImportMenuEx.inputChangeSong(event)"
+    />
+    <input
+      type="file"
+      id="input-file-lyric"
+      accept=".ttml"
+      style="display: none"
+      onchange="ImportMenuEx.inputChangeLyric(event)"
+    />
+    <input
+      type="file"
+      id="input-file-package"
+      accept=".pkp"
+      style="display: none"
+      onchange="ImportMenuEx.inputChangePackage(event)"
+    />
+
+    <!--div class="import-dialog " id="import-dialog">
+      <div class="import-card" id="import-card">
+        <h1>Load files</h1>
+        <p>Upload any music file and a ttml lyrics file.</p>
+        <p id="import-status-song">Song: -</p>
+        <p id="import-status-lyric">Lyric: -</p>
+        <br />
+        <div class="import-buttons">
+          <button
+            id="import-button-cancel"
+            onclick="ImportMenu.closeImportMenu();"
+          >
+            Cancel
+          </button>
+          <br />
+          <button id="import-button-song" onclick="ImportMenu.buttonSong();">
+            Select song
+          </button>
+          <button id="import-button-lyric" onclick="ImportMenu.buttonLyric();">
+            Select lyric
+          </button>
+          <br />
+          <button
+            id="import-button-ok"
+            onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); "
+          >
+            OK
+          </button>
+        </div>
+        <input
+          type="file"
+          id="input-file-song"
+          accept="audio/*"
+          style="display: none"
+          onchange="ImportMenu.inputChangeSong(event)"
+        />
+        <input
+          type="file"
+          id="input-file-lyric"
+          accept=".ttml"
+          style="display: none"
+          onchange="ImportMenu.inputChangeLyric(event)"
+        />
+      </div>
+    </div-->
+
+    <!--div class="import-dialog " id="import-dialog">
+      <div class="import-card" id="import-card">
+        <h1>Load files</h1>
+        <p>Upload any music file and a ttml lyrics file.</p>
+        <p id="import-status-song">Song: -</p>
+        <p id="import-status-lyric">Lyric: -</p>
+        <br />
+        <div class="import-buttons">
+          <button
+            id="import-button-cancel"
+            onclick="ImportMenu.closeImportMenu();"
+          >
+            Cancel
+          </button>
+          <br />
+          <button id="import-button-song" onclick="ImportMenu.buttonSong();">
+            Select song
+          </button>
+          <button id="import-button-lyric" onclick="ImportMenu.buttonLyric();">
+            Select lyric
+          </button>
+          <br />
+          <button
+            id="import-button-ok"
+            onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); "
+          >
+            OK
+          </button>
+        </div>
+        <input
+          type="file"
+          id="input-file-song"
+          accept="audio/*"
+          style="display: none"
+          onchange="ImportMenu.inputChangeSong(event)"
+        />
+        <input
+          type="file"
+          id="input-file-lyric"
+          accept=".ttml"
+          style="display: none"
+          onchange="ImportMenu.inputChangeLyric(event)"
+        />
+      </div>
+    </div-->
+  </body>
 </html>
