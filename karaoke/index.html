@@ -23,6 +23,17 @@
   </head>
 
   <body>
+    <div class="background disabled">
+      <img
+        src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+      />
+      <img
+        src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+      />
+      <img
+        src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+      />
+    </div>
     <audio id="audio-player" style="display: none"></audio>
     <div class="lyrics-area masked" id="lyrics-area">
       <p
@@ -117,10 +128,24 @@
       </div>
     </div>
 
+    <!--Import Main-->
     <div class="import-dialog closed" id="import-dialog-main">
       <div class="card import children-fill col">
-        <h1 style="text-align: center">Load Files</h1>
-        <button class="normal children-fill row second" id="import-package" onclick="ImportMenuEx.openImportMenuPackage();">
+        <div class="children-fill row first">
+          <h1>Import</h1>
+          <button class="clear" onclick="">
+            <img
+              src="./assets/icon_settings.svg"
+              class="tint-light"
+              style="font-size: 1.25em"
+            />
+          </button>
+        </div>
+        <button
+          class="normal children-fill row second"
+          id="import-package"
+          onclick="ImportMenuEx.openImportMenuPackage();"
+        >
           <img
             src="./assets/icon_package.svg"
             class="tint-light"
@@ -141,17 +166,24 @@
           <span style="margin-right: 0.5em">Via separate files</span>
         </button>
         <br />
-        <button class="inverse" onclick="ImportMenuEx.closeAll();"><b>Cancel</b></button>
+        <button class="inverse" onclick="ImportMenuEx.closeAll();">
+          <b>Cancel</b>
+        </button>
       </div>
     </div>
 
+    <!--Import Separate-->
     <div class="import-dialog closed" id="import-dialog-separate">
       <div class="card import children-fill col">
-        <h1 style="text-align: center">Load Files (Separate)</h1>
+        <h1 style="text-align: center">Import (Separate)</h1>
         <p id="import-status-song">Song: -</p>
         <p id="import-status-lyric">Lyric: -</p>
         <br />
-        <button class="normal" id="import-separate-music" onclick="ImportMenuEx.buttonSong()">
+        <button
+          class="normal"
+          id="import-separate-music"
+          onclick="ImportMenuEx.buttonSong()"
+        >
           <img
             src="./assets/icon_music.svg"
             class="tint-light"
@@ -160,7 +192,11 @@
           <span style="margin-right: 0.5em">Select music file</span>
         </button>
 
-        <button class="normal" id="import-separate-ttml" onclick="ImportMenuEx.buttonLyric()">
+        <button
+          class="normal"
+          id="import-separate-ttml"
+          onclick="ImportMenuEx.buttonLyric()"
+        >
           <img
             src="./assets/icon_lyrics.svg"
             class="tint-light"
@@ -173,15 +209,27 @@
           class="children-fill row equal"
           style="margin-top: 1em; font-weight: bold"
         >
-          <button class="inverse" onclick="ImportMenuEx.closeImportMenuSeparate()"><b>Cancel</b></button>
-          <button class="inverse" id="import-button-ok" onclick="ImportMenuEx.LoadFiles();"><b>OK</b></button>
+          <button
+            class="inverse"
+            onclick="ImportMenuEx.closeImportMenuSeparate()"
+          >
+            <b>Cancel</b>
+          </button>
+          <button
+            class="inverse"
+            id="import-button-ok"
+            onclick="ImportMenuEx.LoadFiles();"
+          >
+            <b>OK</b>
+          </button>
         </div>
       </div>
     </div>
 
+    <!--Import Package-->
     <div class="import-dialog closed" id="import-dialog-package">
       <div class="card import children-fill col">
-        <h1 style="text-align: center">Load Files (Package)</h1>
+        <h1 style="text-align: center">Import (Package)</h1>
         <button
           class="normal"
           id="import-separate-music"
@@ -199,7 +247,12 @@
           class="children-fill row equal"
           style="margin-top: 1em; font-weight: bold"
         >
-          <button class="inverse" onclick="ImportMenuEx.closeImportMenuPackage();"><b>Cancel</b></button>
+          <button
+            class="inverse"
+            onclick="ImportMenuEx.closeImportMenuPackage();"
+          >
+            <b>Cancel</b>
+          </button>
         </div>
       </div>
     </div>
@@ -225,6 +278,72 @@
       style="display: none"
       onchange="ImportMenuEx.inputChangePackage(event)"
     />
+
+    <!--Settings-->
+    <div class="import-dialog closed" id="import-dialog-settings">
+      <div class="card import children-fill col">
+        <h1 style="text-align: center">Settings</h1>
+
+        <div class="children-fill row first">
+          <p>Colored Background</p>
+          <label class="md3 switch children-fill slightleft">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <div class="children-fill row first">
+          <p>Track Delay</p>
+          <label class="md3 switch children-fill slightleft">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <div class="children-fill row first">
+          <p>Global Delay</p>
+          <label class="md3 switch children-fill slightleft">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+        <div class="children-fill row first">
+          <input type="range" class="playback-progress dark" />
+          <p
+            style="font-size: 0.75em; margin-left: 0.75em; font-weight: lighter"
+          >
+            100ms
+          </p>
+        </div>
+
+        <br />
+        <button
+          class="normal"
+          id="import-separate-ttml"
+          onclick="ImportMenuEx.buttonLyric()"
+        >
+          <img
+            src="./assets/icon_settings.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Clear App Cache</span>
+        </button>
+
+        <div
+          class="children-fill row equal"
+          style="margin-top: 1em; font-weight: bold"
+        >
+          <button
+            class="inverse"
+            id="import-button-ok"
+            onclick="ImportMenuEx.LoadFiles();"
+          >
+            <b>OK</b>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!--div class="import-dialog " id="import-dialog">
       <div class="import-card" id="import-card">

@@ -437,6 +437,12 @@ var playback_time_left;
 
 var currentLyrics;
 
+var background_container;
+var backgrounds;
+
+var settings_doImageBackground = false;
+var sttings_fontSizeLyrics = 1;
+
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 const $Q = document.querySelector;
@@ -468,6 +474,9 @@ window.addEventListener("load", () => {
 
   audio_player.addEventListener("timeupdate", MediaControls.onTimeUpdate);
   audio_player.addEventListener("ended", MediaControls.onEnd);
+
+  background_container = document.querySelector(".background");
+  backgrounds = document.querySelectorAll(".background>*");
 
   document.body.addEventListener("keyup", function (e) {
     if (e.target.tagName == "button") return;
@@ -538,7 +547,7 @@ class MediaControls {
     if (audio_player.paused) {
       intervalId = setInterval(() => {
         this.ProcessLyrics();
-      }, 10);
+      }, 20);
       audio_player.play();
       //button_playpause_span.innerText = "pause";
       playpause_img.src = "./assets/icon_pause.svg";
@@ -771,6 +780,20 @@ class MediaControls {
       bottom_bar.classList.add("hidden");
     }, 2000);
   }
+
+  static loadImage(blob) {
+    if (blob == null) {
+      background_container.classList.add("disabled");
+      return;
+    }
+
+    background_container.classList.remove("disabled");
+
+    var url = URL.createObjectURL(blob);
+    backgrounds.forEach((b) => {
+      b.src = url;
+    });
+  }
 }
 
 class LyricsControls {
@@ -980,6 +1003,7 @@ class ImportMenuEx {
                 let files = json.files;
                 let songPath = files.song;
                 let ttmlPath = files.ttml;
+                let imgPath = files.album_cover;
 
                 zip
                   .file(songPath)
@@ -992,6 +1016,21 @@ class ImportMenuEx {
                       .async("string")
                       .then((s) => {
                         import_selected_lyric_text = s;
+                        
+                        /*
+                        var imgF = zip.file(imgPath);
+                        if (imgF != null) {
+                          console.log("there is img");
+                          imgF.async("blob").then((b) => {
+                            MediaControls.loadImage(b);
+                            ImportMenuEx.LoadFiles();
+                          });
+                        } else {
+                          MediaControls.loadImage(null);
+                          ImportMenuEx.LoadFiles();
+                        }
+                        */
+
                         ImportMenuEx.LoadFiles();
                       });
                   });
