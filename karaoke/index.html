@@ -18,12 +18,13 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
     <script src="./lib/jszip.min.js"></script>
+    <script src="./lib/nosleep.js"></script>
     <script src="tauri-fix.js"></script>
     <script src="script.js"></script>
   </head>
 
   <body>
-    <div class="background disabled">
+    <!--div class="background disabled">
       <img
         src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
       />
@@ -33,7 +34,7 @@
       <img
         src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
       />
-    </div>
+    </div-->
     <audio id="audio-player" style="display: none"></audio>
     <div class="lyrics-area masked" id="lyrics-area">
       <p
@@ -103,19 +104,28 @@
         />
 
         <p
-          class="playback-time"
+          class="playback-time disabled"
           style="text-align: right"
           id="playback-time-remaining"
         >
           -00:00
         </p>
 
-        <button onclick="ImportMenuEx.openImportMenu();">
+        <button onclick="ImportMenuEx.openImportMenu();" title="Import">
           <!--span class="material-symbols-rounded"> file_open </span-->
           <img src="./assets/icon_file_open.svg" class="tint-dark" />
         </button>
 
-        <button onclick="MediaControls.ToggleFullscreen();">
+        <button onclick="ToggleSleep();" title="Wakelock">
+          <!--span class="material-symbols-rounded"> file_open </span-->
+          <img
+            id="eye-icon"
+            src="./assets/icon_eye_off.svg"
+            class="tint-dark"
+          />
+        </button>
+
+        <button onclick="MediaControls.ToggleFullscreen();" title="Fullscreen">
           <!--span class="material-symbols-rounded" id="fullscreen-text">
             fullscreen
           </span-->
@@ -343,6 +353,21 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <div
+      style="
+        z-index: 99999;
+        position: fixed;
+        width: fit-content;
+        height: fit-content;
+        top: 0;
+        left: 0;
+      "
+    >
+      <p id="fps" style="color: rgba(255, 255, 255, 0.527); font-size: 1em">
+        FPS
+      </p>
     </div>
 
     <!--div class="import-dialog " id="import-dialog">

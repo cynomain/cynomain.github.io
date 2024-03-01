@@ -427,6 +427,7 @@ var bottom_bar;
 //var fs_text;
 var fs_img;
 var playpause_img;
+var eye_img;
 
 var import_dialog_separate;
 var import_dialog_package;
@@ -443,11 +444,16 @@ var backgrounds;
 var settings_doImageBackground = false;
 var sttings_fontSizeLyrics = 1;
 
+var FPS_COUNTER;
+
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 const $Q = document.querySelector;
 const $QA = document.querySelectorAll;
 const $ID = document.getElementById;
+
+var noSleep = new NoSleep();
+var isWakeLock = false;
 
 window.addEventListener("load", () => {
   lyrics_area = document.getElementById("lyrics-area");
@@ -464,6 +470,7 @@ window.addEventListener("load", () => {
   //fs_text = document.getElementById("fullscreen-text");
   fs_img = document.getElementById("fullscreen-icon");
   playpause_img = document.getElementById("playpause-icon");
+  eye_img = document.getElementById("eye-icon");
 
   import_dialog_main = document.getElementById("import-dialog-main");
   import_dialog_separate = document.getElementById("import-dialog-separate");
@@ -477,6 +484,8 @@ window.addEventListener("load", () => {
 
   background_container = document.querySelector(".background");
   backgrounds = document.querySelectorAll(".background>*");
+
+  FPS_COUNTER = document.getElementById("fps");
 
   document.body.addEventListener("keyup", function (e) {
     if (e.target.tagName == "button") return;
@@ -501,8 +510,21 @@ window.addEventListener("load", () => {
   });
 });
 
+function ToggleSleep() {
+  if (isWakeLock) {
+    noSleep.disable();
+    eye_img.src = "./assets/icon_eye_off.svg"
+    isWakeLock = false;
+  } else {
+    noSleep.enable();
+    eye_img.src = "./assets/icon_eye_on.svg"
+    isWakeLock = true;
+  }
+}
+
 isSeeking = false;
 intervalId = 0;
+prevTime = Date.now();
 
 //OLD LOGIC
 hasScrolledThisFrame = false;
@@ -545,14 +567,19 @@ class MediaControls {
     }
 
     if (audio_player.paused) {
+      intervalId = requestAnimationFrame(MediaControls.ProcessLyrics);
+      /*
       intervalId = setInterval(() => {
         this.ProcessLyrics();
       }, 20);
+*/
+
       audio_player.play();
       //button_playpause_span.innerText = "pause";
       playpause_img.src = "./assets/icon_pause.svg";
     } else {
-      clearInterval(intervalId);
+      cancelAnimationFrame(intervalId);
+      //clearInterval(intervalId);
       audio_player.pause();
       //button_playpause_span.innerText = "play_arrow";
       playpause_img.src = "./assets/icon_play.svg";
@@ -626,7 +653,7 @@ class MediaControls {
 
             if (!hasScrolledThisFrame && lastStartTime != d.data.StartTime) {
               lastStartTime = d.data.StartTime;
-              this.smoothScroll(lyrics_area, d.elements[0]);
+              MediaControls.smoothScroll(lyrics_area, d.elements[0]);
             }
           } else if (d.data.Type === "Interlude") {
             d.elements[0].style = `--progress: ${
@@ -725,10 +752,27 @@ class MediaControls {
 
         //NEW LOGIC
         if (mostRecentLyric !== lastMostRecentLyric) {
-          this.smoothScroll(lyrics_area, mostRecentLyric);
+          MediaControls.smoothScroll(lyrics_area, mostRecentLyric);
           lastMostRecentLyric = mostRecentLyric;
         }
       });
+    }
+
+    const time2 = Date.now();
+    frames++;
+    if (time2 > prevTime + 1000) {
+      let fps = Math.round( ( frames * 1000 ) / ( time2 - prevTime ) );
+      prevTime = time2;
+      frames = 0;
+
+      //console.info('FPS: ', fps);
+
+      FPS_COUNTER.innerText = "" + fps;
+    }
+
+
+    if (!audio_player.paused) {
+      intervalId = requestAnimationFrame(MediaControls.ProcessLyrics);
     }
   }
 
@@ -1016,7 +1060,7 @@ class ImportMenuEx {
                       .async("string")
                       .then((s) => {
                         import_selected_lyric_text = s;
-                        
+
                         /*
                         var imgF = zip.file(imgPath);
                         if (imgF != null) {
