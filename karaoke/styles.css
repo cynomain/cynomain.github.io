@@ -377,22 +377,42 @@ button:active:enabled {
   text-align: right;
 }
 
-.lyrics-word {
-  background-image: linear-gradient(
-    to right,
-    var(--lyrics-reached),
-    var(--lyrics-reached) var(--progress),
-    var(--lyrics-not-reached) var(--progress),
-    var(--lyrics-not-reached)
-  );
+.lyrics:not(.vertical),
+.interlude {
+  & > .lyrics-word {
+    background-image: linear-gradient(
+      to right,
+      var(--lyrics-reached),
+      var(--lyrics-reached) var(--progress),
+      var(--lyrics-not-reached) var(--progress),
+      var(--lyrics-not-reached)
+    );
+    /*animation: wipe-right var(--lyrics-length) linear 0s iteration-count direction fill-mode;*/
+    background-clip: text;
+    text-size-adjust: auto;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
 
-  /*animation: wipe-right var(--lyrics-length) linear 0s iteration-count direction fill-mode;*/
+    transition: background-image 0.2s;
+  }
+}
+
+.lyrics.vertical {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+
+  background-image: linear-gradient(
+    to bottom,
+    var(--lyrics-reached),
+    var(--lyrics-reached) calc(var(--progress) * 0.95 + 5%),
+    var(--lyrics-not-reached) calc(var(--progress) * 0.95 + 5%),
+    var(--lyrics-not-reached)
+  ) !important;
+
   background-clip: text;
   text-size-adjust: auto;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
-
-  transition: background-image 0.2s;
 }
 
 .lyrics.reached {
@@ -752,6 +772,10 @@ input[type="submit"] {
 
 .bright-outline {
   border: var(--c-primary-container-on) solid 0.1em !important;
+}
+
+.outlined {
+  outline: yellow 2px dotted;
 }
 
 .spacer {

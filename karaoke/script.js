@@ -364,6 +364,7 @@ class TTMLRenderer {
     } else {
       let wordElement = this.createWord(vocalGroup.Text);
       el.appendChild(wordElement);
+      el.classList.add("vertical");
     }
 
     el.addEventListener("click", () => {
@@ -513,11 +514,11 @@ window.addEventListener("load", () => {
 function ToggleSleep() {
   if (isWakeLock) {
     noSleep.disable();
-    eye_img.src = "./assets/icon_eye_off.svg"
+    eye_img.src = "./assets/icon_eye_off.svg";
     isWakeLock = false;
   } else {
     noSleep.enable();
-    eye_img.src = "./assets/icon_eye_on.svg"
+    eye_img.src = "./assets/icon_eye_on.svg";
     isWakeLock = true;
   }
 }
@@ -612,6 +613,7 @@ class MediaControls {
           if (d.data.Type === "Vocal") {
             const leads = d.data.Lead;
             if (leads !== undefined && leads !== null) {
+              //Words
               for (let i = 0; i < leads.length; i++) {
                 const l = leads[i];
                 const wordElement = d.elements[0].childNodes[i];
@@ -620,8 +622,10 @@ class MediaControls {
                 }%;`;
               }
             } else {
+              //Lines
               let l = d.data;
-              const wordElement = d.elements[0].childNodes[0];
+              //const wordElement = d.elements[0].childNodes[0];
+              const wordElement = d.elements[0];
               wordElement.style = `--progress: ${
                 ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
               }%;`;
@@ -630,18 +634,15 @@ class MediaControls {
             d.elements[0].classList.remove("reached");
             d.elements[0].classList.remove("notreached");
 
-            /*
-            if (!hasScrolledThisFrame && lastStartTime != d.data.StartTime) {
-              lastStartTime = d.data.StartTime;
-              this.smoothScroll(lyrics_area, d.elements[0]);
-            }
-            */
             if (mostRecentLyric != d.elements[0]) {
               mostRecentLyric = d.elements[0];
             }
+
+            /*
           } else if (d.data.Type === "Line") {
             //Single
-            const wordElement = d.elements[0].childNodes[0];
+            //const wordElement = d.elements[0].childNodes[0];
+            const wordElement = d.elements[0].parentNode;
             wordElement.style = `--progress: ${
               ((time - d.data.StartTime) /
                 (d.data.EndTime - d.data.StartTime)) *
@@ -655,6 +656,7 @@ class MediaControls {
               lastStartTime = d.data.StartTime;
               MediaControls.smoothScroll(lyrics_area, d.elements[0]);
             }
+            */
           } else if (d.data.Type === "Interlude") {
             d.elements[0].style = `--progress: ${
               ((time - d.data.StartTime) /
@@ -698,6 +700,10 @@ class MediaControls {
               (n) => (n.style = "--progress: 100%")
             );
             d.elements[0].classList.add("reached");
+
+            if (d.elements[0].classList.contains("vertical")) {
+              d.elements[0].style = "--progress: 100%";
+            }
           }
 
           if (d.elements.length > 1) {
@@ -724,13 +730,19 @@ class MediaControls {
             });
 
             d.elements[0].classList.remove("reached");
-          } else if (d.data.Type === "Line") {
+
+            if (d.elements[0].classList.contains("vertical")) {
+              d.elements[0].style = "--progress: 0%";
+            }
+          } else if (d.data.Type === "Interlude") {
+            /*else if (d.data.Type === "Line") {
             //Single
             const wordElement = d.elements[0].childNodes[0];
             wordElement.style = "--progress: 0%;";
 
             d.elements[0].classList.remove("reached");
-          } else if (d.data.Type === "Interlude") {
+          } 
+          */
             d.elements[0].style = "--progress: 0%;";
 
             d.elements[0].classList.remove("reached");
@@ -761,7 +773,7 @@ class MediaControls {
     const time2 = Date.now();
     frames++;
     if (time2 > prevTime + 1000) {
-      let fps = Math.round( ( frames * 1000 ) / ( time2 - prevTime ) );
+      let fps = Math.round((frames * 1000) / (time2 - prevTime));
       prevTime = time2;
       frames = 0;
 
@@ -769,7 +781,6 @@ class MediaControls {
 
       FPS_COUNTER.innerText = "" + fps;
     }
-
 
     if (!audio_player.paused) {
       intervalId = requestAnimationFrame(MediaControls.ProcessLyrics);
@@ -999,14 +1010,45 @@ class ImportMenu {
 class ImportMenuEx {
   static buttonSong() {
     document.getElementById("input-file-song").click();
+
+    var ismBtn = document.getElementById("import-separate-music")
+    ismBtn.disabled = true;
+
+    document.body.onfocus = function () {
+      setTimeout(() => {
+        ismBtn.disabled = false;
+      }, 100);
+      document.body.onfocus = null;
+    };
   }
 
   static buttonLyric() {
     document.getElementById("input-file-lyric").click();
+
+    var istBtn = document.getElementById("import-separate-ttml")
+    istBtn.disabled = true;
+
+    document.body.onfocus = function () {
+      setTimeout(() => {
+        istBtn.disabled = false;
+      }, 100);
+      document.body.onfocus = null;
+    };
   }
 
   static buttonPackage() {
     document.getElementById("input-file-package").click();
+
+    //VIA KARAOKE PACKAGE
+    var vkpButton = document.getElementById("import-package");
+    vkpButton.disabled = true;
+
+    document.body.onfocus = function () {
+      setTimeout(() => {
+        vkpButton.disabled = false;
+      }, 100);
+      document.body.onfocus = null;
+    };
   }
 
   static inputChangeSong(e) {

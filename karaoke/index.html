@@ -36,6 +36,7 @@
       />
     </div-->
     <audio id="audio-player" style="display: none"></audio>
+
     <div class="lyrics-area masked" id="lyrics-area">
       <p
         class="lyrics left display"
@@ -154,7 +155,7 @@
         <button
           class="normal children-fill row second"
           id="import-package"
-          onclick="ImportMenuEx.openImportMenuPackage();"
+          onclick="ImportMenuEx.buttonPackage();"
         >
           <img
             src="./assets/icon_package.svg"
@@ -365,7 +366,10 @@
         left: 0;
       "
     >
-      <p id="fps" style="color: rgba(255, 255, 255, 0.527); font-size: 1em">
+      <p
+        id="fps"
+        style="color: rgba(255, 255, 255, 0.527); font-size: 1em; margin: 0"
+      >
         FPS
       </p>
     </div>
