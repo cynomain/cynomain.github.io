@@ -404,10 +404,15 @@ class TTMLRenderer {
     var el = document.createElement("p");
     el.className = "interlude close";
     el.style = "--progress: 0%";
+
+    //for (let i = 0; i < 4; i++) {
     var sp = document.createElement("span");
     sp.className = "lyrics-word interlude-circles";
     sp.innerText = "⬤ ⬤ ⬤ ⬤";
+    //sp.innerText = "⬤";
+    //sp.style = "--progress: 0%";
     el.appendChild(sp);
+    //}
 
     return el;
   }
@@ -663,6 +668,19 @@ class MediaControls {
                 (d.data.EndTime - d.data.StartTime)) *
               100
             }%;`;
+
+            /*
+            for (let i = 0; i < 4; i++) {
+              let percent =
+                ((time - d.data.StartTime) /
+                  (d.data.EndTime - d.data.StartTime)) *
+                100;
+
+              let displayPercent = clamp(((percent - 25 * i) / 25*(i+1)) * 100, 0, 100);
+
+              d.elements[0].childNodes[i].style = `--progress: ${displayPercent}%;`;
+            }
+            */
 
             d.elements[0].classList.remove("reached");
             d.elements[0].classList.add("open");
@@ -1011,7 +1029,7 @@ class ImportMenuEx {
   static buttonSong() {
     document.getElementById("input-file-song").click();
 
-    var ismBtn = document.getElementById("import-separate-music")
+    var ismBtn = document.getElementById("import-separate-music");
     ismBtn.disabled = true;
 
     document.body.onfocus = function () {
@@ -1025,7 +1043,7 @@ class ImportMenuEx {
   static buttonLyric() {
     document.getElementById("input-file-lyric").click();
 
-    var istBtn = document.getElementById("import-separate-ttml")
+    var istBtn = document.getElementById("import-separate-ttml");
     istBtn.disabled = true;
 
     document.body.onfocus = function () {
