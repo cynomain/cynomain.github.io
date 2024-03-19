@@ -1,340 +1,3 @@
-class TTML {
-  static MinimumInterludeDuration = 2;
-  static EndInterludeEarlyBy = 0.25; // Seconds before our analytical end. This is used as a prep for the next vocal
-  // Recognition Constants
-  static SyllableSyncCheck = /<span\s+begin="[\d:.]+"/g;
-  static LineSyncCheck = /<p\s+begin="[\d:.]+"/g;
-  static FeatureAgentAttribute = "ttm:agent";
-  static FeatureRoleAttribute = "ttm:role";
-  static AgentVersion = /^v(\d+)$/;
-  static TimeFormat = /(?:(\d+):)?(\d+)(?:\.(\d+))?$/;
-
-  static GetFeatureAgentVersion(element) {
-    var _a;
-    const featureAgent = element.getAttribute(this.FeatureAgentAttribute);
-    const featureAgentVersion =
-      featureAgent === null
-        ? undefined
-        : (_a = this.AgentVersion.exec(featureAgent)) === null || _a === void 0
-        ? void 0
-        : _a[1];
-    return featureAgentVersion === undefined
-      ? undefined
-      : parseInt(featureAgentVersion, 10);
-  }
-
-  static GetTimeInSeconds(time) {
-    // Grab our matches
-    const matches = this.TimeFormat.exec(time);
-    if (matches === null) {
-      return -1;
-    }
-    // Grab all our matches
-    const minutes = matches[1] ? parseInt(matches[1], 10) : 0;
-    const seconds = parseInt(matches[2], 10);
-    const milliseconds = matches[3] ? parseInt(matches[3], 10) : 0;
-    return minutes * 60 + seconds + milliseconds / 1000;
-  }
-
-  static IsNodeASpan(node) {
-    return node.nodeName === "span";
-  }
-
-  // Parse Methods
-  static parser = new DOMParser();
-
-  static ParseAppleMusicLyrics(text) {
-    // Our text is XML so we'll just parse it first
-    const parsedDocument = this.parser.parseFromString(text, "text/xml");
-    const body = parsedDocument.querySelector("body");
-    // Determine if we're syllable synced, line synced, or statically synced
-    const syncType = this.SyllableSyncCheck.test(text)
-      ? "Syllable"
-      : this.LineSyncCheck.test(text)
-      ? "Line"
-      : "Static";
-    // For static-sync we just have to extract each line of text
-    if (syncType === "Static") {
-      const result = {
-        NaturalAlignment: "Left",
-        Language: "en",
-        Type: "Static",
-        Lyrics: [],
-      };
-      for (const element of body.children) {
-        if (element.tagName === "div") {
-          for (const line of element.children) {
-            if (line.tagName === "p") {
-              // Create our lyric-metadata
-              const lyricMetadata = {
-                Text: line.textContent,
-              };
-              result.Lyrics.push(lyricMetadata);
-            }
-          }
-        }
-      }
-      // Determine our language AND natural-alignment
-      {
-        // Put all our text together for processing
-        let textToProcess = result.Lyrics[0].Text;
-        for (let index = 1; index < result.Lyrics.length; index += 1) {
-          textToProcess += `\n${result.Lyrics[index].Text}`;
-        }
-        result.NaturalAlignment = "Left";
-      }
-
-      // Wait for all our stored-promises to finish
-      return result;
-    } else if (syncType == "Line") {
-      const result = {
-        NaturalAlignment: "Left",
-        Language: "en",
-        StartTime: 0,
-        EndTime: 0,
-        Type: "Line",
-        VocalGroups: [],
-      };
-      for (const element of body.children) {
-        if (element.tagName === "div") {
-          for (const line of element.children) {
-            if (line.tagName === "p") {
-              // Determine whether or not we are opposite-aligned
-              const featureAgentVersion = this.GetFeatureAgentVersion(line);
-              const oppositeAligned =
-                featureAgentVersion === undefined
-                  ? false
-                  : featureAgentVersion === 2;
-              // Grab our times
-              const start = this.GetTimeInSeconds(line.getAttribute("begin"));
-              const end = this.GetTimeInSeconds(line.getAttribute("end"));
-              // Store our lyrics now
-              const vocalGroup = {
-                Type: "Vocal",
-                OppositeAligned: oppositeAligned,
-                Text: line.textContent,
-                StartTime: start,
-                EndTime: end,
-              };
-              result.VocalGroups.push(vocalGroup);
-            }
-          }
-        }
-      }
-      // Now set our StartTime/EndTime
-      {
-        const firstLine = result.VocalGroups[0];
-        const lastLine = result.VocalGroups[result.VocalGroups.length - 1];
-        result.StartTime = firstLine.StartTime;
-        result.EndTime = lastLine.EndTime;
-      }
-      // Determine our language AND natural-alignment
-      {
-        // Put all our text together for processing
-        const lines = [];
-        for (const vocalGroup of result.VocalGroups) {
-          if (vocalGroup.Type === "Vocal") {
-            lines.push(vocalGroup.Text);
-          }
-        }
-        const textToProcess = lines.join("\n");
-        // Determine our language
-        result.NaturalAlignment = "Left";
-      }
-      // Wait for all our stored-promises to finish
-      return result;
-    } else {
-      const result = {
-        NaturalAlignment: "Left",
-        Language: "en",
-        StartTime: 0,
-        EndTime: 0,
-        Type: "Syllable",
-        VocalGroups: [],
-      };
-      for (const element of body.children) {
-        if (element.tagName === "div") {
-          for (const line of element.children) {
-            if (line.tagName === "p") {
-              // Determine whether or not we are opposite-aligned
-              const featureAgentVersion = this.GetFeatureAgentVersion(line);
-              const oppositeAligned =
-                featureAgentVersion === undefined
-                  ? false
-                  : featureAgentVersion === 2;
-              // Store our lyrics now
-              const leadLyrics = [];
-              const backgroundLyrics = [];
-              const lineNodes = line.childNodes;
-              for (const [index, syllable] of lineNodes.entries()) {
-                if (this.IsNodeASpan(syllable)) {
-                  // We have to first determine if we're a background lyric - since we have inner spans if we are
-                  const isBackground =
-                    syllable.getAttribute(this.FeatureRoleAttribute) === "x-bg";
-                  if (isBackground) {
-                    // Gather our background-lyrics
-                    const backgroundNodes = syllable.childNodes;
-                    for (const [
-                      backgroundIndex,
-                      backgroundSyllable,
-                    ] of backgroundNodes.entries()) {
-                      if (this.IsNodeASpan(backgroundSyllable)) {
-                        const start = this.GetTimeInSeconds(
-                          backgroundSyllable.getAttribute("begin")
-                        );
-                        const end = this.GetTimeInSeconds(
-                          backgroundSyllable.getAttribute("end")
-                        );
-                        const nextNode = backgroundNodes[backgroundIndex + 1];
-                        const backgroundLyric = {
-                          Text: backgroundSyllable.textContent,
-                          IsPartOfWord:
-                            nextNode === undefined
-                              ? false
-                              : nextNode.nodeType !== Node.TEXT_NODE,
-                          StartTime: start,
-                          EndTime: end,
-                        };
-                        backgroundLyrics.push(backgroundLyric);
-                      }
-                    }
-                    // Now determine whether or not we are surrounded by parentheses
-                    {
-                      const firstBackgroundSyllable = backgroundLyrics[0];
-                      const lastBackgroundSyllable =
-                        backgroundLyrics[backgroundLyrics.length - 1];
-                      if (
-                        firstBackgroundSyllable.Text.startsWith("(") &&
-                        lastBackgroundSyllable.Text.endsWith(")")
-                      ) {
-                        // We are surrounded by parentheses, so we'll remove them
-                        firstBackgroundSyllable.Text =
-                          firstBackgroundSyllable.Text.slice(1);
-                        lastBackgroundSyllable.Text =
-                          lastBackgroundSyllable.Text.slice(0, -1);
-                      }
-                    }
-                  } else {
-                    const start = this.GetTimeInSeconds(
-                      syllable.getAttribute("begin")
-                    );
-                    const end = this.GetTimeInSeconds(
-                      syllable.getAttribute("end")
-                    );
-                    const nextNode = lineNodes[index + 1];
-                    const leadLyric = {
-                      Text: syllable.textContent,
-                      IsPartOfWord:
-                        nextNode === undefined
-                          ? false
-                          : nextNode.nodeType !== Node.TEXT_NODE,
-                      StartTime: start,
-                      EndTime: end,
-                    };
-                    leadLyrics.push(leadLyric);
-                  }
-                }
-              }
-              // Now store our line
-              result.VocalGroups.push({
-                Type: "Vocal",
-                OppositeAligned: oppositeAligned,
-                StartTime:
-                  backgroundLyrics.length === 0
-                    ? leadLyrics[0].StartTime
-                    : Math.min(
-                        leadLyrics[0].StartTime,
-                        backgroundLyrics[0].StartTime
-                      ),
-                EndTime:
-                  backgroundLyrics.length === 0
-                    ? leadLyrics[leadLyrics.length - 1].EndTime
-                    : Math.max(
-                        leadLyrics[leadLyrics.length - 1].EndTime,
-                        backgroundLyrics[backgroundLyrics.length - 1].EndTime
-                      ),
-                Lead: leadLyrics,
-                Background:
-                  backgroundLyrics.length === 0 ? undefined : backgroundLyrics,
-              });
-            }
-          }
-        }
-      }
-      // Now set our StartTime/EndTime
-      {
-        const firstLine = result.VocalGroups[0];
-        const lastLine = result.VocalGroups[result.VocalGroups.length - 1];
-        result.StartTime = firstLine.StartTime;
-        result.EndTime = lastLine.EndTime;
-      }
-      // Determine our language AND natural-alignment
-      {
-        // Put all our text together for processing
-        const lines = [];
-        for (const vocalGroup of result.VocalGroups) {
-          if (vocalGroup.Type === "Vocal") {
-            let text = vocalGroup.Lead[0].Text;
-            for (let index = 1; index < vocalGroup.Lead.length; index += 1) {
-              const syllable = vocalGroup.Lead[index];
-              text += `${syllable.IsPartOfWord ? "" : " "}${syllable.Text}`;
-            }
-            lines.push(text);
-          }
-        }
-        const textToProcess = lines.join("\n");
-
-        result.NaturalAlignment = "Left";
-      }
-
-      // Wait for all our stored-promises to finish
-      return result;
-    }
-  }
-
-  static ParseLyrics(content) {
-    // Grab our parsed-lyrics
-    var parsedLyrics = this.ParseAppleMusicLyrics(content);
-    // Now add in interludes anywhere we can
-    if (parsedLyrics.Type !== "Static") {
-      // First check if our first vocal-group needs an interlude before it
-      let addedStartInterlude = false;
-      {
-        const firstVocalGroup = parsedLyrics.VocalGroups[0];
-        if (firstVocalGroup.StartTime >= this.MinimumInterludeDuration) {
-          parsedLyrics.VocalGroups.unshift({
-            Type: "Interlude",
-            StartTime: 0,
-            EndTime: firstVocalGroup.StartTime - this.EndInterludeEarlyBy,
-          });
-          addedStartInterlude = true;
-        }
-      }
-      // Now go through our vocals and determine if we need to add an interlude anywhere
-      for (
-        let index = parsedLyrics.VocalGroups.length - 1;
-        index > (addedStartInterlude ? 1 : 0);
-        index -= 1
-      ) {
-        const endingVocalGroup = parsedLyrics.VocalGroups[index];
-        const startingVocalGroup = parsedLyrics.VocalGroups[index - 1];
-        if (
-          endingVocalGroup.StartTime - startingVocalGroup.EndTime >=
-          this.MinimumInterludeDuration
-        ) {
-          parsedLyrics.VocalGroups.splice(index, 0, {
-            Type: "Interlude",
-            StartTime: startingVocalGroup.EndTime,
-            EndTime: endingVocalGroup.StartTime - this.EndInterludeEarlyBy,
-          });
-        }
-      }
-    }
-    // Now return our parsed-lyrics
-    return parsedLyrics;
-  }
-}
-
 class TTMLRenderer {
   static createLead(vocalGroup) {
     if (vocalGroup.Type == "Interlude") {
@@ -553,18 +216,22 @@ class MediaControls {
     }
   }
 
-  static LoadCurrentAudio() {
+  static LoadAudio(fileObject) {
     //button_playpause_span.innerText = "play_arrow";
     playpause_img.src = "./assets/icon_play.svg";
     audio_player.pause();
 
-    audio_player.src = URL.createObjectURL(import_selected_song);
+    audio_player.src = URL.createObjectURL(fileObject);
     audio_player.load();
     progress_bar.disabled = false;
     button_playpause.disabled = false;
     this.Seek(0);
     isSeeking = false;
     progress_bar.value = 0;
+  }
+
+  static LoadCurrentAudio() {
+    this.LoadAudio(import_selected_song);
   }
 
   static TogglePausePlay() {
@@ -867,17 +534,48 @@ class MediaControls {
       b.src = url;
     });
   }
-}
 
-class LyricsControls {
-  static LoadTTML() {
-    currentLyrics = MAKE(import_selected_lyric_text);
+  static PlayOnceReady() {
+    audio_player.addEventListener(
+      "canplay",
+      () => {
+        MediaControls.TogglePausePlay();
+      },
+      { once: true }
+    );
   }
 }
 
-function MAKE(ttml) {
-  lyrics_area.innerHTML = "";
+class LyricsControls {
+  static LoadAsTTML(text) {
+    currentLyrics = MakeTTML(text);
+  }
+
+  static LoadAsObject(text) {
+    currentLyrics = MakeObject(text);
+  }
+
+  static LoadCurrentAsObject() {
+    this.LoadAsObject(import_selected_lyric_text);
+  }
+
+  static LoadCurrentAsTTML() {
+    this.LoadAsTTML(import_selected_lyric_text);
+  }
+}
+
+function MakeTTML(ttml) {
   let data = RenderTTML(ttml);
+  return ApplyToDoc(data);
+}
+
+function MakeObject(obj) {
+  let data = RenderObject(JSON.parse(obj));
+  return ApplyToDoc(data);
+}
+
+function ApplyToDoc(data) {
+  lyrics_area.innerHTML = "";
   data.forEach((d) => {
     d.elements.forEach((e) => {
       lyrics_area.appendChild(e);
@@ -888,16 +586,21 @@ function MAKE(ttml) {
 
 function RenderTTML(ttml) {
   var parsed = TTML.ParseLyrics(ttml);
-  var data = [];
-  parsed.VocalGroups.forEach((vg) => {
+  return RenderObject(parsed);
+}
+
+function RenderObject(data) {
+  var data2 = [];
+  data.VocalGroups.forEach((vg) => {
     var elementsCreated = TTMLRenderer.createLead(vg);
-    data.push({ data: vg, elements: elementsCreated });
+    data2.push({ data: vg, elements: elementsCreated });
   });
-  return data;
+  return data2;
 }
 
 hasSelectedSong = false;
 hasSelectedLyric = false;
+///DEPRECATED
 class ImportMenu {
   static readLyric() {
     var reader = new FileReader();
@@ -921,66 +624,10 @@ class ImportMenu {
     console.log(e.target.files);
     var file = e.target.files[0];
 
-    /*
-    if (file.type == "application/zip" || file.name.endsWith("zip")) {
-      //It is a zip file
-      JSZip.loadAsync(file).then(
-        function (zip) {
-          console.log("loaded zip");
-
-          let song;
-          let lyric;
-
-          zip.forEach(function (relativePath, zipEntry) {
-            console.log(relativePath);
-            console.log(zipEntry);
-            if (
-              relativePath.toLowerCase() === "lyric.ttml" ||
-              relativePath.toLowerCase() === "lyrics.ttml"
-            ) {
-              lyric = zipEntry;
-            }
-
-            if (relativePath.toLowerCase().startsWith("song.")) {
-              song = zipEntry;
-            }
-          });
-
-          if (typeof song !== "undefined" && typeof lyric !== "undefined") {
-            //YES
-            song.async("uint8array").then((arr) => {
-              import_selected_song = new Blob(arr);
-              hasSelectedSong = true;
-              import_status_song.innerText = "Song: " + song.name;
-              ImportMenu.checkEnableOkButton();
-              song = undefined;
-            });
-
-            lyric.async("uint8array").then((arr) => {
-              import_selected_lyric = new Blob(arr);
-              hasSelectedLyric = true;
-              import_status_lyric.innerText = "Lyric: " + lyric.name;
-              ImportMenu.checkEnableOkButton();
-              lyric = undefined;
-            });
-          } else {
-            //cleanup
-            lyric = undefined;
-            song = undefined;
-            zip = undefined;
-          }
-        },
-        function (e) {
-          alert("Error reading zip! " + e.message);
-        }
-      );
-    } else {
-      */
     import_status_song.innerText = "Song: " + file.name;
     import_selected_song = file;
     hasSelectedSong = true;
     this.checkEnableOkButton();
-    //}
   }
 
   static inputChangeLyric(e) {
@@ -1014,7 +661,7 @@ class ImportMenu {
   static LoadFiles() {
     MediaControls.LoadCurrentAudio();
     this.readLyric();
-    LyricsControls.LoadTTML();
+    LyricsControls.LoadCurrentAsObject();
     audio_player.addEventListener(
       "canplay",
       () => {
@@ -1031,13 +678,16 @@ class ImportMenuEx {
 
     var ismBtn = document.getElementById("import-separate-music");
     ismBtn.disabled = true;
+    setTimeout(() => {
+      ismBtn.disabled = false;
+    }, 1000);
 
+    /*
     document.body.onfocus = function () {
-      setTimeout(() => {
-        ismBtn.disabled = false;
-      }, 100);
+
       document.body.onfocus = null;
     };
+    */
   }
 
   static buttonLyric() {
@@ -1046,12 +696,9 @@ class ImportMenuEx {
     var istBtn = document.getElementById("import-separate-ttml");
     istBtn.disabled = true;
 
-    document.body.onfocus = function () {
-      setTimeout(() => {
-        istBtn.disabled = false;
-      }, 100);
-      document.body.onfocus = null;
-    };
+    setTimeout(() => {
+      istBtn.disabled = false;
+    }, 1000);
   }
 
   static buttonPackage() {
@@ -1060,13 +707,9 @@ class ImportMenuEx {
     //VIA KARAOKE PACKAGE
     var vkpButton = document.getElementById("import-package");
     vkpButton.disabled = true;
-
-    document.body.onfocus = function () {
-      setTimeout(() => {
-        vkpButton.disabled = false;
-      }, 100);
-      document.body.onfocus = null;
-    };
+    setTimeout(() => {
+      vkpButton.disabled = false;
+    }, 1000);
   }
 
   static inputChangeSong(e) {
@@ -1106,7 +749,11 @@ class ImportMenuEx {
                 let json = JSON.parse(m);
                 let files = json.files;
                 let songPath = files.song;
+
                 let ttmlPath = files.ttml;
+                let jsonPath = files.json;
+                //let lrcPath = files.lrc;
+
                 let imgPath = files.album_cover;
 
                 zip
@@ -1115,8 +762,20 @@ class ImportMenuEx {
                   .then((blob) => {
                     //console.log(blob);
                     import_selected_song = blob;
+
+                    let lyricsToBeRead = ttmlPath ?? jsonPath;
+                    if (isObjectUndefined(lyricsToBeRead)) {
+                      throw new Error("No lyrics in meta file.");
+                    }
+
+                    let type = isObjectUndefined(ttmlPath)
+                      ? isObjectUndefined(jsonPath)
+                        ? "null"
+                        : "json"
+                      : "ttml";
+
                     zip
-                      .file(ttmlPath)
+                      .file(lyricsToBeRead)
                       .async("string")
                       .then((s) => {
                         import_selected_lyric_text = s;
@@ -1135,7 +794,19 @@ class ImportMenuEx {
                         }
                         */
 
-                        ImportMenuEx.LoadFiles();
+                        ImportMenuEx.closeAll();
+                        MediaControls.LoadCurrentAudio();
+                        switch (type) {
+                          case "ttml":
+                            LyricsControls.LoadCurrentAsTTML();
+                            break;
+
+                          case "json":
+                            LyricsControls.LoadCurrentAsObject();
+                          default:
+                            break;
+                        }
+                        MediaControls.PlayOnceReady();
                       });
                   });
               });
@@ -1204,14 +875,8 @@ class ImportMenuEx {
   static LoadFiles() {
     this.closeAll();
     MediaControls.LoadCurrentAudio();
-    LyricsControls.LoadTTML();
-    audio_player.addEventListener(
-      "canplay",
-      () => {
-        MediaControls.TogglePausePlay();
-      },
-      { once: true }
-    );
+    LyricsControls.LoadCurrentAsObject();
+    MediaControls.PlayOnceReady();
   }
 }
 
@@ -1264,4 +929,8 @@ class Utils {
       })
     );
   }
+}
+
+function isObjectUndefined(obj) {
+  return typeof obj === "undefined" || obj === null || obj === undefined;
 }
