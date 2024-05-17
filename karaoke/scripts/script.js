@@ -117,33 +117,33 @@ var FPS_COUNTER;
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
-const $Q = document.querySelector;
-const $QA = document.querySelectorAll;
-const $ID = document.getElementById;
+const $Q = (q) => document.querySelector(q);
+const $A = (q) => document.querySelectorAll(q);
+const $I = (id) => document.getElementById(id);
 
 var noSleep = new NoSleep();
 var isWakeLock = false;
 
 window.addEventListener("load", () => {
-  lyrics_area = document.getElementById("lyrics-area");
-  import_dialog = document.getElementById("import-dialog");
-  import_status_lyric = document.getElementById("import-status-lyric");
-  import_status_song = document.getElementById("import-status-song");
-  audio_player = document.getElementById("audio-player");
-  button_playpause = document.getElementById("playback-playpause-button");
+  lyrics_area = $I("lyrics-area");
+  import_dialog = $I("import-dialog");
+  import_status_lyric = $I("import-status-lyric");
+  import_status_song = $I("import-status-song");
+  audio_player = $I("audio-player");
+  button_playpause = $I("playback-playpause-button");
   //button_playpause_span = button_playpause.children[0];
-  progress_bar = document.getElementById("playback-progress");
-  playback_time = document.getElementById("playback-time-current");
-  playback_time_left = document.getElementById("playback-time-remaining");
-  bottom_bar = document.getElementById("bottom-bar");
-  //fs_text = document.getElementById("fullscreen-text");
-  fs_img = document.getElementById("fullscreen-icon");
-  playpause_img = document.getElementById("playpause-icon");
-  eye_img = document.getElementById("eye-icon");
+  progress_bar = $I("playback-progress");
+  playback_time = $I("playback-time-current");
+  playback_time_left = $I("playback-time-remaining");
+  bottom_bar = $I("bottom-bar");
+  //fs_text = $I("fullscreen-text");
+  fs_img = $I("fullscreen-icon");
+  playpause_img = $I("playpause-icon");
+  eye_img = $I("eye-icon");
 
-  import_dialog_main = document.getElementById("import-dialog-main");
-  import_dialog_separate = document.getElementById("import-dialog-separate");
-  import_dialog_package = document.getElementById("import-dialog-package");
+  import_dialog_main = $I("import-dialog-main");
+  import_dialog_separate = $I("import-dialog-separate");
+  import_dialog_package = $I("import-dialog-package");
 
   progress_bar.disabled = true;
   button_playpause.disabled = true;
@@ -151,10 +151,10 @@ window.addEventListener("load", () => {
   audio_player.addEventListener("timeupdate", MediaControls.onTimeUpdate);
   audio_player.addEventListener("ended", MediaControls.onEnd);
 
-  background_container = document.querySelector(".background");
-  backgrounds = document.querySelectorAll(".background>*");
+  background_container = $Q(".background");
+  backgrounds = $A(".background>*");
 
-  FPS_COUNTER = document.getElementById("fps");
+  FPS_COUNTER = $I("fps");
 
   document.body.addEventListener("keyup", function (e) {
     if (e.target.tagName == "button") return;
@@ -269,9 +269,9 @@ class MediaControls {
         ? 0
         : audio_player.currentTime / audio_player.duration;
     }
-    playback_time.innerText = Utils.secs2time(audio_player.currentTime);
+    playback_time.innerText = Utils.SecondsToTime(audio_player.currentTime);
     playback_time_left.innerText =
-      "-" + Utils.secs2time(audio_player.duration - audio_player.currentTime);
+      "-" + Utils.SecondsToTime(audio_player.duration - audio_player.currentTime);
   }
 
   static ProcessLyrics() {
@@ -591,7 +591,8 @@ function RenderTTML(ttml) {
 
 function RenderObject(data) {
   var data2 = [];
-  data.VocalGroups.forEach((vg) => {
+  var vg = data.VocalGroups ?? data.Content;
+  vg.forEach((vg) => {
     var elementsCreated = TTMLRenderer.createLead(vg);
     data2.push({ data: vg, elements: elementsCreated });
   });
@@ -613,11 +614,11 @@ class ImportMenu {
   }
 
   static buttonSong() {
-    document.getElementById("input-file-song").click();
+    $I("input-file-song").click();
   }
 
   static buttonLyric() {
-    document.getElementById("input-file-lyric").click();
+    $I("input-file-lyric").click();
   }
 
   static inputChangeSong(e) {
@@ -640,7 +641,7 @@ class ImportMenu {
   }
 
   static checkEnableOkButton() {
-    document.getElementById("import-button-ok").disabled = !(
+    $I("import-button-ok").disabled = !(
       hasSelectedSong && hasSelectedLyric
     );
   }
@@ -674,9 +675,9 @@ class ImportMenu {
 
 class ImportMenuEx {
   static buttonSong() {
-    document.getElementById("input-file-song").click();
+    $I("input-file-song").click();
 
-    var ismBtn = document.getElementById("import-separate-music");
+    var ismBtn = $I("import-separate-music");
     ismBtn.disabled = true;
     setTimeout(() => {
       ismBtn.disabled = false;
@@ -691,9 +692,9 @@ class ImportMenuEx {
   }
 
   static buttonLyric() {
-    document.getElementById("input-file-lyric").click();
+    $I("input-file-lyric").click();
 
-    var istBtn = document.getElementById("import-separate-ttml");
+    var istBtn = $I("import-separate-ttml");
     istBtn.disabled = true;
 
     setTimeout(() => {
@@ -702,10 +703,10 @@ class ImportMenuEx {
   }
 
   static buttonPackage() {
-    document.getElementById("input-file-package").click();
+    $I("input-file-package").click();
 
     //VIA KARAOKE PACKAGE
-    var vkpButton = document.getElementById("import-package");
+    var vkpButton = $I("import-package");
     vkpButton.disabled = true;
     setTimeout(() => {
       vkpButton.disabled = false;
@@ -832,7 +833,7 @@ class ImportMenuEx {
   }
 
   static checkEnableOkButton() {
-    document.getElementById("import-button-ok").disabled = !(
+    $I("import-button-ok").disabled = !(
       hasSelectedSong && hasSelectedLyric
     );
   }
@@ -906,7 +907,7 @@ class Utils {
     );
   }
 
-  static secs2time(secs) {
+  static SecondsToTime(secs) {
     //1029301.232 ms
     //1029.301232 secs
     //1029.301232 % 60 = 9.301232
