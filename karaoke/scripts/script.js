@@ -591,8 +591,8 @@ function RenderTTML(ttml) {
 
 function RenderObject(data) {
   var data2 = [];
-  var vg = data.VocalGroups ?? data.Content;
-  vg.forEach((vg) => {
+  var vocalgroup = data.VocalGroups ?? data.Content;
+  vocalgroup.forEach((vg) => {
     var elementsCreated = TTMLRenderer.createLead(vg);
     data2.push({ data: vg, elements: elementsCreated });
   });
