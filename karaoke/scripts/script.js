@@ -17,8 +17,13 @@ class TTMLRenderer {
     el.className =
       "lyrics notreached " + (vocalGroup.OppositeAligned ? "right" : "left");
     if (vocalGroup.Lead) {
-      for (let i = 0; i < vocalGroup.Lead.length; i++) {
-        const word = vocalGroup.Lead[i];
+      let theLead = vocalGroup.Lead;
+      if (vocalGroup.Lead.Syllables) {
+        theLead = vocalGroup.Lead.Syllables;
+      }
+
+      for (let i = 0; i < theLead.length; i++) {
+        const word = theLead[i];
         let wordElement = this.createWord(
           word.Text + (word.IsPartOfWord ? "" : " ")
         );
@@ -289,18 +294,16 @@ class MediaControls {
               for (let i = 0; i < leads.length; i++) {
                 const l = leads[i];
                 const wordElement = d.elements[0].childNodes[i];
-                wordElement.style = `--progress: ${
-                  ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-                }%;`;
+                wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+                  }%;`;
               }
             } else {
               //Lines
               let l = d.data;
               //const wordElement = d.elements[0].childNodes[0];
               const wordElement = d.elements[0];
-              wordElement.style = `--progress: ${
-                ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-              }%;`;
+              wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+                }%;`;
             }
 
             d.elements[0].classList.remove("reached");
@@ -330,11 +333,10 @@ class MediaControls {
             }
             */
           } else if (d.data.Type === "Interlude") {
-            d.elements[0].style = `--progress: ${
-              ((time - d.data.StartTime) /
-                (d.data.EndTime - d.data.StartTime)) *
+            d.elements[0].style = `--progress: ${((time - d.data.StartTime) /
+              (d.data.EndTime - d.data.StartTime)) *
               100
-            }%;`;
+              }%;`;
 
             /*
             for (let i = 0; i < 4; i++) {
@@ -370,9 +372,8 @@ class MediaControls {
             for (let i = 0; i < bg.length; i++) {
               const l = bg[i];
               const wordElement = d.elements[1].childNodes[i];
-              wordElement.style = `--progress: ${
-                ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-              }%;`;
+              wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+                }%;`;
             }
             d.elements[1].classList.remove("reached");
             d.elements[1].classList.remove("notreached");
@@ -570,7 +571,11 @@ function MakeTTML(ttml) {
 }
 
 function MakeObject(obj) {
-  let data = RenderObject(JSON.parse(obj));
+  let lrcJson = ProcessJson(JSON.parse(obj));
+
+  console.log(lrcJson);
+
+  let data = RenderObject(lrcJson);
   return ApplyToDoc(data);
 }
 
@@ -597,6 +602,64 @@ function RenderObject(data) {
     data2.push({ data: vg, elements: elementsCreated });
   });
   return data2;
+}
+
+function ProcessJson(lrcJson) {
+  let js = lrcJson;
+  if (js.Content && js.Type === "Syllable") {
+    //Is new
+    //let newContent = [];
+    js.Content.forEach(x => {
+      x.StartTime = x.Lead.StartTime;
+      x.EndTime = x.Lead.EndTime;
+      x.Lead = x.Lead.Syllables;
+
+      //delete x.Lead.Syllables;
+      //newContent.push(x);
+    });
+
+    //js.Content = newContent;
+  }
+  if (js.Content) {
+    let vgs = js.Content;
+
+    const MinimumInterludeDuration = 2;
+    const EndInterludeEarlyBy = 0.25; // Seconds before our analytical end. This is used as a prep for the next vocal
+
+    // First check if our first vocal-group needs an interlude before it
+    let addedStartInterlude = false;
+    {
+      const firstVocalGroup = vgs[0];
+      if (firstVocalGroup.StartTime >= MinimumInterludeDuration) {
+        vgs.unshift({
+          Type: "Interlude",
+          StartTime: 0,
+          EndTime: firstVocalGroup.StartTime - EndInterludeEarlyBy,
+        });
+        addedStartInterlude = true;
+      }
+    }
+    // Now go through our vocals and determine if we need to add an interlude anywhere
+    for (
+      let index = vgs.length - 1;
+      index > (addedStartInterlude ? 1 : 0);
+      index -= 1
+    ) {
+      const endingVocalGroup = vgs[index];
+      const startingVocalGroup = vgs[index - 1];
+      if (
+        endingVocalGroup.StartTime - startingVocalGroup.EndTime >=
+        MinimumInterludeDuration
+      ) {
+        vgs.splice(index, 0, {
+          Type: "Interlude",
+          StartTime: startingVocalGroup.EndTime,
+          EndTime: endingVocalGroup.StartTime - EndInterludeEarlyBy,
+        });
+      }
+    }
+  }
+  return js;
 }
 
 hasSelectedSong = false;
@@ -685,7 +748,7 @@ class ImportMenuEx {
 
     /*
     document.body.onfocus = function () {
-
+ 
       document.body.onfocus = null;
     };
     */
