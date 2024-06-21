@@ -1874,8 +1874,8 @@ class SearchService {
   }
 
   static DisplayResults(results) {
-    //search_card.classList.remove("disabled");
-    FadeDisable(search_card);
+    search_card.classList.remove("disabled");
+    //FadeDisable(search_card);
     DOMHelper.MakeWorks(results);
   }
 }

@@ -556,6 +556,10 @@ class LyricsControls {
     currentLyrics = MakeObject(text);
   }
 
+  static LoadAsLRC(text) {
+    currentLyrics = Make
+  }
+
   static LoadCurrentAsObject() {
     this.LoadAsObject(import_selected_lyric_text);
   }
@@ -563,6 +567,15 @@ class LyricsControls {
   static LoadCurrentAsTTML() {
     this.LoadAsTTML(import_selected_lyric_text);
   }
+
+  static LoadCurrentAsLRC() {
+    this.LoadAsLRC(import_selected_lyric_text);
+  }
+}
+
+function MakeLRC(lrc){
+  let data = LRC.Parse(lrc);
+  return MakeObject(data);
 }
 
 function MakeTTML(ttml) {
@@ -620,6 +633,8 @@ function ProcessJson(lrcJson) {
 
     //js.Content = newContent;
   }
+
+  // ADD INTERLUDES
   if (js.Content) {
     let vgs = js.Content;
 
@@ -816,7 +831,7 @@ class ImportMenuEx {
 
                 let ttmlPath = files.ttml;
                 let jsonPath = files.json;
-                //let lrcPath = files.lrc;
+                let lrcPath = files.lrc;
 
                 let imgPath = files.album_cover;
 
@@ -834,9 +849,12 @@ class ImportMenuEx {
 
                     let type = isObjectUndefined(ttmlPath)
                       ? isObjectUndefined(jsonPath)
-                        ? "null"
+                        ? isObjectUndefined(lrcPath)
+                          ? "null"
+                          : "lrc"
                         : "json"
                       : "ttml";
+
 
                     zip
                       .file(lyricsToBeRead)
@@ -867,6 +885,10 @@ class ImportMenuEx {
 
                           case "json":
                             LyricsControls.LoadCurrentAsObject();
+                            break;
+                          case "lrc":
+                            LyricsControls.LoadCurrentAsLRC();
+                            break;
                           default:
                             break;
                         }
