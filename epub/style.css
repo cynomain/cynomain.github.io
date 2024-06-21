@@ -140,8 +140,8 @@ h6 {
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-corner {
@@ -794,7 +794,7 @@ select.inverse {
 
 select.input-like {
   background-color: var(--c-surface-container-highest);
-  color: var(--c-primary);
+  color: white;
   border: none;
   border-right: 0.5em transparent solid;
   border-radius: 0.25em 0.25em 0.1em 0.1em;
@@ -919,5 +919,38 @@ input::-webkit-inner-spin-button {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+
+.button-go-to-top {
+  position: fixed;
+  z-index: 10;
+  bottom: 1em;
+  right: 1em;
+  font-size: 1em;
+  box-shadow: #0f0d13 2px 2px 2px 2px;
+
+  transition: bottom .5s ease-in-out;
+
+  &.hidden {
+    bottom: -4em;
+  }
+}
+
+.fadein {
+  animation:forwards kf-fadein .1s ease-in-out;
+}
+
+.fadeout {
+  animation:reverse kf-fadein .1s ease-in-out;
+}
+
+@keyframes kf-fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

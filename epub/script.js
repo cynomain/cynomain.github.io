@@ -43,6 +43,9 @@ var button_offlinemode;
 
 var default_main_content;
 
+var button_gototop;
+var isTop = true;
+
 function RefreshAppCache() {
   sendMessage("cache_rebuild").then((x) => {
     console.log(x);
@@ -53,6 +56,26 @@ function RefreshAppCache() {
     }
   });
 }
+
+
+function smoothScroll(parent, target) {
+  const targetRect = target.getBoundingClientRect();
+  const targetTop = targetRect.top + parent.scrollTop;
+  const targetHeight = targetRect.height;
+
+  // Calculate desired scroll position for centering
+  const parentHeight = parent.offsetHeight;
+  const scrollTo =
+    targetTop - (parentHeight - targetHeight) / 2 - targetHeight;
+
+  // Use requestAnimationFrame for smooth animation
+  parent.scrollTo({
+    top: scrollTo,
+    behavior: "smooth", // Ensure smooth scrolling behavior
+    block: "center",
+  });
+}
+
 
 function sendMessage(message) {
   // This wraps the message posting/response in a promise, which will
@@ -82,6 +105,26 @@ function sendMessage(message) {
   });
 }
 
+function FadeDisable(element) {
+  requestAnimationFrame(function () {
+    element.classList.add("fadeout");
+    setTimeout(() => {
+      element.classList.remove("fadeout");
+      element.classList.add("disabled");
+    }, 90);
+  });
+}
+
+function FadeEnable(element) {
+  requestAnimationFrame(() => {
+    element.classList.remove("disabled");
+    element.classList.add("fadein");
+    setTimeout(() => {
+      element.classList.remove("fadein");
+    }, 90);
+  });
+}
+
 //Debug
 window.addEventListener("keyup", (e) => {
   if (e.ctrlKey && e.altKey && e.key == "\\") {
@@ -94,7 +137,7 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-if (window.location.origin.includes("127")){
+if (window.location.origin.includes("127")) {
   //DEBUG
   window.addEventListener("keyup", (e) => {
     if (e.key == ";") {
@@ -130,6 +173,7 @@ function OnLoad() {
   infopopup_description = $I("popup-info-description");
 
   button_offlinemode = $I("button-offlinemode");
+  button_gototop = $I("button-go-to-top");
 
   //Input file
   input_file_folder.onchange = ProcessFolders;
@@ -139,19 +183,45 @@ function OnLoad() {
     input_file_folder.removeAttribute("webkitdirectory");
   }
 
+
+  div_main_content.onscroll = () => {
+    if (div_main_content.scrollTop > 0 && isTop) {
+      //has scrolled down but hasnt changed
+      button_gototop.classList.remove("hidden");
+      isTop = false;
+    }
+    else if (div_main_content.scrollTop <= 0 && !isTop) {
+      //is top but hasnt changed
+      button_gototop.classList.add("hidden");
+      isTop = true;
+    }
+  }
+
+  button_gototop.onclick = () => {
+    div_main_content.scrollTo({
+      top: 0,
+      behavior: "smooth", // Ensure smooth scrolling behavior
+      block: "center",
+    });
+  }
+
   //La buttons
   //Main Buttons
   $I("button-import").onclick = () => {
-    popup_import.classList.remove("disabled");
+    //popup_import.classList.remove("disabled");
+    FadeEnable(popup_import);
   };
 
   $I("button-search").onclick = () => {
-    popup_search.classList.remove("disabled");
+    //popup_search.classList.remove("disabled");
+    FadeEnable(popup_search);
   };
 
   //Import Buttons
   $I("button-help").onclick = () => {
-    popup_import.classList.add("disabled");
+    //popup_import.classList.add("disabled");
+    FadeDisable(popup_import);
+
     InfoDialog(
       `This is a webapp to catalog<br>downloaded <a href="https://archiveofourown.org">AO3</a> works (as epub).<br><br>Made by <a href="/">cynomain</a>`,
       true
@@ -161,7 +231,9 @@ function OnLoad() {
   $I("button-clear-library").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
-        popup_import.classList.add("disabled");
+        //popup_import.classList.add("disabled");
+        FadeDisable(popup_import);
+
         db.Clear();
         db.ClearCache();
         localStorage.clear();
@@ -174,7 +246,10 @@ function OnLoad() {
   $I("button-clear-bookmarks").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
-        popup_import.classList.add("disabled");
+        //popup_import.classList.add("disabled");
+        FadeDisable(popup_import);
+
+
         db.ClearBookmarks();
         db.Save();
         //window.location.reload();
@@ -184,28 +259,36 @@ function OnLoad() {
   };
 
   $I("button-add-to-library").onclick = () => {
-    popup_import.classList.add("disabled");
+    //popup_import.classList.add("disabled");
+    FadeDisable(popup_import);
+
     input_file_folder.click();
   };
 
   $I("button-close-library").onclick = () => {
-    popup_import.classList.add("disabled");
+    //popup_import.classList.add("disabled");
+    FadeDisable(popup_import);
+
   };
 
   $I("button-open-settings").onclick = () => {
     popup_settings.classList.remove("disabled");
     popup_import.classList.add("disabled");
+    //FadeEnable(popup_settings);
+    //FadeDisable(popup_import);
   };
 
   //Settings Buttons
   $I("button-rebuild-cache").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
-        popup_import.classList.add("disabled");
-        popup_loading.classList.remove("disabled");
+        //popup_import.classList.add("disabled");
+        FadeDisable(popup_import);
+
         db.ClearCache();
         db.BuildCache();
-        popup_loading.classList.remove("disabled");
+        //popup_loading.classList.remove("disabled");
+        FadeEnable(popup_loading);
         //window.location.reload();
         Reload();
       }
@@ -215,7 +298,9 @@ function OnLoad() {
   $I("button-refresh-app").onclick = () => {
     ConfirmDialog((b) => {
       if (b) {
-        popup_import.classList.add("disabled");
+        //popup_import.classList.add("disabled");
+        FadeDisable(popup_import);
+
         /*
         caches.delete("cynomain-epub-v1").then((c) => {
           window.location.reload(true);
@@ -231,8 +316,11 @@ function OnLoad() {
     toggleOfflineMode();
   };
 
-  $I("button-close-settings").onclick = () => {
+  $I("button-back-settings").onclick = () => {
     popup_settings.classList.add("disabled");
+    popup_import.classList.remove("disabled");
+    //FadeDisable(popup_settings);
+    //FadeEnable(popup_import);
   };
 
   //Search buttons
@@ -259,6 +347,12 @@ function OnLoad() {
     );
   };
 
+  $I("catalog-link").onclick = (e) => {
+    e.preventDefault();
+    GoTo(e.target.href);
+  };
+
+
   //Database
   db = new AppDB();
   db.Load();
@@ -267,7 +361,7 @@ function OnLoad() {
   query = GetQuery();
   if (typeof query !== "string") {
     let res = SearchService.QueryWorks(query);
-    console.log(res);
+    //console.log(res);
     SearchService.DisplayResults(res);
   } else {
     SearchService.DisplayResults(db.Works);
@@ -276,7 +370,8 @@ function OnLoad() {
   //Offline mode
   let offlinemode = isOfflineMode();
   if (offlinemode) {
-    search_info_offlinemode.classList.remove("disabled");
+    //search_info_offlinemode.classList.remove("disabled");
+    FadeDisable(search_info_offlinemode);
     button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
     interceptOfflineEvents(offlinemode);
   }
@@ -345,13 +440,15 @@ function toggleOfflineMode() {
     //Enable
     localStorage.setItem("isOfflineMode", true);
     button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Disable Offline Mode`;
-    search_info_offlinemode.classList.remove("disabled");
+    //search_info_offlinemode.classList.remove("disabled");
+    FadeEnable(search_info_offlinemode);
   } else {
     //If enabled
     //Disable
     localStorage.removeItem("isOfflineMode");
     button_offlinemode.innerHTML = `<img src="/epub/assets/icon_offline.svg" style="margin-right: 0.2em; margin-left: -0.75em" class="tint-dark";/> Enable Offline Mode`;
-    search_info_offlinemode.classList.add("disabled");
+    //search_info_offlinemode.classList.add("disabled");
+    FadeDisable(search_info_offlinemode);
   }
 
   interceptOfflineEvents(!offlinemode);
@@ -375,7 +472,9 @@ function interceptOfflineEvents(isofflinemode) {
     });
   } else {
     document.querySelectorAll("a").forEach((a) => {
-      a.onclick = null;
+      if (a.id !== "catalog-link") {
+        a.onclick = null;
+      }
     });
   }
 }
@@ -449,7 +548,7 @@ var saveTimeoutId = 1938293;
 
 function ProcessFolders(event) {
   let files = event.target.files;
-  console.log(files);
+  //console.log(files);
 
   ConfirmDialog(
     (b) => {
@@ -463,7 +562,9 @@ function ProcessFolders(event) {
 }
 
 function ProcessFiles(files) {
-  popup_loading.classList.remove("disabled");
+  //popup_loading.classList.remove("disabled");
+  FadeEnable(popup_loading);
+
   //let errors = [];
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
@@ -475,14 +576,18 @@ function ProcessFiles(files) {
 
           clearTimeout(saveTimeoutId);
           saveTimeoutId = setTimeout(() => {
-            popup_loading.classList.add("disabled");
+            //popup_loading.classList.add("disabled");
+
             db.Save();
             db.ClearCache();
             db.BuildCache();
+
+            FadeDisable(popup_loading);
+
             console.log("saved");
             //window.location.reload();
             Reload();
-          }, 1000);
+          }, 500);
         });
       } catch (Ex) {
         console.log(Ex);
@@ -591,9 +696,8 @@ function ProcessEpubFile(file) {
             "NOV",
             "DEC",
           ];
-          date = `${date_obj.getDate()} ${
-            months[date_obj.getMonth()]
-          } ${date_obj.getFullYear()}`;
+          date = `${date_obj.getDate()} ${months[date_obj.getMonth()]
+            } ${date_obj.getFullYear()}`;
 
           return zip.file(/000.xhtml/)[0].async("string");
         })
@@ -764,7 +868,9 @@ function ProcessEpubFile(file) {
 }
 
 function InfoDialog(description, html) {
-  popup_info.classList.remove("disabled");
+  //popup_info.classList.remove("disabled");
+  FadeEnable(popup_info);
+
   if (html) {
     infopopup_description.innerHTML = description;
   } else {
@@ -773,10 +879,12 @@ function InfoDialog(description, html) {
 }
 
 function infoDialog_close() {
-  popup_info.classList.add("disabled");
+  //popup_info.classList.add("disabled");
+  FadeDisable(popup_info);
+
 }
 
-var confirmAction = () => {};
+var confirmAction = () => { };
 function ConfirmDialog(action, desc, html) {
   confirmAction = action;
   if (html) {
@@ -785,11 +893,15 @@ function ConfirmDialog(action, desc, html) {
     confirm_description.innerText = isEmpty(desc) ? "" : desc;
   }
 
-  popup_confirm.classList.remove("disabled");
+  //popup_confirm.classList.remove("disabled");
+  FadeEnable(popup_confirm);
+
 }
 
 function confirmDialog_button(bool) {
-  popup_confirm.classList.add("disabled");
+  //popup_confirm.classList.add("disabled");
+  FadeDisable(popup_confirm);
+
   confirmAction(bool);
 }
 
@@ -1268,7 +1380,9 @@ class SearchUI {
     });
 
     button_cancel.onclick = () => {
-      popup_search.classList.add("disabled");
+      //popup_search.classList.add("disabled");
+      FadeDisable(popup_search);
+
     };
 
     button_search.onclick = () => {
@@ -1476,7 +1590,9 @@ class Search {
 
 class SearchService {
   static QueryWorks(query) {
-    popup_loading.classList.remove("disabled");
+    //popup_loading.classList.remove("disabled");
+    FadeEnable(popup_loading);
+
     try {
       let q_any = Search.ParseSearch(query["any"] ?? "");
       let q_title = Search.ParseSearch(query["title"] ?? "");
@@ -1693,10 +1809,10 @@ class SearchService {
         if (!isEmpty(query[index])) {
           infos.push(
             prefix +
-              ": " +
-              capitalizeFirstLetter(
-                DOMHelper.DesanitizeSearchValue(query[index])
-              )
+            ": " +
+            capitalizeFirstLetter(
+              DOMHelper.DesanitizeSearchValue(query[index])
+            )
           );
         }
       };
@@ -1743,19 +1859,23 @@ class SearchService {
       pushIfNotEmptyCap("bookmarked", "Bookmarked");
       search_info.innerText = infos.join("\n");
       search_info_amount.innerText = `Found ${results.length} result(s).`;
-      popup_loading.classList.add("disabled");
+      //popup_loading.classList.add("disabled");
+      FadeDisable(popup_loading);
 
       cached = undefined;
       return results;
     } catch (ex) {
       console.log(ex);
-      popup_loading.classList.add("disabled");
+      //popup_loading.classList.add("disabled");
+      FadeDisable(popup_loading);
+      
       return [];
     }
   }
 
   static DisplayResults(results) {
-    search_card.classList.remove("disabled");
+    //search_card.classList.remove("disabled");
+    FadeDisable(search_card);
     DOMHelper.MakeWorks(results);
   }
 }
@@ -1919,7 +2039,8 @@ class AppDB {
       return;
     }
 
-    popup_loading.classList.remove("disabled");
+    //popup_loading.classList.remove("disabled");
+    FadeEnable(popup_loading);
 
     this.Works = JSON.parse(localStorage.getItem("works") ?? "[]");
 
@@ -1929,7 +2050,9 @@ class AppDB {
       JSON.parse(localStorage.getItem("bookmarks") ?? "[]")
     );
 
-    popup_loading.classList.add("disabled");
+    //popup_loading.classList.add("disabled");
+    FadeDisable(popup_loading);
+
   }
 
   Save() {

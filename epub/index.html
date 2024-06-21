@@ -55,7 +55,7 @@
         <img src="/epub/assets/icon_menu.svg" />
       </button>
 
-      <a href="/epub" class="static">Catalog</a>
+      <a href="/epub" class="static" id="catalog-link">Catalog</a>
 
       <button id="button-search" style="font-size: 1em">
         <img src="/epub/assets/icon_search.svg" />
@@ -76,7 +76,12 @@
         </p>
         <p class="info bold" id="search-info-amount">Please wait...</p>
       </div>
+
+      <button class="button-go-to-top hidden" id="button-go-to-top" >
+        <img src="./assets/icon_back.svg" style="rotate: 90deg;">
+      </button>
     </main>
+
 
     <div id="popup-search" class="popup disabled">
       <div class="search card">
@@ -325,9 +330,9 @@
               margin-top: 0.75em;
               font-weight: bold;
             "
-            id="button-close-settings"
+            id="button-back-settings"
           >
-            Close
+            Back
           </button>
         </div>
       </div>
