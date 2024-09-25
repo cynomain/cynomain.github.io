@@ -3,6 +3,13 @@ const $A = (q) => document.querySelectorAll(q);
 const $I = (id) => document.getElementById(id);
 
 /*
+var IS_TAURI = false;
+if (window.__TAURI__) {
+  IS_TAURI = true;
+}
+  */
+
+/*
 var button_import;
 var button_search;
 var button_clear_search;

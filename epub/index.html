@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0,
     maximum-scale=1.0, user-scalable=0"
     />
-    <title>Epub Explorer</title>
+    <title>Epub Catalog</title>
 
     <link rel="manifest" href="manifest.json" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -61,6 +61,8 @@
         <img src="/epub/assets/icon_search.svg" />
       </button>
     </header>
+
+
     <main class="main-content" id="main-content">
       <div id="search-card" class="card search-info">
         <p class="info-title">
@@ -81,6 +83,22 @@
         <img src="./assets/icon_back.svg" style="rotate: 90deg;">
       </button>
     </main>
+
+    <div class="sidebar children-fill second col" id="sidebar">
+      <div class="children-fill second">
+        <button class="onsurface" id="button-close-sidebar" style="font-size: 1.5em">
+          <img src="/epub/assets/icon_close.svg" class="tint-light" />
+        </button>
+        <h1 style="text-align: center;">Searches</h1>
+        <button class="onsurface" id="button-open-import" style="margin-right: 1em; font-size: 1em">
+          <img src="/epub/assets/icon_settings.svg" class="tint-light" />
+        </button>
+      </div>
+      
+      <div class="content">
+        <button style="align-items:start; text-align: left;">Entry</button>
+      </div>
+    </div>
 
 
     <div id="popup-search" class="popup disabled">

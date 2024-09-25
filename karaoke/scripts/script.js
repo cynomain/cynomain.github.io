@@ -49,14 +49,16 @@ class TTMLRenderer {
       (vocalGroup.OppositeAligned ? "right" : "left");
     el.style = "--progress: 0%";
 
-    for (let i = 0; i < vocalGroup.Background.length; i++) {
-      const word = vocalGroup.Background[i];
+    //console.log(vocalGroup.Background);
+    let sylls = isObjectUndefined(vocalGroup.Background[0].Syllables) ? vocalGroup.Background : vocalGroup.Background[0].Syllables;
+
+    for (let i = 0; i < sylls.length; i++) {
+      const word = sylls[i];
       let wordElement = this.createWord(
         word.Text + (word.IsPartOfWord ? "" : " ")
       );
       el.appendChild(wordElement);
     }
-
     return el;
   }
 
@@ -586,7 +588,7 @@ function MakeTTML(ttml) {
 function MakeObject(obj) {
   let lrcJson = ProcessJson(JSON.parse(obj));
 
-  console.log(lrcJson);
+  //console.log(lrcJson);
 
   let data = RenderObject(lrcJson);
   return ApplyToDoc(data);

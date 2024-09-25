@@ -29,6 +29,9 @@
   --c-surface-tint: #d0bcff;
   --c-outline: #938f99;
   --c-outline-variant: #49454f;
+
+  --sidebar-width: 100%;
+  --sidebar-radius: 0 0 0 0;
 }
 
 body {
@@ -98,6 +101,11 @@ img {
 
   .card {
     max-width: 90dvw !important;
+  }
+
+  :root {
+    --sidebar-width: 25em;
+    --sidebar-radius: 0 .75em .75em 0;
   }
 }
 
@@ -203,6 +211,12 @@ input[type="submit"] {
     color: var(--c-on-primary);
   }
 
+  &.onsurface {
+    background-color: transparent;
+    color: var(--c-surface-on);
+    padding: 0.5em;
+  }
+
   &:enabled {
     cursor: pointer;
   }
@@ -251,6 +265,8 @@ input[type="submit"] {
   > button {
     flex: 1;
     margin: 0 1em 0 1em;
+    background-color: transparent !important;
+    font-size: 2em;
 
     > span.material-symbols-rounded {
       font-size: 200%;
@@ -952,5 +968,28 @@ input::-webkit-inner-spin-button {
   }
   100% {
     opacity: 1;
+  }
+}
+
+
+.sidebar {
+  position: absolute;
+  height: 100%;
+  width: var(--sidebar-width);
+  left: 0;
+  background-color: var(--c-surface-container-highest);
+
+  border-radius: var(--sidebar-radius);
+
+  .content {
+    padding: 1em;
+
+    > button {
+      width: 100%;
+      background-color: var(--c-surface-container-highest);
+      text-align: left !important;
+      font-size: 1.1em;
+      color: var(--c-primary);
+    }
   }
 }
