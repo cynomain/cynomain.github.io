@@ -50,7 +50,7 @@
           ></video>
       </div>
     </div-->
-    
+
     <audio id="audio-player" style="display: none"></audio>
 
     <div class="lyrics-area masked" id="lyrics-area">
@@ -61,7 +61,7 @@
         <span class="lyrics-word">Waiting for</span>
         <span
           class="lyrics-word special-import"
-          onclick="ImportMenuEx.openImportMenu();"
+          onclick="ImportMenuEx.buttonPackage();"
           >import</span
         >
       </p>
@@ -128,19 +128,18 @@
           -00:00
         </p>
 
-        <button onclick="ImportMenuEx.openImportMenu();" title="Import">
+        <button onclick="ImportMenuEx.buttonPackage();" title="Import">
           <!--span class="material-symbols-rounded"> file_open </span-->
           <img src="./assets/icon_file_open.svg" class="tint-dark" />
         </button>
 
-        <button onclick="ToggleSleep();" title="Wakelock">
-          <!--span class="material-symbols-rounded"> file_open </span-->
+        <!--button onclick="ToggleSleep();" title="Wakelock">
           <img
             id="eye-icon"
             src="./assets/icon_eye_off.svg"
             class="tint-dark"
           />
-        </button>
+        </button -->
 
         <button onclick="MediaControls.ToggleFullscreen();" title="Fullscreen">
           <!--span class="material-symbols-rounded" id="fullscreen-text">
@@ -156,6 +155,7 @@
     </div>
 
     <!--Import Main-->
+    <!--
     <div class="import-dialog closed" id="import-dialog-main">
       <div class="card import children-fill col">
         <div class="children-fill row first">
@@ -198,8 +198,10 @@
         </button>
       </div>
     </div>
+  -->
 
     <!--Import Separate-->
+    <!--
     <div class="import-dialog closed" id="import-dialog-separate">
       <div class="card import children-fill col">
         <h1 style="text-align: center">Import (Separate)</h1>
@@ -252,6 +254,7 @@
         </div>
       </div>
     </div>
+    ->>
 
     <!--Import Package-->
     <div class="import-dialog closed" id="import-dialog-package">
@@ -385,101 +388,10 @@
       <p
         id="fps"
         style="color: rgba(255, 255, 255, 0.527); font-size: 1em; margin: 0"
+        class="disabled"
       >
         FPS
       </p>
     </div>
-
-    <!--div class="import-dialog " id="import-dialog">
-      <div class="import-card" id="import-card">
-        <h1>Load files</h1>
-        <p>Upload any music file and a ttml lyrics file.</p>
-        <p id="import-status-song">Song: -</p>
-        <p id="import-status-lyric">Lyric: -</p>
-        <br />
-        <div class="import-buttons">
-          <button
-            id="import-button-cancel"
-            onclick="ImportMenu.closeImportMenu();"
-          >
-            Cancel
-          </button>
-          <br />
-          <button id="import-button-song" onclick="ImportMenu.buttonSong();">
-            Select song
-          </button>
-          <button id="import-button-lyric" onclick="ImportMenu.buttonLyric();">
-            Select lyric
-          </button>
-          <br />
-          <button
-            id="import-button-ok"
-            onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); "
-          >
-            OK
-          </button>
-        </div>
-        <input
-          type="file"
-          id="input-file-song"
-          accept="audio/*"
-          style="display: none"
-          onchange="ImportMenu.inputChangeSong(event)"
-        />
-        <input
-          type="file"
-          id="input-file-lyric"
-          accept=".ttml"
-          style="display: none"
-          onchange="ImportMenu.inputChangeLyric(event)"
-        />
-      </div>
-    </div-->
-
-    <!--div class="import-dialog " id="import-dialog">
-      <div class="import-card" id="import-card">
-        <h1>Load files</h1>
-        <p>Upload any music file and a ttml lyrics file.</p>
-        <p id="import-status-song">Song: -</p>
-        <p id="import-status-lyric">Lyric: -</p>
-        <br />
-        <div class="import-buttons">
-          <button
-            id="import-button-cancel"
-            onclick="ImportMenu.closeImportMenu();"
-          >
-            Cancel
-          </button>
-          <br />
-          <button id="import-button-song" onclick="ImportMenu.buttonSong();">
-            Select song
-          </button>
-          <button id="import-button-lyric" onclick="ImportMenu.buttonLyric();">
-            Select lyric
-          </button>
-          <br />
-          <button
-            id="import-button-ok"
-            onclick="ImportMenu.closeImportMenu(); ImportMenu.LoadFiles(); "
-          >
-            OK
-          </button>
-        </div>
-        <input
-          type="file"
-          id="input-file-song"
-          accept="audio/*"
-          style="display: none"
-          onchange="ImportMenu.inputChangeSong(event)"
-        />
-        <input
-          type="file"
-          id="input-file-lyric"
-          accept=".ttml"
-          style="display: none"
-          onchange="ImportMenu.inputChangeLyric(event)"
-        />
-      </div>
-    </div-->
   </body>
 </html>

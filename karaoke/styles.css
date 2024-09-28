@@ -38,7 +38,7 @@
 
 body {
   color: #f6f6f6;
-  background-color: #1d1b20;
+  background-color: var(--c-surface);
   font: 100% system-ui;
   margin: 0;
   user-select: none;
@@ -68,7 +68,7 @@ body {
 }
 
 ::backdrop {
-  background-color: #1d1b20;
+  background-color: var(--c-surface);
 }
 
 html {
@@ -122,7 +122,7 @@ a {
 @media (prefers-color-scheme: dark) {
   body {
     color: #e6e0e9;
-    background: #1d1b20;
+    background: var(--c-surface-container-lowest);
   }
 
   body a {
@@ -160,7 +160,7 @@ a {
 .bottom-bar {
   font-size: 0.8em;
 
-  background-color: #141218;
+  background-color: var(--c-surface-container);
   align-self: center;
   align-items: center;
   align-content: center;
@@ -358,8 +358,7 @@ button:active:enabled {
   --lyrics-reached: #ffffff;
 
   transition: color 1s, filter 0s, text-shadow 1s, --lyrics-reached 1s,
-    -webkit-text-stroke 1s, font-size 0.2s, margin-top 0.2s, margin-bottom 0.2s;
-
+    -webkit-text-stroke 1s, margin-top 0.2s, margin-bottom 0.2s, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   /*
   margin-top: 0.75em;
   margin-bottom: 0.75em;
@@ -387,6 +386,7 @@ button:active:enabled {
   filter: opacity(1);
 
   & > .lyrics-word {
+
     background-image: linear-gradient(
       to right,
       var(--lyrics-reached),
@@ -515,7 +515,8 @@ button:active:enabled {
 
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  transform: scaleY(0);
+  transform: scale(0);
+  transform-origin: bottom left;
   height: 0;
 
   /*--lyrics-reached: #c6afff;*/
@@ -542,7 +543,7 @@ button:active:enabled {
 */
 
 .interlude.open {
-  transform: scaleY(1);
+  transform: scale(1);
   height: auto;
   margin: 1em 0.25em 1em 0.25em;
 }

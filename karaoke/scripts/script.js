@@ -50,7 +50,9 @@ class TTMLRenderer {
     el.style = "--progress: 0%";
 
     //console.log(vocalGroup.Background);
-    let sylls = isObjectUndefined(vocalGroup.Background[0].Syllables) ? vocalGroup.Background : vocalGroup.Background[0].Syllables;
+    let sylls = isObjectUndefined(vocalGroup.Background[0].Syllables)
+      ? vocalGroup.Background
+      : vocalGroup.Background[0].Syllables;
 
     for (let i = 0; i < sylls.length; i++) {
       const word = sylls[i];
@@ -89,9 +91,11 @@ class TTMLRenderer {
 }
 
 var lyrics_area;
+/*
 var import_dialog;
 var import_status_song;
 var import_status_lyric;
+*/
 var import_selected_song;
 var import_selected_lyric;
 var import_selected_lyric_text;
@@ -105,9 +109,11 @@ var fs_img;
 var playpause_img;
 var eye_img;
 
+/*
 var import_dialog_separate;
 var import_dialog_package;
 var import_dialog_main;
+*/
 
 var playback_time;
 var playback_time_left;
@@ -133,9 +139,11 @@ var isWakeLock = false;
 
 window.addEventListener("load", () => {
   lyrics_area = $I("lyrics-area");
+  /*
   import_dialog = $I("import-dialog");
   import_status_lyric = $I("import-status-lyric");
   import_status_song = $I("import-status-song");
+  */
   audio_player = $I("audio-player");
   button_playpause = $I("playback-playpause-button");
   //button_playpause_span = button_playpause.children[0];
@@ -148,9 +156,11 @@ window.addEventListener("load", () => {
   playpause_img = $I("playpause-icon");
   eye_img = $I("eye-icon");
 
+  /*
   import_dialog_main = $I("import-dialog-main");
   import_dialog_separate = $I("import-dialog-separate");
   import_dialog_package = $I("import-dialog-package");
+  */
 
   progress_bar.disabled = true;
   button_playpause.disabled = true;
@@ -189,11 +199,11 @@ window.addEventListener("load", () => {
 function ToggleSleep() {
   if (isWakeLock) {
     noSleep.disable();
-    eye_img.src = "./assets/icon_eye_off.svg";
+    //eye_img.src = "./assets/icon_eye_off.svg";
     isWakeLock = false;
   } else {
     noSleep.enable();
-    eye_img.src = "./assets/icon_eye_on.svg";
+    //eye_img.src = "./assets/icon_eye_on.svg";
     isWakeLock = true;
   }
 }
@@ -246,14 +256,9 @@ class MediaControls {
       return;
     }
 
+    ToggleSleep();
     if (audio_player.paused) {
       intervalId = requestAnimationFrame(MediaControls.ProcessLyrics);
-      /*
-      intervalId = setInterval(() => {
-        this.ProcessLyrics();
-      }, 20);
-*/
-
       audio_player.play();
       //button_playpause_span.innerText = "pause";
       playpause_img.src = "./assets/icon_pause.svg";
@@ -278,7 +283,8 @@ class MediaControls {
     }
     playback_time.innerText = Utils.SecondsToTime(audio_player.currentTime);
     playback_time_left.innerText =
-      "-" + Utils.SecondsToTime(audio_player.duration - audio_player.currentTime);
+      "-" +
+      Utils.SecondsToTime(audio_player.duration - audio_player.currentTime);
   }
 
   static ProcessLyrics() {
@@ -296,16 +302,18 @@ class MediaControls {
               for (let i = 0; i < leads.length; i++) {
                 const l = leads[i];
                 const wordElement = d.elements[0].childNodes[i];
-                wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-                  }%;`;
+                wordElement.style = `--progress: ${
+                  ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+                }%;`;
               }
             } else {
               //Lines
               let l = d.data;
               //const wordElement = d.elements[0].childNodes[0];
               const wordElement = d.elements[0];
-              wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-                }%;`;
+              wordElement.style = `--progress: ${
+                ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+              }%;`;
             }
 
             d.elements[0].classList.remove("reached");
@@ -335,10 +343,11 @@ class MediaControls {
             }
             */
           } else if (d.data.Type === "Interlude") {
-            d.elements[0].style = `--progress: ${((time - d.data.StartTime) /
-              (d.data.EndTime - d.data.StartTime)) *
+            d.elements[0].style = `--progress: ${
+              ((time - d.data.StartTime) /
+                (d.data.EndTime - d.data.StartTime)) *
               100
-              }%;`;
+            }%;`;
 
             /*
             for (let i = 0; i < 4; i++) {
@@ -374,8 +383,9 @@ class MediaControls {
             for (let i = 0; i < bg.length; i++) {
               const l = bg[i];
               const wordElement = d.elements[1].childNodes[i];
-              wordElement.style = `--progress: ${((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
-                }%;`;
+              wordElement.style = `--progress: ${
+                ((time - l.StartTime) / (l.EndTime - l.StartTime)) * 100
+              }%;`;
             }
             d.elements[1].classList.remove("reached");
             d.elements[1].classList.remove("notreached");
@@ -559,7 +569,7 @@ class LyricsControls {
   }
 
   static LoadAsLRC(text) {
-    currentLyrics = Make
+    currentLyrics = Make;
   }
 
   static LoadCurrentAsObject() {
@@ -575,7 +585,7 @@ class LyricsControls {
   }
 }
 
-function MakeLRC(lrc){
+function MakeLRC(lrc) {
   let data = LRC.Parse(lrc);
   return MakeObject(data);
 }
@@ -624,7 +634,7 @@ function ProcessJson(lrcJson) {
   if (js.Content && js.Type === "Syllable") {
     //Is new
     //let newContent = [];
-    js.Content.forEach(x => {
+    js.Content.forEach((x) => {
       x.StartTime = x.Lead.StartTime;
       x.EndTime = x.Lead.EndTime;
       x.Lead = x.Lead.Syllables;
@@ -679,137 +689,19 @@ function ProcessJson(lrcJson) {
   return js;
 }
 
-hasSelectedSong = false;
-hasSelectedLyric = false;
-///DEPRECATED
-class ImportMenu {
-  static readLyric() {
-    var reader = new FileReader();
-
-    reader.onload = function (e) {
-      import_selected_lyric_text = reader.result;
-    };
-
-    reader.readAsText(import_selected_lyric);
-  }
-
-  static buttonSong() {
-    $I("input-file-song").click();
-  }
-
-  static buttonLyric() {
-    $I("input-file-lyric").click();
-  }
-
-  static inputChangeSong(e) {
-    console.log(e.target.files);
-    var file = e.target.files[0];
-
-    import_status_song.innerText = "Song: " + file.name;
-    import_selected_song = file;
-    hasSelectedSong = true;
-    this.checkEnableOkButton();
-  }
-
-  static inputChangeLyric(e) {
-    console.log(e.target.files);
-    import_status_lyric.innerText = "Lyric: " + e.target.files[0].name;
-    import_selected_lyric = e.target.files[0];
-
-    hasSelectedLyric = true;
-    this.checkEnableOkButton();
-  }
-
-  static checkEnableOkButton() {
-    $I("import-button-ok").disabled = !(
-      hasSelectedSong && hasSelectedLyric
-    );
-  }
-
-  static openImportMenu() {
-    import_dialog.classList.remove("closed");
-    import_status_song.innerText = "Song: -";
-    import_status_lyric.innerText = "Lyric: -";
-    hasSelectedLyric = false;
-    hasSelectedSong = false;
-    this.checkEnableOkButton();
-  }
-
-  static closeImportMenu() {
-    import_dialog.classList.add("closed");
-  }
-
-  static LoadFiles() {
-    MediaControls.LoadCurrentAudio();
-    this.readLyric();
-    LyricsControls.LoadCurrentAsObject();
-    audio_player.addEventListener(
-      "canplay",
-      () => {
-        MediaControls.TogglePausePlay();
-      },
-      { once: true }
-    );
-  }
-}
-
 class ImportMenuEx {
-  static buttonSong() {
-    $I("input-file-song").click();
-
-    var ismBtn = $I("import-separate-music");
-    ismBtn.disabled = true;
-    setTimeout(() => {
-      ismBtn.disabled = false;
-    }, 1000);
-
-    /*
-    document.body.onfocus = function () {
- 
-      document.body.onfocus = null;
-    };
-    */
-  }
-
-  static buttonLyric() {
-    $I("input-file-lyric").click();
-
-    var istBtn = $I("import-separate-ttml");
-    istBtn.disabled = true;
-
-    setTimeout(() => {
-      istBtn.disabled = false;
-    }, 1000);
-  }
 
   static buttonPackage() {
     $I("input-file-package").click();
 
+    /*
     //VIA KARAOKE PACKAGE
     var vkpButton = $I("import-package");
     vkpButton.disabled = true;
     setTimeout(() => {
       vkpButton.disabled = false;
     }, 1000);
-  }
-
-  static inputChangeSong(e) {
-    console.log(e.target.files);
-    var file = e.target.files[0];
-    import_status_song.innerText = "Song: " + file.name;
-    import_selected_song = file;
-    hasSelectedSong = true;
-    this.checkEnableOkButton();
-    //}
-  }
-
-  static inputChangeLyric(e) {
-    console.log(e.target.files);
-    import_status_lyric.innerText = "Lyric: " + e.target.files[0].name;
-    import_selected_lyric = e.target.files[0];
-    this.readLyric();
-    hasSelectedLyric = true;
-    this.checkEnableOkButton();
+    */
   }
 
   static inputChangePackage(e) {
@@ -856,7 +748,6 @@ class ImportMenuEx {
                           : "lrc"
                         : "json"
                       : "ttml";
-
 
                     zip
                       .file(lyricsToBeRead)
@@ -919,52 +810,14 @@ class ImportMenuEx {
     reader.readAsText(import_selected_lyric);
   }
 
-  static checkEnableOkButton() {
-    $I("import-button-ok").disabled = !(
-      hasSelectedSong && hasSelectedLyric
-    );
-  }
-
-  static openImportMenu() {
-    import_dialog_main.classList.remove("closed");
-  }
-
-  static openImportMenuSeparate() {
-    import_dialog_separate.classList.remove("closed");
-    import_status_song.innerText = "Song: -";
-    import_status_lyric.innerText = "Lyric: -";
-    hasSelectedLyric = false;
-    hasSelectedSong = false;
-    this.checkEnableOkButton();
-  }
-
-  static openImportMenuPackage() {
-    import_dialog_package.classList.remove("closed");
-  }
-
-  static closeImportMenu() {
-    import_dialog_main.classList.add("closed");
-  }
-
-  static closeImportMenuSeparate() {
-    import_dialog_separate.classList.add("closed");
-  }
-
-  static closeImportMenuPackage() {
-    import_dialog_package.classList.add("closed");
-  }
-
-  static closeAll() {
-    this.closeImportMenu();
-    this.closeImportMenuSeparate();
-    this.closeImportMenuPackage();
-  }
-
   static LoadFiles() {
-    this.closeAll();
     MediaControls.LoadCurrentAudio();
     LyricsControls.LoadCurrentAsObject();
     MediaControls.PlayOnceReady();
+  }
+
+  static closeAll() {
+    
   }
 }
 
