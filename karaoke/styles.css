@@ -358,7 +358,8 @@ button:active:enabled {
   --lyrics-reached: #ffffff;
 
   transition: color 1s, filter 0s, text-shadow 1s, --lyrics-reached 1s,
-    -webkit-text-stroke 1s, margin-top 0.2s, margin-bottom 0.2s, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -webkit-text-stroke 1s, margin-top 0.2s, margin-bottom 0.2s,
+    transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   /*
   margin-top: 0.75em;
   margin-bottom: 0.75em;
@@ -386,7 +387,6 @@ button:active:enabled {
   filter: opacity(1);
 
   & > .lyrics-word {
-
     background-image: linear-gradient(
       to right,
       var(--lyrics-reached),
@@ -420,7 +420,9 @@ button:active:enabled {
   text-size-adjust: auto;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
+
 }
+
 
 .lyrics.reached,
 .lyrics.notreached {
@@ -513,7 +515,9 @@ button:active:enabled {
 
   width: 100%;
 
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    margin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   transform: scale(0);
   transform-origin: bottom left;
@@ -845,7 +849,7 @@ input[type="submit"] {
 
   * {
     filter: none;
-    animation: spinny 5s linear 0s infinite forwards;
+    animation: spinny 10s linear 0s infinite forwards;
   }
 
   *:nth-child(1) {
@@ -854,6 +858,7 @@ input[type="submit"] {
     height: auto;
     top: -5%;
     left: -15%;
+    animation-direction: alternate;
   }
 
   *:nth-child(2) {
@@ -869,7 +874,21 @@ input[type="submit"] {
     position: fixed;
     width: 75%;
     height: auto;
-    top: -100%;
+    top: 40%;
+  }
+
+  &::after{
+    z-index: 10000;
+    position:fixed;
+    width: 150%;
+    height: 150%;
+    background-color: transparent;
+    transition: background-color .5s;
+    content: "";
+  }
+
+  &.black::after {
+    background-color: black;
   }
 }
 
@@ -890,18 +909,16 @@ input[type="submit"] {
   }
 }
 
+
 .md3.switch {
   user-select: none;
   position: relative;
-  height: 32px;
-  width: 50px;
+  height: 1.5em;
+  width: 2.5em;
   -webkit-tap-highlight-color: transparent;
-  margin: 10px;
+  margin: 0px;
+  padding-right: 2.5em;
   font-family: "Roboto", sans-serif;
-
-  &.slightleft {
-    transform: translateX(-1.5em);
-  }
 }
 
 .md3.switch input {
@@ -917,10 +934,10 @@ input[type="submit"] {
   position: absolute;
   cursor: pointer;
   background-color: var(--c-surface-variant);
-  width: 48px;
-  height: 28px;
-  border-radius: 28px;
-  border: 2px solid var(--c-outline);
+  width: 2.4em;
+  height: 1.4em;
+  border-radius: 1.4em;
+  border: 0.1em solid var(--c-outline);
   transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
 }
 
@@ -928,12 +945,12 @@ input[type="submit"] {
 .md3.switch span.slider::before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
+  height: 0.8em;
+  width: 0.8em;
   left: 0px;
-  margin: 6px;
+  margin: 0.3em;
   background-color: var(--c-outline);
-  border-radius: 28px;
+  border-radius: 1.4em;
   transition: left 175ms cubic-bezier(0, 0.5, 0.5, 1.5),
     background-color 0.1s ease-in-out, height 50ms ease-in-out,
     width 50ms ease-in-out, margin 50ms ease-in-out;
@@ -943,10 +960,10 @@ input[type="submit"] {
 .md3.switch span.slider span.icon {
   position: relative;
   left: 0px;
-  margin: 6px 0px;
-  height: 16px;
-  width: 16px;
-  font-size: 16px;
+  margin: 0.3em 0em;
+  height: 0.8em;
+  width: 0.8em;
+  font-size: 0.8em;
   text-align: center;
   opacity: 0;
   transition: left 175ms cubic-bezier(0, 0.5, 0.5, 1.5);
@@ -962,10 +979,10 @@ input[type="submit"] {
 /* active thumb */
 .md3.switch input:checked + span.slider::before {
   background-color: var(--c-primary);
-  height: 24px;
-  width: 24px;
-  left: 20px;
-  margin: 2px;
+  height: 1.2em;
+  width: 1.2em;
+  left: 1em;
+  margin: 0.1em;
 }
 
 /* hover thumb */
@@ -980,8 +997,8 @@ input[type="submit"] {
 
 /* click thumb */
 .md3.switch input:not(:disabled):active + span.slider::before {
-  height: 28px;
-  width: 28px;
+  height: 1.4em;
+  width: 1.4em;
   margin: 0px;
 }
 
@@ -992,7 +1009,7 @@ input[type="submit"] {
 
 /* active icon */
 .md3.switch input:checked + span.slider span.icon {
-  left: 26px;
+  left: 1.3em;
   opacity: 1;
   color: var(--c-primary-container-on);
 }
@@ -1027,5 +1044,5 @@ input[type="submit"] {
 }
 
 .md3.switch input:focus-visible + span.slider {
-  outline: 2px solid var(--c-primary);
+  outline: 0.1em solid var(--c-primary);
 }

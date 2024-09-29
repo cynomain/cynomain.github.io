@@ -19,39 +19,36 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="./lib/jszip.min.js"></script>
     <script src="./lib/nosleep.js"></script>
-    <script src="./scripts/tauri-fix.js"></script>
     <script src="./scripts/ttml.js"></script>
     <script src="./scripts/lrc.js"></script>
+    <!--
+    <script src="./scripts/tauri-fix.js"></script>
     <script src="./scripts/script.js"></script>
+        -->
   </head>
 
   <body>
-    <!--div class="background">
-      <div class="blur-cover disabled">
+    <div class="background disabled">
+      <div class="blur-cover">
         <img
-          src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+          src=""
         />
         <img
-          src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+          src=""
         />
         <img
-          src="https://i.scdn.co/image/ab67616d0000b273e21cc1db05580b6f2d2a3b6e"
+          src=""
         />
       </div>
-
-      <div class="music-video">
-        <video
-          src="testmv.mp4"
-          autoplay
-          muted
-          width="100%"
-          height="100%"
-          
-          ></video>
-      </div>
-    </div-->
+    </div>
 
     <audio id="audio-player" style="display: none"></audio>
+    <input
+      type="file"
+      id="input-file-package"
+      accept=".pkp"
+      style="display: none"
+    />
 
     <div class="lyrics-area masked" id="lyrics-area">
       <p
@@ -128,7 +125,7 @@
           -00:00
         </p>
 
-        <button onclick="ImportMenuEx.buttonPackage();" title="Import">
+        <button onclick="ImportMenuEx.buttonPackage();" title="Import" id="button-import">
           <!--span class="material-symbols-rounded"> file_open </span-->
           <img src="./assets/icon_file_open.svg" class="tint-dark" />
         </button>
@@ -141,7 +138,7 @@
           />
         </button -->
 
-        <button onclick="MediaControls.ToggleFullscreen();" title="Fullscreen">
+        <button onclick="MediaControls.ToggleFullscreen();" title="Fullscreen" id="button-fullscreen">
           <!--span class="material-symbols-rounded" id="fullscreen-text">
             fullscreen
           </span-->
@@ -257,6 +254,7 @@
     ->>
 
     <!--Import Package-->
+    <!--
     <div class="import-dialog closed" id="import-dialog-package">
       <div class="card import children-fill col">
         <h1 style="text-align: center">Import (Package)</h1>
@@ -308,11 +306,11 @@
       style="display: none"
       onchange="ImportMenuEx.inputChangePackage(event)"
     />
-
+  -->
     <!--Settings-->
     <div class="import-dialog closed" id="import-dialog-settings">
-      <div class="card import children-fill col">
-        <h1 style="text-align: center">Settings</h1>
+      <div class="card import children-fill col" style="gap: .25em">
+        <h1 style="text-align: center; margin: 0">Settings</h1>
 
         <div class="children-fill row first">
           <p>Colored Background</p>
@@ -388,10 +386,19 @@
       <p
         id="fps"
         style="color: rgba(255, 255, 255, 0.527); font-size: 1em; margin: 0"
-        class="disabled"
+        class=""
       >
         FPS
       </p>
     </div>
+    
+    <script src="./scripts/jqlite.js"></script>
+    <script src="./scripts/common.js"></script>
+    <script src="./scripts/io.js"></script>
+    <script src="./scripts/settings.js"></script>
+    <script src="./scripts/element_maker.js"></script>
+    <script src="./scripts/audio_manager.js"></script>
+    <script src="./scripts/ui_manager.js"></script>
+    <script src="./scripts/script_neo.js"></script>
   </body>
 </html>

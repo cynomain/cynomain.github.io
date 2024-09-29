@@ -245,6 +245,8 @@ class MediaControls {
     this.Seek(0);
     isSeeking = false;
     progress_bar.value = 0;
+
+    
   }
 
   static LoadCurrentAudio() {
@@ -569,7 +571,7 @@ class LyricsControls {
   }
 
   static LoadAsLRC(text) {
-    currentLyrics = Make;
+    currentLyrics = MakeLRC(text);
   }
 
   static LoadCurrentAsObject() {
