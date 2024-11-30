@@ -11,19 +11,30 @@ class Dialog {
     });
   }
 
-  addLabeledElement(labelGetter) {
+  addLabeledElement(labelGetter, element) {
     this.elements.push({
       labelGetter: labelGetter,
       build() {
-        return createLabeledElement(this.labelGetter());
+        return createLabeledElement(this.labelGetter(), element);
       },
     });
   }
 
   addToggle(labelGetter, valueGetter, valueSetter) {
-
+    this.elements.push({
+        labelGetter: labelGetter,
+        valueGetter: valueGetter,
+        valueSetter: valueSetter,
+        build() {
+          return createToggle(this.labelGetter(), this.valueGetter, this.valueSetter);
+        },
+      });
   }
 
+  addButton(labelGetter, onClick){
+
+  }
+  
   createLabeledElement(label, element) {
     let el = document.createElement("div");
     el.className = "children-fill row first col";

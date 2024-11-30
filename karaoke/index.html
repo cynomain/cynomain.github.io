@@ -19,8 +19,8 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="./lib/jszip.min.js"></script>
     <script src="./lib/nosleep.js"></script>
-    <script src="./scripts/ttml.js"></script>
-    <script src="./scripts/lrc.js"></script>
+    <script src="./scripts/parsers/ttml.js"></script>
+    <script src="./scripts/parsers/lrc.js"></script>
     <!--
     <script src="./scripts/tauri-fix.js"></script>
     <script src="./scripts/script.js"></script>
@@ -151,162 +151,6 @@
       </div>
     </div>
 
-    <!--Import Main-->
-    <!--
-    <div class="import-dialog closed" id="import-dialog-main">
-      <div class="card import children-fill col">
-        <div class="children-fill row first">
-          <h1>Import</h1>
-          <button class="clear" onclick="">
-            <img
-              src="./assets/icon_settings.svg"
-              class="tint-light"
-              style="font-size: 1.25em"
-            />
-          </button>
-        </div>
-        <button
-          class="normal children-fill row second"
-          id="import-package"
-          onclick="ImportMenuEx.buttonPackage();"
-        >
-          <img
-            src="./assets/icon_package.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Via Karaoke Package (.pkp)</span>
-        </button>
-        <button
-          class="normal children-fill row second"
-          id="import-separatefiles"
-          onclick="ImportMenuEx.openImportMenuSeparate();"
-        >
-          <img
-            src="./assets/icon_media.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Via separate files</span>
-        </button>
-        <br />
-        <button class="inverse" onclick="ImportMenuEx.closeAll();">
-          <b>Cancel</b>
-        </button>
-      </div>
-    </div>
-  -->
-
-    <!--Import Separate-->
-    <!--
-    <div class="import-dialog closed" id="import-dialog-separate">
-      <div class="card import children-fill col">
-        <h1 style="text-align: center">Import (Separate)</h1>
-        <p id="import-status-song">Song: -</p>
-        <p id="import-status-lyric">Lyric: -</p>
-        <br />
-        <button
-          class="normal"
-          id="import-separate-music"
-          onclick="ImportMenuEx.buttonSong()"
-        >
-          <img
-            src="./assets/icon_music.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Select music file</span>
-        </button>
-
-        <button
-          class="normal"
-          id="import-separate-ttml"
-          onclick="ImportMenuEx.buttonLyric()"
-        >
-          <img
-            src="./assets/icon_lyrics.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Select TTML file</span>
-        </button>
-
-        <div
-          class="children-fill row equal"
-          style="margin-top: 1em; font-weight: bold"
-        >
-          <button
-            class="inverse"
-            onclick="ImportMenuEx.closeImportMenuSeparate()"
-          >
-            <b>Cancel</b>
-          </button>
-          <button
-            class="inverse"
-            id="import-button-ok"
-            onclick="ImportMenuEx.LoadFiles();"
-          >
-            <b>OK</b>
-          </button>
-        </div>
-      </div>
-    </div>
-    ->>
-
-    <!--Import Package-->
-    <!--
-    <div class="import-dialog closed" id="import-dialog-package">
-      <div class="card import children-fill col">
-        <h1 style="text-align: center">Import (Package)</h1>
-        <button
-          class="normal"
-          id="import-separate-music"
-          onclick="ImportMenuEx.buttonPackage();"
-        >
-          <img
-            src="./assets/icon_package.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Select package file</span>
-        </button>
-
-        <div
-          class="children-fill row equal"
-          style="margin-top: 1em; font-weight: bold"
-        >
-          <button
-            class="inverse"
-            onclick="ImportMenuEx.closeImportMenuPackage();"
-          >
-            <b>Cancel</b>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <input
-      type="file"
-      id="input-file-song"
-      accept="audio/*"
-      style="display: none"
-      onchange="ImportMenuEx.inputChangeSong(event)"
-    />
-    <input
-      type="file"
-      id="input-file-lyric"
-      accept=".ttml"
-      style="display: none"
-      onchange="ImportMenuEx.inputChangeLyric(event)"
-    />
-    <input
-      type="file"
-      id="input-file-package"
-      accept=".pkp"
-      style="display: none"
-      onchange="ImportMenuEx.inputChangePackage(event)"
-    />
-  -->
     <!--Settings-->
     <div class="import-dialog closed" id="import-dialog-settings">
       <div class="card import children-fill col" style="gap: .25em">
@@ -398,6 +242,7 @@
     <script src="./scripts/settings.js"></script>
     <script src="./scripts/element_maker.js"></script>
     <script src="./scripts/audio_manager.js"></script>
+    <script src="./scripts/renderers/regular_renderer.js"></script>
     <script src="./scripts/ui_manager.js"></script>
     <script src="./scripts/script_neo.js"></script>
   </body>

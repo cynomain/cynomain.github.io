@@ -146,9 +146,9 @@ var IO = {
       currentState.lyricsString = lyrics;
 
       if (lyricsPath === jsonPath) {
-        currentLyrics = ElementMaker.renderJson(lyrics);
+        currentLyrics = LyricsUI.renderJson(lyrics);
       } else {
-        currentLyrics = ElementMaker.renderTTML(lyrics);
+        currentLyrics = LyricsUI.renderTTML(lyrics);
       }
       AudioManager.loadAudio(song);
       AudioManager.playOnceReady();

@@ -850,12 +850,12 @@ input[type="submit"] {
   * {
     filter: none;
     animation: spinny 10s linear 0s infinite forwards;
+    width: auto;
+    height: 75%;
   }
 
   *:nth-child(1) {
     position: fixed;
-    width: 75%;
-    height: auto;
     top: -5%;
     left: -15%;
     animation-direction: alternate;
@@ -863,8 +863,6 @@ input[type="submit"] {
 
   *:nth-child(2) {
     position: fixed;
-    width: 75%;
-    height: auto;
     top: -5%;
     right: -15%;
     animation-direction: backwards;
@@ -872,8 +870,6 @@ input[type="submit"] {
 
   *:nth-child(3) {
     position: fixed;
-    width: 75%;
-    height: auto;
     top: 40%;
   }
 

@@ -1,8 +1,8 @@
 /// <reference path="common.js">
 /// <reference path="audio_manager.js">
 /// <reference path="ui_manager.js">
-/// <reference path="lrc.js">
-/// <reference path="ttml.js">
+/// <reference path="parsers/lrc.js">
+/// <reference path="parsers/ttml.js">
 
 var ElementMaker = {
   createLeadModel(vocalGroup) {
@@ -160,47 +160,5 @@ var ElementMaker = {
       }
     }
     return js;
-  },
-
-  renderLrc(lrc) {
-    let data = LRC.Parse(lrc);
-    return this.renderJson(data);
-  },
-
-  renderTTML(ttml) {
-    var parsed = TTML.ParseLyrics(ttml);
-    return this.turnDataToModel(parsed);
-  },
-
-  turnDataToModel(data) {
-    var data2 = [];
-    var vocalgroups = data.VocalGroups ?? data.Content;
-    vocalgroups.forEach((vg) => {
-      if (isObjectUndefined(vg.StartTime)) {
-        if (!isObjectUndefined(vg.Lead)) {
-          vg.StartTime = vg.Lead.StartTime;
-          vg.EndTime = vg.Lead.EndTime;
-        }
-      }
-      var elementsCreated = this.createLeadModel(vg);
-      data2.push({ data: vg, elements: elementsCreated });
-    });
-    return data2;
-  },
-
-  applyModelToDoc(data) {
-    lyrics_area.innerHTML = "";
-    data.forEach((d) => {
-      d.elements.forEach((e) => {
-        lyrics_area.appendChild(e);
-      });
-    });
-    return data;
-  },
-
-  renderJson(json) {
-    let lrcJson = this.normalize(JSON.parse(json));
-    let data = this.turnDataToModel(lrcJson);
-    return this.applyModelToDoc(data);
   },
 };
