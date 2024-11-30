@@ -145,14 +145,22 @@ var IO = {
       currentState.songBlob = song;
       currentState.lyricsString = lyrics;
 
+      console.log(lyricsPath);
+      console.log(jsonPath);
+      console.log(ttmlPath);
       if (lyricsPath === jsonPath) {
         currentLyrics = LyricsUI.renderJson(lyrics);
-      } else {
+        console.log("otw to json");
+      } else if (lyricsPath === ttmlPath) {
         currentLyrics = LyricsUI.renderTTML(lyrics);
+        console.log("otw to ttml");
+      }else{
+        alert("Error occured while loading lyrics: Info: " + lyricsPath);
       }
       AudioManager.loadAudio(song);
       AudioManager.playOnceReady();
       BackgroundUI.loadImage(image);
+      console.log("done");
     } catch (e) {
       console.error(e);
       alert("an error occured: " + e);

@@ -186,8 +186,10 @@ var LyricsUI = {
     },
   
     renderTTML(ttml) {
+      console.log("rendering ttml");
       var parsed = TTML.ParseLyrics(ttml);
-      return LyricsUI.turnDataToModel(parsed);
+      var data = LyricsUI.turnDataToModel(parsed);
+      return LyricsUI.applyModelToDoc(data);
     },
   
     turnDataToModel(data) {
@@ -207,6 +209,7 @@ var LyricsUI = {
     },
   
     applyModelToDoc(data) {
+      console.log("apply");
       lyrics_area.innerHTML = "";
       data.forEach((d) => {
         d.elements.forEach((e) => {
@@ -217,6 +220,7 @@ var LyricsUI = {
     },
   
     renderJson(json) {
+      console.log("render json");
       let lrcJson = ElementMaker.normalize(JSON.parse(json));
       let data = LyricsUI.turnDataToModel(lrcJson);
       return LyricsUI.applyModelToDoc(data);

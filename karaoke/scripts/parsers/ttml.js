@@ -11,11 +11,11 @@ class TTML {
 
   static GetFeatureAgentVersion(element) {
     var _a;
-    const featureAgent = element.getAttribute(this.FeatureAgentAttribute);
+    const featureAgent = element.getAttribute(TTML.FeatureAgentAttribute);
     const featureAgentVersion =
       featureAgent === null
         ? undefined
-        : (_a = this.AgentVersion.exec(featureAgent)) === null || _a === void 0
+        : (_a = TTML.AgentVersion.exec(featureAgent)) === null || _a === void 0
         ? void 0
         : _a[1];
     return featureAgentVersion === undefined
@@ -25,7 +25,7 @@ class TTML {
 
   static GetTimeInSeconds(time) {
     // Grab our matches
-    const matches = this.TimeFormat.exec(time);
+    const matches = TTML.TimeFormat.exec(time);
     if (matches === null) {
       return -1;
     }
@@ -45,12 +45,12 @@ class TTML {
 
   static ParseAppleMusicLyrics(text) {
     // Our text is XML so we'll just parse it first
-    const parsedDocument = this.parser.parseFromString(text, "text/xml");
+    const parsedDocument = TTML.parser.parseFromString(text, "text/xml");
     const body = parsedDocument.querySelector("body");
     // Determine if we're syllable synced, line synced, or statically synced
-    const syncType = this.SyllableSyncCheck.test(text)
+    const syncType = TTML.SyllableSyncCheck.test(text)
       ? "Syllable"
-      : this.LineSyncCheck.test(text)
+      : TTML.LineSyncCheck.test(text)
       ? "Line"
       : "Static";
     // For static-sync we just have to extract each line of text
@@ -100,14 +100,14 @@ class TTML {
           for (const line of element.children) {
             if (line.tagName === "p") {
               // Determine whether or not we are opposite-aligned
-              const featureAgentVersion = this.GetFeatureAgentVersion(line);
+              const featureAgentVersion = TTML.GetFeatureAgentVersion(line);
               const oppositeAligned =
                 featureAgentVersion === undefined
                   ? false
                   : featureAgentVersion === 2;
               // Grab our times
-              const start = this.GetTimeInSeconds(line.getAttribute("begin"));
-              const end = this.GetTimeInSeconds(line.getAttribute("end"));
+              const start = TTML.GetTimeInSeconds(line.getAttribute("begin"));
+              const end = TTML.GetTimeInSeconds(line.getAttribute("end"));
               // Store our lyrics now
               const vocalGroup = {
                 Type: "Vocal",
@@ -157,7 +157,7 @@ class TTML {
           for (const line of element.children) {
             if (line.tagName === "p") {
               // Determine whether or not we are opposite-aligned
-              const featureAgentVersion = this.GetFeatureAgentVersion(line);
+              const featureAgentVersion = TTML.GetFeatureAgentVersion(line);
               const oppositeAligned =
                 featureAgentVersion === undefined
                   ? false
@@ -167,10 +167,10 @@ class TTML {
               const backgroundLyrics = [];
               const lineNodes = line.childNodes;
               for (const [index, syllable] of lineNodes.entries()) {
-                if (this.IsNodeASpan(syllable)) {
+                if (TTML.IsNodeASpan(syllable)) {
                   // We have to first determine if we're a background lyric - since we have inner spans if we are
                   const isBackground =
-                    syllable.getAttribute(this.FeatureRoleAttribute) === "x-bg";
+                    syllable.getAttribute(TTML.FeatureRoleAttribute) === "x-bg";
                   if (isBackground) {
                     // Gather our background-lyrics
                     const backgroundNodes = syllable.childNodes;
@@ -178,11 +178,11 @@ class TTML {
                       backgroundIndex,
                       backgroundSyllable,
                     ] of backgroundNodes.entries()) {
-                      if (this.IsNodeASpan(backgroundSyllable)) {
-                        const start = this.GetTimeInSeconds(
+                      if (TTML.IsNodeASpan(backgroundSyllable)) {
+                        const start = TTML.GetTimeInSeconds(
                           backgroundSyllable.getAttribute("begin")
                         );
-                        const end = this.GetTimeInSeconds(
+                        const end = TTML.GetTimeInSeconds(
                           backgroundSyllable.getAttribute("end")
                         );
                         const nextNode = backgroundNodes[backgroundIndex + 1];
@@ -215,10 +215,10 @@ class TTML {
                       }
                     }
                   } else {
-                    const start = this.GetTimeInSeconds(
+                    const start = TTML.GetTimeInSeconds(
                       syllable.getAttribute("begin")
                     );
-                    const end = this.GetTimeInSeconds(
+                    const end = TTML.GetTimeInSeconds(
                       syllable.getAttribute("end")
                     );
                     const nextNode = lineNodes[index + 1];
@@ -294,18 +294,18 @@ class TTML {
 
   static ParseLyrics(content) {
     // Grab our parsed-lyrics
-    var parsedLyrics = this.ParseAppleMusicLyrics(content);
+    var parsedLyrics = TTML.ParseAppleMusicLyrics(content);
     // Now add in interludes anywhere we can
     if (parsedLyrics.Type !== "Static") {
       // First check if our first vocal-group needs an interlude before it
       let addedStartInterlude = false;
       {
         const firstVocalGroup = parsedLyrics.VocalGroups[0];
-        if (firstVocalGroup.StartTime >= this.MinimumInterludeDuration) {
+        if (firstVocalGroup.StartTime >= TTML.MinimumInterludeDuration) {
           parsedLyrics.VocalGroups.unshift({
             Type: "Interlude",
             StartTime: 0,
-            EndTime: firstVocalGroup.StartTime - this.EndInterludeEarlyBy,
+            EndTime: firstVocalGroup.StartTime - TTML.EndInterludeEarlyBy,
           });
           addedStartInterlude = true;
         }
@@ -320,12 +320,12 @@ class TTML {
         const startingVocalGroup = parsedLyrics.VocalGroups[index - 1];
         if (
           endingVocalGroup.StartTime - startingVocalGroup.EndTime >=
-          this.MinimumInterludeDuration
+          TTML.MinimumInterludeDuration
         ) {
           parsedLyrics.VocalGroups.splice(index, 0, {
             Type: "Interlude",
             StartTime: startingVocalGroup.EndTime,
-            EndTime: endingVocalGroup.StartTime - this.EndInterludeEarlyBy,
+            EndTime: endingVocalGroup.StartTime - TTML.EndInterludeEarlyBy,
           });
         }
       }
