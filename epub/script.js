@@ -1598,7 +1598,8 @@ class Search {
 class SearchService {
   static QueryWorks(query) {
     //popup_loading.classList.remove("disabled");
-    FadeEnable(popup_loading);
+    
+    //FadeEnable(popup_loading);
 
     try {
       let q_any = Search.ParseSearch(query["any"] ?? "");
@@ -1867,14 +1868,14 @@ class SearchService {
       search_info.innerText = infos.join("\n");
       search_info_amount.innerText = `Found ${results.length} result(s).`;
       //popup_loading.classList.add("disabled");
-      FadeDisable(popup_loading);
+      //FadeDisable(popup_loading);
 
       cached = undefined;
       return results;
     } catch (ex) {
       console.log(ex);
       //popup_loading.classList.add("disabled");
-      FadeDisable(popup_loading);
+      //FadeDisable(popup_loading);
       
       return [];
     }
@@ -2047,7 +2048,7 @@ class AppDB {
     }
 
     //popup_loading.classList.remove("disabled");
-    FadeEnable(popup_loading);
+    //FadeEnable(popup_loading);
 
     this.Works = JSON.parse(localStorage.getItem("works") ?? "[]");
 
@@ -2058,7 +2059,7 @@ class AppDB {
     );
 
     //popup_loading.classList.add("disabled");
-    FadeDisable(popup_loading);
+    //FadeDisable(popup_loading);
 
   }
 
