@@ -4,10 +4,12 @@ body {
   font: 100% system-ui;
   height: 100%;
   width: 100%;
+  top: 0;
   margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   justify-self: center;
   justify-items: center;
   align-items: center;
@@ -23,6 +25,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 @media only screen and (hover: none) and (pointer: coarse) {

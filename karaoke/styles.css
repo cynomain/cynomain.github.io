@@ -399,6 +399,7 @@ button:active:enabled {
     text-size-adjust: auto;
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
+    /* transform: translateY(calc( sin( (var(--progress)/2.0) * 1turn ) * 1em)); */
 
     /*transition: background-image 0.2s;*/
   }
@@ -438,10 +439,12 @@ button:active:enabled {
 
   /*text-shadow: none;*/
 
+  /*
   &:hover {
-    filter: opacity(100%) Im !important;
+    filter: opacity(60%) !important;
     color: var(--lyric-normal) !important;
   }
+    */
 
   cursor: pointer;
 
@@ -849,28 +852,41 @@ input[type="submit"] {
 
   * {
     filter: none;
-    animation: spinny 10s linear 0s infinite forwards;
+    animation: spinny 20s linear 0s infinite forwards;
     width: auto;
-    height: 75%;
+    height: 100%;
   }
 
   *:nth-child(1) {
     position: fixed;
-    top: -5%;
-    left: -15%;
+    top: 1%;
+    left: 7%;
     animation-direction: alternate;
   }
 
   *:nth-child(2) {
     position: fixed;
-    top: -5%;
-    right: -15%;
+    top: 1%;
+    right: 7%;
     animation-direction: backwards;
   }
 
   *:nth-child(3) {
     position: fixed;
-    top: 40%;
+    top: 50%;
+    left: 50%;
+  }
+
+  *:nth-child(4) {
+    position: fixed;
+    top: 0%;
+    left: -25%;
+  }
+
+  *:nth-child(5) {
+    position: fixed;
+    top: 0%;
+    right: -25%;
   }
 
   &::after{

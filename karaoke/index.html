@@ -30,15 +30,11 @@
   <body>
     <div class="background disabled">
       <div class="blur-cover">
-        <img
-          src=""
-        />
-        <img
-          src=""
-        />
-        <img
-          src=""
-        />
+        <img src="" />
+        <img src="" />
+        <img src="" />
+        <img src="" />
+        <img src="" />
       </div>
     </div>
 
@@ -125,7 +121,11 @@
           -00:00
         </p>
 
-        <button onclick="ImportMenuEx.buttonPackage();" title="Import" id="button-import">
+        <button
+          onclick="ImportMenuEx.buttonPackage();"
+          title="Import"
+          id="button-import"
+        >
           <!--span class="material-symbols-rounded"> file_open </span-->
           <img src="./assets/icon_file_open.svg" class="tint-dark" />
         </button>
@@ -138,7 +138,11 @@
           />
         </button -->
 
-        <button onclick="MediaControls.ToggleFullscreen();" title="Fullscreen" id="button-fullscreen">
+        <button
+          onclick="MediaControls.ToggleFullscreen();"
+          title="Fullscreen"
+          id="button-fullscreen"
+        >
           <!--span class="material-symbols-rounded" id="fullscreen-text">
             fullscreen
           </span-->
@@ -153,7 +157,7 @@
 
     <!--Settings-->
     <div class="import-dialog closed" id="import-dialog-settings">
-      <div class="card import children-fill col" style="gap: .25em">
+      <div class="card import children-fill col" style="gap: 0.25em">
         <h1 style="text-align: center; margin: 0">Settings</h1>
 
         <div class="children-fill row first">
@@ -235,7 +239,7 @@
         FPS
       </p>
     </div>
-    
+
     <script src="./scripts/jqlite.js"></script>
     <script src="./scripts/common.js"></script>
     <script src="./scripts/io.js"></script>

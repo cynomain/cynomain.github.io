@@ -218,7 +218,7 @@ class TTML {
                     const start = TTML.GetTimeInSeconds(
                       syllable.getAttribute("begin")
                     );
-                    const end = TTML.GetTimeInSeconds(
+                    const end = TTML  .GetTimeInSeconds(
                       syllable.getAttribute("end")
                     );
                     const nextNode = lineNodes[index + 1];

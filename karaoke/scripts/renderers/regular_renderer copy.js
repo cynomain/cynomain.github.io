@@ -2,7 +2,7 @@ var LyricsUI = {
     mostRecentLyric: null,
     lastMostRecentLyric: null,
     intervalId: 0,
-
+  
     ProcessLyrics() {
       let time = audio_player.currentTime;
   
@@ -63,7 +63,7 @@ var LyricsUI = {
           if (d.data.StartTime <= time && d.data.EndTime >= time) {
             //Yes
             if (d.data.Type === "Vocal") {
-              let leads = d.data.Lead;
+              const leads = d.data.Lead;
   
               //Has Leads -> Word Synced
               if (!isObjectUndefined(leads)) {
