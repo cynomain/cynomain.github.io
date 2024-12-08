@@ -18,6 +18,7 @@ var currentState = {
 
 var settings = {
   enableBackground: true,
+  enableFps: true,
   mode: 0,
   size: 1.0,
 };

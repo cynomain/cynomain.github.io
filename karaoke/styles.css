@@ -100,7 +100,7 @@ img {
   }
 }
 
-@media only screen and (hover: none) and (pointer: coarse) {
+@media only screen  and (pointer: coarse) {
   body {
     font: 70% system-ui;
   }
@@ -1057,4 +1057,8 @@ input[type="submit"] {
 
 .md3.switch input:focus-visible + span.slider {
   outline: 0.1em solid var(--c-primary);
+}
+
+.fps.hidden {
+  opacity: 0;
 }

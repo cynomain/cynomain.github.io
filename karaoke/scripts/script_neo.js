@@ -33,20 +33,34 @@ document.body.addEventListener("keyup", function (e) {
 
 function saveSettings() {
   for (prop in settings) {
-    localStorage.setItem("settings." + prop, settings[prop]);
+    localStorage.setItem("karaoke_settings." + prop, settings[prop]);
   }
   console.log("saved!");
 }
 
 function getSettings() {
   for (prop in settings) {
-    settings[prop] = eval(localStorage.getItem("settings." + prop, settings[prop]));
+    settings[prop] = eval(localStorage.getItem("karaoke_settings." + prop, settings[prop]));
   }
   console.log("loaded!");
 }
 
+function ensureSettings() {
+  for (prop in settings) {
+    let s = settings[prop];
+    let d = defaultSettings[prop];
+    if (isObjectUndefined(s) && !isObjectUndefined(d)) {
+      settings[prop] = d;
+    }
+  }
+}
+
+var defaultSettings = structuredClone(settings);
 getSettings();
+ensureSettings();
 BackgroundUI.updateVisibility();
+FPSCounter.updateVisibility();
+
 
 
 window.addEventListener("beforeunload", () => {

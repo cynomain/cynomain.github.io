@@ -131,6 +131,7 @@ $I("button-fullscreen").onclick = BottomBarUI.toggleFullscreen;
 let pbar = $I("playback-progress");
 pbar.onpointerup = () => BottomBarUI.onProgressBarChange(pbar.value);
 pbar.onpointerdown = BottomBarUI.onProgressBarClick;
+
 let bgToggleCounter = 0;
 $I("fps").onclick = () => {
   bgToggleCounter++;
@@ -141,12 +142,36 @@ $I("fps").onclick = () => {
   }
 };
 
+let holdTimer = NaN;
+
+$I("fps").onpointerdown = () => {
+  if (!isNaN(holdTimer)) {
+    clearTimeout(holdTimer);
+  }
+  holdTimer = setTimeout(() => {
+    settings.enableFps = !settings.enableFps;
+    FPSCounter.updateVisibility();
+}, 3000);
+}
+
+$I("fps").onpointerup = () => {
+  if (!isNaN(holdTimer)) {
+    clearTimeout(holdTimer);
+  }
+  holdTimer = NaN;
+}
+
 var FPSCounter = {
   prevTime: 0,
   frames: 0,
   fps_counter: $I("fps"),
+  fps: 0,
 
   fpsCounter() {
+    if (!settings.enableFps){
+      return;
+    }
+
     const time2 = Date.now();
     this.frames++;
     if (time2 > this.prevTime + 1000) {
@@ -157,6 +182,11 @@ var FPSCounter = {
       //console.info('FPS: ', fps);
 
       this.fps_counter.innerText = "" + fps;
+      this.fps = fps;
     }
   },
+
+  updateVisibility() {
+    this.fps_counter.classList.toggle("hidden", !settings.enableFps);
+  }
 };

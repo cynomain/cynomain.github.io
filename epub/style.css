@@ -109,7 +109,7 @@ img {
   }
 }
 
-@media only screen and (hover: none) and (pointer: coarse) {
+@media only screen and (pointer: coarse) {
   body {
     font: 80% system-ui;
   }

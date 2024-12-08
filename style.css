@@ -1,6 +1,6 @@
 body {
   color: #e6e0e9;
-  background: #141218;
+  background-color: #141218;
   font: 100% system-ui;
   height: 100%;
   width: 100%;
@@ -34,9 +34,10 @@ html {
   padding: 0;
 }
 
-@media only screen and (hover: none) and (pointer: coarse) {
+@media only screen and (pointer: coarse) {
   body {
     font: 75% system-ui;
+    background-color: red;
   }
 }
 
