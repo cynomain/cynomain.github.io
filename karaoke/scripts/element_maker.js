@@ -7,7 +7,7 @@
 var ElementMaker = {
   createLeadModel(vocalGroup) {
     if (vocalGroup.Type == "Interlude") {
-      return [this.createInterludeElement()];
+      return [this.createInterludeElement(vocalGroup)];
     }
 
     var line = this.createLineElement(vocalGroup);
@@ -84,20 +84,10 @@ var ElementMaker = {
     return el;
   },
 
-  createInterludeElement() {
-    var el = document.createElement("p");
+  createInterludeElement(vocalGroup) {
+    let el = this.createLineElement(vocalGroup);
     el.className = "interlude close";
     el.style = "--progress: 0%";
-
-    //for (let i = 0; i < 4; i++) {
-    var sp = document.createElement("span");
-    sp.className = "lyrics-word interlude-circles";
-    sp.innerText = "⬤ ⬤ ⬤ ⬤";
-    //sp.innerText = "⬤";
-    //sp.style = "--progress: 0%";
-    el.appendChild(sp);
-    //}
-
     return el;
   },
 
@@ -112,11 +102,10 @@ var ElementMaker = {
         x.EndTime = x.Lead.EndTime;
         x.Lead = x.Lead.Syllables;
 
-          
         //delete x.Lead.Syllables;
         //newContent.push(x);
       });
-  
+
       //js.Content = newContent;
     }
 
@@ -126,16 +115,52 @@ var ElementMaker = {
       const MinimumInterludeDuration = 2;
       const EndInterludeEarlyBy = 0.25; // Seconds before our analytical end. This is used as a prep for the next vocal
 
+      const makeInterlude = (starttime, endtime) => {
+        let delta = endtime - starttime;
+        return {
+          Type: "Interlude",
+          StartTime: starttime,
+          EndTime: endtime,
+          OppositeAligned: false,
+          Lead: {
+            Syllables: [
+              {
+                Text: "⬤",
+                IsPartOfWord: false,
+                StartTime: starttime,
+                EndTime: endtime - (delta * 3) / 4,
+              },
+              {
+                Text: "⬤",
+                IsPartOfWord: false,
+                StartTime: endtime - (delta * 3) / 4,
+                EndTime: endtime - (delta * 2) / 4,
+              },
+              {
+                Text: "⬤",
+                IsPartOfWord: false,
+                StartTime: endtime - (delta * 2) / 4,
+                EndTime: endtime - (delta * 1) / 4,
+              },
+              {
+                Text: "⬤",
+                IsPartOfWord: false,
+                StartTime: endtime - (delta * 1) / 4,
+                EndTime: endtime,
+              },
+            ],
+          },
+        };
+      };
+
       // First check if our first vocal-group needs an interlude before it
       let addedStartInterlude = false;
       {
         const firstVocalGroup = vgs[0];
         if (firstVocalGroup.StartTime >= MinimumInterludeDuration) {
-          vgs.unshift({
-            Type: "Interlude",
-            StartTime: 0,
-            EndTime: firstVocalGroup.StartTime - EndInterludeEarlyBy,
-          });
+          vgs.unshift(
+            makeInterlude(0, firstVocalGroup.StartTime - EndInterludeEarlyBy)
+          );
           addedStartInterlude = true;
         }
       }
@@ -151,11 +176,14 @@ var ElementMaker = {
           endingVocalGroup.StartTime - startingVocalGroup.EndTime >=
           MinimumInterludeDuration
         ) {
-          vgs.splice(index, 0, {
-            Type: "Interlude",
-            StartTime: startingVocalGroup.EndTime,
-            EndTime: endingVocalGroup.StartTime - EndInterludeEarlyBy,
-          });
+          vgs.splice(
+            index,
+            0,
+            makeInterlude(
+              startingVocalGroup.EndTime,
+              endingVocalGroup.StartTime - EndInterludeEarlyBy
+            )
+          );
         }
       }
     }

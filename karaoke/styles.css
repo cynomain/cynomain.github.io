@@ -100,7 +100,7 @@ img {
   }
 }
 
-@media only screen  and (pointer: coarse) {
+@media only screen and (pointer: coarse) {
   body {
     font: 70% system-ui;
   }
@@ -358,8 +358,11 @@ button:active:enabled {
   --lyrics-reached: #ffffff;
 
   transition: color 1s, filter 0s, text-shadow 1s, --lyrics-reached 1s,
-    -webkit-text-stroke 1s, margin-top 0.2s, margin-bottom 0.2s,
+    -webkit-text-stroke 1s, margin-top 0.2s,
     transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+/* margin-bottom 0.2s */
+  
   /*
   margin-top: 0.75em;
   margin-bottom: 0.75em;
@@ -382,11 +385,22 @@ button:active:enabled {
   text-align: right;
 }
 
+.lyrics-word {  
+  display: inline-block;
+  white-space: pre;
+  white-space-collapse: preserve;
+}
+
 .lyrics:not(.vertical):not(.reached):not(.notreached),
 .interlude {
   filter: opacity(1);
+  color: transparent;
 
   & > .lyrics-word {
+    /* Convert percentage to degrees (0% -> 0deg, 100% -> 180deg) and calculate sine */
+    transform: translateY(var(--height)) scale(var(--scale)); 
+ 
+    
     background-image: linear-gradient(
       to right,
       var(--lyrics-reached),
@@ -405,6 +419,11 @@ button:active:enabled {
   }
 }
 
+.lyrics.vertical > .lyrics-word {
+  display: inline !important;
+  white-space: normal !important;
+}
+
 .lyrics.vertical:not(.reached):not(.notreached) {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -421,9 +440,7 @@ button:active:enabled {
   text-size-adjust: auto;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
-
 }
-
 
 .lyrics.reached,
 .lyrics.notreached {
@@ -837,7 +854,7 @@ input[type="submit"] {
   align-content: center;
   filter: blur(100px) brightness(50%);
   user-select: none;
-  
+
   > * {
     width: 100%;
     height: 100%;
@@ -886,7 +903,7 @@ input[type="submit"] {
 
   *:nth-child(4) {
     position: fixed;
-    top: 10%%;
+    top: 10%;
     left: -25%;
     animation-direction: alternate-reverse;
     animation-duration: 20s;
@@ -899,16 +916,15 @@ input[type="submit"] {
     animation-duration: 22s;
   }
 
-  &::after{
+  &::after {
     z-index: 10000;
-    position:fixed;
+    position: fixed;
     width: 150%;
     height: 150%;
     background-color: transparent;
-    transition: background-color .5s;
+    transition: background-color 0.5s;
     content: "";
   }
-  
 
   &.black::after {
     background-color: black;
@@ -931,7 +947,6 @@ input[type="submit"] {
     transform: rotate(360deg);
   }
 }
-
 
 .md3.switch {
   user-select: none;

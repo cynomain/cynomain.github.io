@@ -3,8 +3,6 @@ var LyricsUI = {
   lastMostRecentLyric: null,
   intervalId: 0,
   count: 0,
-  lastDOM: [],
-  currentDOM: [],
 
   ProcessLyrics() {
     if (FPSCounter.fps > 60) {
@@ -29,32 +27,24 @@ var LyricsUI = {
       return a;
     };
 
-    const setProgress = (element, progress, animationScale = 1) => {
+    const setProgress = (element, progress) => {
       var clampedProgress = clamp(progress, 0, 1);
-      if (progress < 1) {
-        var quad = -(2 * clampedProgress - 1) * (2 * clampedProgress - 1) + 1;
-        //var sine = Math.sin(clampedProgress * Math.PI);
-        var height = quad * (0.2 * animationScale);
-        var scale = quad * (0.05 * animationScale) + 1;
+      if (progress <= 1) {
+        var height =
+          (-(2 * clampedProgress - 1) * (2 * clampedProgress - 1) + 1) * 0.2;
         element.style = `--progress: ${
           clampedProgress * 100
-        }%; --height: -${height}em; --scale: ${scale};`;
+        }%; --height: -${height}em;`;
       } else {
         element.style = `--progress: ${progress * 100}%;`;
       }
       //element.style = `--progress: ${progress * 100}%; --height: -${Math.sin(clamp(progress, 0, 1) * Math.PI) * .2}em;`;
     };
-    const setProgressT = (element, timedObject, overrideScale = 1) => {
-      let scale =
-        overrideScale == 1
-          ? timedObject.EndTime - timedObject.StartTime > 1
-            ? 1
-            : 0.5
-          : overrideScale;
+    const setProgressT = (element, timedObject) => {
       let value =
         (time - timedObject.StartTime) /
         (timedObject.EndTime - timedObject.StartTime);
-      setProgress(element, value, scale);
+      setProgress(element, value);
     };
 
     const set100 = (element) => {
@@ -103,97 +93,76 @@ var LyricsUI = {
         //In Progress
         if (d.data.StartTime <= time && d.data.EndTime >= time) {
           //Yes
-          d.firstLastState = 0;
-          //if (d.data.Type === "Vocal") {
-          let leads = d.data.Lead;
-          let interlude = d.data.Type === "Interlude";
-          //Has Leads -> Word Synced
-          if (!isObjectUndefined(leads)) {
-            if (!isObjectUndefined(leads.Syllables)) {
-              leads = leads.Syllables;
-            }
-            //Words
-            for (let i = 0; i < leads.length; i++) {
-              setProgressT(
-                firstElement.childNodes[i],
-                leads[i],
-                interlude ? 2 : 1
-              );
-            }
-          }
-          // Doesnt have Leads -> Line Synced
-          else {
-            //console.log("NonLead");
-            setProgressT(firstElement, d.data);
-          }
+          if (d.data.Type === "Vocal") {
+            let leads = d.data.Lead;
 
-          removeReachTags(firstElement);
-          setMostRecentIfNot(firstElement);
-          //}
-          //else
-          // Is Interlude
-          if (interlude) {
-            const interlude = d.elements[0];
-            /*
-            for (let i = 0; i < 4; i++){
-              setProgressT(interlude.childNodes[i], d.data);
+            //Has Leads -> Word Synced
+            if (!isObjectUndefined(leads)) {
+              if (!isObjectUndefined(leads.Syllables)) {
+                leads = leads.Syllables;
+              }
+              //Words
+              for (let i = 0; i < leads.length; i++) {
+                setProgressT(firstElement.childNodes[i], leads[i]);
+              }
             }
-            */
-            /*
+            // Doesnt have Leads -> Line Synced
+            else {
+              //console.log("NonLead");
+              setProgressT(firstElement, d.data);
+            }
+
+            removeReachTags(firstElement);
+            setMostRecentIfNot(firstElement);
+          }
+          // Is Interlude
+          else if (d.data.Type === "Interlude") {
+            const interlude = d.elements[0];
+
+            setProgressT(interlude, d.data);
+
             removeReachTags(interlude);
             setMostRecentIfNot(interlude);
-            */
             interlude.classList.add("open");
           }
         }
 
         //Reached
         else if (d.data.EndTime < time) {
-          if (d.firstLastState !== 1) {
-            //if (isLyrics(firstElement)) {
+          if (isLyrics(firstElement)) {
             setChildren100(firstElement);
             setReached(firstElement);
 
             if (isVertical(firstElement)) {
               setProgress(firstElement, 1);
             }
-            //}
-
-            if (isInterlude(firstElement)) {
-              /*
-              set100(firstElement);
-              setChildren100(firstElement);
-              */
-              firstElement.classList.remove("open");
-            }
           }
-          d.firstLastState = 1;
+
+          if (isInterlude(firstElement)) {
+            set100(firstElement);
+            firstElement.classList.remove("open");
+          }
         }
 
         //Not reached
         else {
-          if (d.firstLastState !== -1) {
-            //if (isLyrics(firstElement)) {
+          if (isLyrics(firstElement)) {
             setNotReached(firstElement);
-            //}
+          }
 
-            //if (d.data.Type === "Vocal") {
+          if (d.data.Type === "Vocal") {
             setChildren0(firstElement);
             setNotReached(firstElement);
 
             if (isVertical(firstElement)) {
               set0(firstElement);
             }
-            //} else
-            if (d.data.Type === "Interlude") {
-              /*
-              set0(firstElement);
-              setNotReached(firstElement);
-              */
-              firstElement.classList.remove("open");
-            }
+          } else if (d.data.Type === "Interlude") {
+            set0(firstElement);
+            setNotReached(firstElement);
+
+            firstElement.classList.remove("open");
           }
-          d.firstLastState = -1;
         }
 
         if (d.elements.length > 1) {
@@ -201,33 +170,21 @@ var LyricsUI = {
           const bg = d.data.Background[0].Syllables;
           const secondElement = d.elements[1];
 
-          //In progress
           if (vg.StartTime <= time && vg.EndTime >= time) {
-            d.secondLastState = 0;
-
             for (let i = 0; i < bg.length; i++) {
               const l = bg[i];
               const wordElement = d.elements[1].childNodes[i];
               setProgressT(wordElement, l);
             }
-
             removeReachTags(d.elements[1]);
           }
-          //Reached
+          //Recahed
           else if (vg.EndTime < time) {
-            if (d.secondLastState !== 1) {
-              setChildren100(secondElement);
-              setReached(secondElement);
-            }
-            d.secondLastState = 1;
-          }
-          //Not Reached
-          else {
-            if (d.secondLastState !== -1) {
-              setChildren0(secondElement);
-              setNotReached(secondElement);
-            }
-            d.secondLastState = -1;
+            setChildren100(secondElement);
+            setReached(secondElement);
+          } else {
+            setChildren0(secondElement);
+            setNotReached(secondElement);
           }
         }
 
