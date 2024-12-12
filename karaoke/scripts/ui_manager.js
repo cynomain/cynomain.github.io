@@ -61,13 +61,13 @@ var BottomBarUI = {
   },
 
   onProgressBarChange(value) {
-    console.log("endseek");
+    //console.log("endseek");
     AudioManager.seek(value * audio_player.duration);
     BottomBarUI.isSeeking = false;
   },
 
   onProgressBarClick() {
-    console.log("beginseek");
+    //console.log("beginseek");
     BottomBarUI.isSeeking = true;
   },
 

@@ -1,6 +1,9 @@
 var LyricsUI = {
   mostRecentLyric: null,
   lastMostRecentLyric: null,
+  //nextLyric: null,
+  //nextLyricIndex: -1,
+  //alreadyScrolled: false,
   intervalId: 0,
   count: 0,
   lastDOM: [],
@@ -30,15 +33,28 @@ var LyricsUI = {
     };
 
     const setProgress = (element, progress, animationScale = 1) => {
-      var clampedProgress = clamp(progress, 0, 1);
-      if (progress < 1) {
-        var quad = -(2 * clampedProgress - 1) * (2 * clampedProgress - 1) + 1;
-        //var sine = Math.sin(clampedProgress * Math.PI);
-        var height = quad * (0.2 * animationScale);
-        var scale = quad * (0.05 * animationScale) + 1;
+      var clampedProgress = clamp(progress, -1, 2);
+      if (progress >= -1 && progress <= 2) {
+        //let quad = -(2 * clampedProgress - 1) * (2 * clampedProgress - 1) + 1;
+        let sine = Math.sin(clampedProgress * Math.PI);
+        if (sine < 0) {
+          sine *= .2;
+        }
+        else{
+          sine *= 1.2;
+        }
+        //let x = clampedProgress - .5;
+        /*
+        let custom =
+          1.15 *
+          Math.pow(Math.E, -(0.5 * x * x)) *
+          Math.sin(4 * x * x + Math.PI / 1.5);
+        */
+        let height = -(sine * (0.2 * animationScale));
+        let scale = sine * (0.05 * animationScale) + 1;
         element.style = `--progress: ${
           clampedProgress * 100
-        }%; --height: -${height}em; --scale: ${scale};`;
+        }%; --height: ${height}em; --scale: ${scale};`;
       } else {
         element.style = `--progress: ${progress * 100}%;`;
       }
@@ -90,21 +106,22 @@ var LyricsUI = {
       element.classList.remove("notreached");
     };
 
+    
     const setMostRecentIfNot = (element) => {
-      if (this.mostRecentLyric != element) {
-        this.mostRecentLyric = element;
+      if (LyricsUI.mostRecentLyric !== element) {
+        LyricsUI.mostRecentLyric = element;
       }
     };
+    
 
     if (currentLyrics != null) {
-      currentLyrics.forEach((d) => {
+      for (let L = 0; L < currentLyrics.length; L++) {
+        const d = currentLyrics[L];
         const firstElement = d.elements[0];
 
         //In Progress
         if (d.data.StartTime <= time && d.data.EndTime >= time) {
-          //Yes
           d.firstLastState = 0;
-          //if (d.data.Type === "Vocal") {
           let leads = d.data.Lead;
           let interlude = d.data.Type === "Interlude";
           //Has Leads -> Word Synced
@@ -123,47 +140,54 @@ var LyricsUI = {
           }
           // Doesnt have Leads -> Line Synced
           else {
-            //console.log("NonLead");
             setProgressT(firstElement, d.data);
           }
 
           removeReachTags(firstElement);
+          
           setMostRecentIfNot(firstElement);
-          //}
-          //else
-          // Is Interlude
+
           if (interlude) {
             const interlude = d.elements[0];
-            /*
-            for (let i = 0; i < 4; i++){
-              setProgressT(interlude.childNodes[i], d.data);
-            }
-            */
-            /*
-            removeReachTags(interlude);
-            setMostRecentIfNot(interlude);
-            */
             interlude.classList.add("open");
           }
+
+          //let prog = (time - d.data.StartTime) / (d.data.EndTime - d.data.StartTime);
+          /*
+          if (prog >= 0.9 && LyricsUI.nextLyric !== null){
+            console.log("scrolled");      
+            smoothScroll(lyrics_area, LyricsUI.nextLyric);
+            LyricsUI.nextLyric = null;
+          }
+          */
+
+          /*
+          if ((L != LyricsUI.nextLyricIndex || L != LyricsUI.nextLyricIndex + 1) || LyricsUI.nextLyric === d || LyricsUI.nextLyric == null){
+            //Already here.
+            LyricsUI.nextLyric = L < currentLyrics.length -1 ? currentLyrics[L+1] : null;
+            LyricsUI.alreadyScrolled = false;
+          }
+
+          //0.5 secs till next one
+          if (!LyricsUI.alreadyScrolled && LyricsUI.nextLyric != null && LyricsUI.nextLyric.data.StartTime - time <= 0.5){
+            smoothScroll(lyrics_area, LyricsUI.nextLyric.elements[0]);
+            LyricsUI.alreadyScrolled = true;
+          }
+
+          */
         }
 
         //Reached
         else if (d.data.EndTime < time) {
           if (d.firstLastState !== 1) {
-            //if (isLyrics(firstElement)) {
             setChildren100(firstElement);
             setReached(firstElement);
 
             if (isVertical(firstElement)) {
               setProgress(firstElement, 1);
             }
-            //}
 
             if (isInterlude(firstElement)) {
-              /*
-              set100(firstElement);
-              setChildren100(firstElement);
-              */
               firstElement.classList.remove("open");
             }
           }
@@ -173,23 +197,14 @@ var LyricsUI = {
         //Not reached
         else {
           if (d.firstLastState !== -1) {
-            //if (isLyrics(firstElement)) {
-            setNotReached(firstElement);
-            //}
-
-            //if (d.data.Type === "Vocal") {
             setChildren0(firstElement);
             setNotReached(firstElement);
 
             if (isVertical(firstElement)) {
               set0(firstElement);
             }
-            //} else
+
             if (d.data.Type === "Interlude") {
-              /*
-              set0(firstElement);
-              setNotReached(firstElement);
-              */
               firstElement.classList.remove("open");
             }
           }
@@ -231,12 +246,19 @@ var LyricsUI = {
           }
         }
 
+        
         //NEW LOGIC
-        if (this.mostRecentLyric !== this.lastMostRecentLyric) {
-          smoothScroll(lyrics_area, this.mostRecentLyric);
-          this.lastMostRecentLyric = this.mostRecentLyric;
+        if (LyricsUI.mostRecentLyric !== LyricsUI.lastMostRecentLyric) {
+          smoothScroll(lyrics_area, LyricsUI.mostRecentLyric);
+          //console.log("CHECK");
+          //LyricsUI.nextLyric = L < (currentLyrics.length - 1) ? currentLyrics[L+1].elements[0] : null; 
+          //console.log(LyricsUI.nextLyric);
+
+          LyricsUI.lastMostRecentLyric = LyricsUI.mostRecentLyric;
         }
-      });
+        
+       
+      }
     }
 
     if (!audio_player.paused) {
