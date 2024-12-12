@@ -44,8 +44,10 @@ var BottomBarUI = {
     BottomBarUI.updateTime();
     BottomBarUI.updateIcons();
   },
+  wasFullScreen: false,
 
   importPackage() {
+    BottomBarUI.wasFullScreen = document.fullscreenElement !== null;
     $I("input-file-package").click();
   },
 
@@ -128,6 +130,7 @@ $I("touch-bar").onpointerenter = BottomBarUI.onTouchBarEnter;
 $I("playback-playpause-button").onclick = AudioManager.togglePlayback;
 $I("button-import").onclick = BottomBarUI.importPackage;
 $I("button-fullscreen").onclick = BottomBarUI.toggleFullscreen;
+
 let pbar = $I("playback-progress");
 pbar.onpointerup = () => BottomBarUI.onProgressBarChange(pbar.value);
 pbar.onpointerdown = BottomBarUI.onProgressBarClick;
@@ -151,15 +154,15 @@ $I("fps").onpointerdown = () => {
   holdTimer = setTimeout(() => {
     settings.enableFps = !settings.enableFps;
     FPSCounter.updateVisibility();
-}, 3000);
-}
+  }, 3000);
+};
 
 $I("fps").onpointerup = () => {
   if (!isNaN(holdTimer)) {
     clearTimeout(holdTimer);
   }
   holdTimer = NaN;
-}
+};
 
 var FPSCounter = {
   prevTime: 0,
@@ -168,7 +171,7 @@ var FPSCounter = {
   fps: 0,
 
   fpsCounter() {
-    if (!settings.enableFps){
+    if (!settings.enableFps) {
       return;
     }
 
@@ -188,5 +191,7 @@ var FPSCounter = {
 
   updateVisibility() {
     this.fps_counter.classList.toggle("hidden", !settings.enableFps);
-  }
+  },
 };
+
+settings.offset = 0;

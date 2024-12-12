@@ -21,6 +21,7 @@ var settings = {
   enableFps: true,
   mode: 0,
   size: 1.0,
+  offset: 0.0,
 };
 
 var currentLyrics;

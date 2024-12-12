@@ -21,7 +21,7 @@ var LyricsUI = {
       }
     }
 
-    let time = audio_player.currentTime;
+    let time = audio_player.currentTime + settings.offset;
 
     const clamp = (a, min, max) => {
       if (a < min) return min;

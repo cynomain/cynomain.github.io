@@ -161,6 +161,19 @@ var IO = {
       AudioManager.playOnceReady();
       BackgroundUI.loadImage(image);
       console.log("done");
+
+      if (BottomBarUI.wasFullScreen){
+        console.log("was fullscreen");
+        document.body.requestFullscreen();
+        BottomBarUI.wasFullScreen = false;
+      }
+
+      lyrics_area.scrollTo({
+        top: 0,
+        behavior: "smooth", // Ensure smooth scrolling behavior
+        block: "center",
+      });
+      
     } catch (e) {
       console.error(e);
       alert("an error occured: " + e);

@@ -361,12 +361,13 @@ button:active:enabled {
     -webkit-text-stroke 1s, margin-top 0.2s,
     transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-/* margin-bottom 0.2s */
-  
+  /* margin-bottom 0.2s */
+
   /*
   margin-top: 0.75em;
   margin-bottom: 0.75em;
   */
+
 }
 
 .lyrics.small {
@@ -385,10 +386,13 @@ button:active:enabled {
   text-align: right;
 }
 
-.lyrics-word {  
+.lyrics-word {
   display: inline-block;
   white-space: pre;
-  white-space-collapse: preserve;
+
+  &.part {
+    white-space: nowrap;
+  }
 }
 
 .lyrics:not(.vertical):not(.reached):not(.notreached),
@@ -398,9 +402,8 @@ button:active:enabled {
 
   & > .lyrics-word {
     /* Convert percentage to degrees (0% -> 0deg, 100% -> 180deg) and calculate sine */
-    transform: translateY(var(--height)) scale(var(--scale)); 
- 
-    
+    transform: translateY(var(--height)) scale(var(--scale));
+
     background-image: linear-gradient(
       to right,
       var(--lyrics-reached),

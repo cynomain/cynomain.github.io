@@ -67,7 +67,7 @@
           text-align: center;
         "
       >
-        <span class="lyrics-word">(hover over the bottom of the screen)</span>
+        <span class="lyrics-word" style="display: inline; white-space: normal;">(hover over the bottom of the screen)</span>
       </p>
     </div>
 
@@ -77,7 +77,7 @@
       onpointerenter="MediaControls.onTouchBarEnter();"
       onpointerleave="MediaControls.onTouchBarExit();"
     >
-      <div class="bottom-bar hidden" id="bottom-bar">
+      <div class="bottom-bar" id="bottom-bar">
         <button
           class="playback-button"
           id="playback-playpause-button"
@@ -238,6 +238,8 @@
       >
         FPS
       </p>
+
+
     </div>
 
     <script src="./scripts/jqlite.js"></script>
