@@ -135,6 +135,7 @@ let pbar = $I("playback-progress");
 pbar.onpointerup = () => BottomBarUI.onProgressBarChange(pbar.value);
 pbar.onpointerdown = BottomBarUI.onProgressBarClick;
 
+/*
 let bgToggleCounter = 0;
 $I("fps").onclick = () => {
   bgToggleCounter++;
@@ -163,6 +164,7 @@ $I("fps").onpointerup = () => {
   }
   holdTimer = NaN;
 };
+*/
 
 var FPSCounter = {
   prevTime: 0,
@@ -172,6 +174,7 @@ var FPSCounter = {
 
   fpsCounter() {
     if (!settings.enableFps) {
+      fps = 60;
       return;
     }
 

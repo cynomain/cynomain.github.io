@@ -18,7 +18,9 @@ var currentState = {
 
 var settings = {
   enableBackground: true,
+  enableTextAnimation: true,
   enableFps: true,
+  powerSaving: false,
   mode: 0,
   size: 1.0,
   offset: 0.0,
@@ -90,5 +92,6 @@ function smoothScroll(parent, target) {
     top: scrollTo,
     behavior: "smooth", // Ensure smooth scrolling behavior
     block: "center",
+    inline: "closest",
   });
 }

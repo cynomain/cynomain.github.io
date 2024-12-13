@@ -28,7 +28,11 @@
   </head>
 
   <body>
-    <div class="background disabled" draggable="false" oncontextmenu="return false;">
+    <div
+      class="background disabled"
+      draggable="false"
+      oncontextmenu="return false;"
+    >
       <div class="blur-cover" draggable="false" oncontextmenu="return false;">
         <img src="" draggable="false" oncontextmenu="return false;" />
         <img src="" draggable="false" oncontextmenu="return false;" />
@@ -49,7 +53,7 @@
     <div class="lyrics-area masked" id="lyrics-area">
       <p
         class="lyrics left display"
-        style="--progress: 100%; --lyrics-reached: #ffffff;"
+        style="--progress: 100%; --lyrics-reached: #ffffff"
       >
         <span class="lyrics-word">Waiting for</span>
         <span
@@ -67,7 +71,9 @@
           text-align: center;
         "
       >
-        <span class="lyrics-word" style="display: inline; white-space: normal;">(hover over the bottom of the screen)</span>
+        <span class="lyrics-word" style="display: inline; white-space: normal"
+          >(hover over the bottom of the screen)</span
+        >
       </p>
     </div>
 
@@ -130,22 +136,15 @@
           <img src="./assets/icon_file_open.svg" class="tint-dark" />
         </button>
 
-        <!--button onclick="ToggleSleep();" title="Wakelock">
-          <img
-            id="eye-icon"
-            src="./assets/icon_eye_off.svg"
-            class="tint-dark"
-          />
-        </button -->
+        <button title="Settings" id="button-settings">
+          <img src="./assets/icon_settings.svg" class="tint-dark" />
+        </button>
 
         <button
           onclick="MediaControls.ToggleFullscreen();"
           title="Fullscreen"
           id="button-fullscreen"
         >
-          <!--span class="material-symbols-rounded" id="fullscreen-text">
-            fullscreen
-          </span-->
           <img
             id="fullscreen-icon"
             src="./assets/icon_fullscreen_enter.svg"
@@ -155,72 +154,7 @@
       </div>
     </div>
 
-    <!--Settings-->
-    <div class="import-dialog closed" id="import-dialog-settings">
-      <div class="card import children-fill col" style="gap: 0.25em">
-        <h1 style="text-align: center; margin: 0">Settings</h1>
-
-        <div class="children-fill row first">
-          <p>Colored Background</p>
-          <label class="md3 switch children-fill slightleft">
-            <input type="checkbox" />
-            <span class="slider"> </span>
-          </label>
-        </div>
-
-        <div class="children-fill row first">
-          <p>Track Delay</p>
-          <label class="md3 switch children-fill slightleft">
-            <input type="checkbox" />
-            <span class="slider"> </span>
-          </label>
-        </div>
-
-        <div class="children-fill row first">
-          <p>Global Delay</p>
-          <label class="md3 switch children-fill slightleft">
-            <input type="checkbox" />
-            <span class="slider"> </span>
-          </label>
-        </div>
-        <div class="children-fill row first">
-          <input type="range" class="playback-progress dark" />
-          <p
-            style="font-size: 0.75em; margin-left: 0.75em; font-weight: lighter"
-          >
-            100ms
-          </p>
-        </div>
-
-        <br />
-        <button
-          class="normal"
-          id="import-separate-ttml"
-          onclick="ImportMenuEx.buttonLyric()"
-        >
-          <img
-            src="./assets/icon_settings.svg"
-            class="tint-light"
-            style="margin-right: 0.5em; font-size: 1.25em"
-          />
-          <span style="margin-right: 0.5em">Clear App Cache</span>
-        </button>
-
-        <div
-          class="children-fill row equal"
-          style="margin-top: 1em; font-weight: bold"
-        >
-          <button
-            class="inverse"
-            id="import-button-ok"
-            onclick="ImportMenuEx.LoadFiles();"
-          >
-            <b>OK</b>
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <!-- TOP MOST -->
     <div
       style="
         z-index: 99999;
@@ -238,8 +172,80 @@
       >
         FPS
       </p>
+    </div>
 
+    <!-- TOP MOST -->
+    <div class="neo-overlay closed" id="settings-dialog">
+      <!--Settings-->
+      <div class="neo-card">
+        <h1>Settings</h1>
 
+        <div class="setting-entry" id="setting-bg">
+          <p>Fancy Background</p>
+          <label class="md3 switch">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <div class="setting-entry" id="setting-anim">
+          <p>Fancy Animation</p>
+          <label class="md3 switch">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <div class="setting-entry" id="setting-fps">
+          <p>FPS Counter</p>
+          <label class="md3 switch">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <div class="setting-entry" id="setting-power">
+          <p>Power Saving</p>
+          <label class="md3 switch">
+            <input type="checkbox" />
+            <span class="slider"> </span>
+          </label>
+        </div>
+
+        <!--
+        <div class="children-fill row first">
+          <input type="range" class="playback-progress dark" />
+          <p
+            style="font-size: 0.75em; margin-left: 0.75em; font-weight: lighter"
+          >
+            100ms
+          </p>
+        </div>
+        
+        <br />
+        <button
+          class="normal"
+          id="import-separate-ttml"
+          onclick="ImportMenuEx.buttonLyric()"
+        >
+          <img
+            src="./assets/icon_settings.svg"
+            class="tint-light"
+            style="margin-right: 0.5em; font-size: 1.25em"
+          />
+          <span style="margin-right: 0.5em">Clear App Cache</span>
+        </button>
+      -->
+
+        <div
+          class="children-fill row equal"
+          style="margin-top: 1em; font-weight: bold"
+        >
+          <button class="inverse" id="settings-ok">
+            <b>Close</b>
+          </button>
+        </div>
+      </div>
     </div>
 
     <script src="./scripts/jqlite.js"></script>

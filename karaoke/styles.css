@@ -277,7 +277,8 @@ button:active:enabled {
 
 .playback-time {
   font-size: 1.25em;
-  min-width: 3em;
+  min-width: 2em;
+  width: auto;  
 }
 
 .lyrics-area {
@@ -302,8 +303,8 @@ button:active:enabled {
   overflow-y: scroll;
 
   width: fit-content;
-  max-width: 75%;
-  max-height: 75%;
+  max-width: 90%;
+  max-height: 80%;
 
   box-sizing: border-box;
 
@@ -367,7 +368,6 @@ button:active:enabled {
   margin-top: 0.75em;
   margin-bottom: 0.75em;
   */
-
 }
 
 .lyrics.small {
@@ -392,6 +392,13 @@ button:active:enabled {
 
   &.part {
     white-space: nowrap;
+  }
+}
+
+.lyrics-area.lite {
+  .lyrics-word {
+    display: inline !important;
+    white-space: normal !important;
   }
 }
 
@@ -580,7 +587,7 @@ button:active:enabled {
 }
 */
 
-.import-dialog {
+.import {
   background-color: #00000098;
   opacity: 1;
   width: 100%;
@@ -601,18 +608,18 @@ button:active:enabled {
   font-size: 1.25em;
 }
 
-.import-dialog.closed {
+.import.closed {
   opacity: 0;
   display: none;
 }
 
-.import-card {
+.card {
   background-color: #36343b;
   padding: 2em;
   border-radius: 2em;
 }
 
-.import-card > h1 {
+.card > h1 {
   margin: 0;
 }
 
@@ -1090,4 +1097,65 @@ input[type="submit"] {
 
 .fps.hidden {
   opacity: 0;
+}
+
+.neo-overlay {
+  z-index: 1000000;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  align-content: center;
+  background-color: rgba(0, 0, 0, 0.349);
+
+  transition: opacity .2s;
+  opacity: 1;
+  visibility: visible;
+
+  &.closed {
+    opacity: 0;
+    visibility: hidden;
+    
+  }
+}
+
+.neo-card {
+  background-color: var(--c-surface-container);
+  padding: 1.5em;
+  border-radius: 2em;
+  outline: 2px var(--c-primary) solid;
+
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+
+  & > h1 {
+    text-align: center;
+    margin: 0;
+  }
+}
+
+.setting-entry {
+  display: flex;
+  & > :first-child {
+    flex: 100;
+  }
+  & > :not(:first-child) {
+    flex: 1;
+  }
+  flex-direction: row;
+  justify-items: center;
+  align-items: center;
+
+  p {
+    font-size: 1.25em;
+  }
+
+  .md3 {
+    font-size: 1.2em;
+  }
 }

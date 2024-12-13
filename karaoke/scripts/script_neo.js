@@ -58,6 +58,7 @@ function ensureSettings() {
 var defaultSettings = structuredClone(settings);
 getSettings();
 ensureSettings();
+SettingsUI.updateToggles();
 BackgroundUI.updateVisibility();
 FPSCounter.updateVisibility();
 

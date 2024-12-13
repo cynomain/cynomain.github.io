@@ -10,10 +10,12 @@ var LyricsUI = {
   currentDOM: [],
 
   ProcessLyrics() {
-    if (FPSCounter.fps > 60) {
+    let constraintCount = settings.powerSaving ? 2 : 0;
+
+    if (FPSCounter.fps > 60 || settings.powerSaving) {
       LyricsUI.count++;
 
-      if (LyricsUI.count < 2) {
+      if (LyricsUI.count < constraintCount + 2) {
         if (!audio_player.paused) {
           LyricsUI.start();
         }
@@ -34,14 +36,17 @@ var LyricsUI = {
 
     const setProgress = (element, progress, animationScale = 1) => {
       var clampedProgress = clamp(progress, -1, 2);
-      if (progress >= -1 && progress <= 2) {
+      if (settings.enableTextAnimation && progress >= -1 && progress <= 2) {
         //let quad = -(2 * clampedProgress - 1) * (2 * clampedProgress - 1) + 1;
         let sine = Math.sin(clampedProgress * Math.PI);
         if (sine < 0) {
           sine *= .2;
+          if (clampedProgress < 0) {
+            sine *= 0.75;
+          }
         }
         else{
-          sine *= 1.2;
+          sine *= 1.5;
         }
         //let x = clampedProgress - .5;
         /*
@@ -266,6 +271,10 @@ var LyricsUI = {
     }
 
     FPSCounter.fpsCounter();
+  },
+
+  updateFancy() {
+    lyrics_area.classList.toggle("lite", !settings.enableTextAnimation);
   },
 
   start() {

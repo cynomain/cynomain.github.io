@@ -91,3 +91,56 @@ class Dialog {
     return button;
   }
 }
+
+var SettingsUI = {
+  settingsOverlay: $I("settings-dialog"),
+  toggle_bg: $Q("#setting-bg > .switch > input"),
+  toggle_anim: $Q("#setting-anim > .switch > input"),
+  toggle_fps: $Q("#setting-fps > .switch > input"),
+  toggle_power: $Q("#setting-power > .switch > input"),
+
+  updateToggles() {
+    SettingsUI.toggle_bg.checked = settings.enableBackground;
+    SettingsUI.toggle_anim.checked = settings.enableTextAnimation;
+    SettingsUI.toggle_fps.checked = settings.enableFps;
+    SettingsUI.toggle_power.checked = settings.powerSaving;
+  },
+
+  openSettings() {
+    SettingsUI.settingsOverlay.classList.toggle("closed", false);
+  },
+
+  closeSettings() {
+    SettingsUI.settingsOverlay.classList.toggle("closed", true);
+  }
+}
+
+SettingsUI.toggle_bg.onclick = () => {
+  settings.enableBackground = SettingsUI.toggle_bg.checked;
+  //SettingsUI.updateToggles();
+  BackgroundUI.updateVisibility();
+}
+
+SettingsUI.toggle_anim.onclick = () => {
+  settings.enableTextAnimation = SettingsUI.toggle_anim.checked;
+  //SettingsUI.updateToggles();
+  LyricsUI.updateFancy();
+}
+
+SettingsUI.toggle_fps.onclick = () => {
+  settings.enableFps = SettingsUI.toggle_fps.checked;
+  //SettingsUI.updateToggles();
+  FPSCounter.updateVisibility();
+}
+
+SettingsUI.toggle_power.onclick = () => {
+  settings.powerSaving = SettingsUI.toggle_power.checked;
+  //SettingsUI.updateToggles();
+}
+$I("settings-ok").onclick = () => {
+  SettingsUI.closeSettings();
+}
+
+$I("button-settings").onclick = () => {
+  SettingsUI.openSettings();
+}
