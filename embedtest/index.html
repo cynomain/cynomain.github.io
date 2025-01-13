@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embedding Test</title>
+    <meta property="og:title" content="Embed Test" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://cynomain.github.io/embedtest/index.html"
+    />
+    <style>
+      #square {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        text-align: center;
+        vertical-align: middle;
+        align-content: center;
+        color: white;
+
+        &.rainbow {
+          animation: rainbow 2s infinite;
+        }
+      }
+      @keyframes rainbow {
+        0% {
+          background-color: blue;
+        }
+        50% {
+          background-color: green;
+        }
+        100% {
+          background-color: yellow;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>HELLO THIS IS AN EMBED TEST</h1>
+    <div id="square">Square</div>
+    <button id="rainbow" onclick="document.getElementById('square').classList.toggle('rainbow');">RAINBOW MODE</button>
+    <textarea>
+
+    </textarea>
+  </body>
+</html>
