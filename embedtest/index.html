@@ -10,6 +10,11 @@
       property="og:url"
       content="https://cynomain.github.io/embedtest/index.html"
     />
+    <link
+      rel="iframely"
+      href="https://cynomain.github.io/embedtest/index.html"
+      media="(aspect-ratio: 1280/720)"
+    />
     <style>
       #square {
         width: 100px;
@@ -40,9 +45,12 @@
   <body>
     <h1>HELLO THIS IS AN EMBED TEST</h1>
     <div id="square">Square</div>
-    <button id="rainbow" onclick="document.getElementById('square').classList.toggle('rainbow');">RAINBOW MODE</button>
-    <textarea>
-
-    </textarea>
+    <button
+      id="rainbow"
+      onclick="document.getElementById('square').classList.toggle('rainbow');"
+    >
+      RAINBOW MODE
+    </button>
+    <textarea> </textarea>
   </body>
 </html>
